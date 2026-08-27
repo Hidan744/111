@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Specialist — портфолио</title>
+<meta name="description" content="Портфолио AI-специалиста: LLM-агенты, RAG-системы, автоматизация процессов и продакшн-решения на базе искусственного интеллекта.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0b0d'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%23c9ff3d' font-family='monospace'%3E%3E%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+<div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
+
+<header class="site-header" id="siteHeader">
+  <div class="wrap header-inner">
+    <a href="#home" class="brand">
+      <span class="brand-mark">[AI<span class="dot">·</span>SPEC]</span>
+    </a>
+
+    <nav class="main-nav" id="mainNav">
+      <a href="#work" data-nav>Работы</a>
+      <a href="#capabilities" data-nav>Навыки</a>
+      <a href="#process" data-nav>Процесс</a>
+      <a href="#contact" data-nav>Контакты</a>
+    </nav>
+
+    <a href="#contact" class="btn btn-ghost header-cta">Связаться</a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="home">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <canvas id="netCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-grid-overlay" aria-hidden="true"></div>
+
+    <div class="wrap hero-inner">
+      <p class="eyebrow reveal">
+        <span class="eyebrow-tag">SYSTEM.ROLE</span>
+        <span class="terminal-line">&gt; whoami <span class="caret">_</span></span>
+      </p>
+
+      <h1 class="hero-title reveal">
+        Я создаю продукты,<br>
+        которые <em>думают</em>.
+      </h1>
+
+      <p class="hero-sub reveal">
+        Проектирую <span class="rotator" id="rotator"><span class="rotator-word">LLM-агентов</span></span>
+        и системы на базе искусственного интеллекта, которые решают
+        настоящие бизнес-задачи — от прототипа за один день
+        до продакшн-нагрузки в миллионы запросов.
+      </p>
+
+      <div class="hero-actions reveal">
+        <a href="#work" class="btn btn-primary">
+          <span>Смотреть работы</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#contact" class="btn btn-outline">Написать мне</a>
+      </div>
+
+      <div class="hero-stats reveal">
+        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">лет с ИИ&nbsp;и&nbsp;данными</span></div>
+        <div class="stat-sep" aria-hidden="true">/</div>
+        <div class="stat"><span class="stat-num">30+</span><span class="stat-label">AI-систем в продакшне</span></div>
+        <div class="stat-sep" aria-hidden="true">/</div>
+        <div class="stat"><span class="stat-num">LLM · RAG · Agents</span><span class="stat-label">основной стек</span></div>
+      </div>
+    </div>
+
+    <a href="#capabilities" class="scroll-hint" aria-label="Пролистать вниз">
+      <span></span>
+    </a>
+  </section>
+
+  <!-- ================= CAPABILITIES ================= -->
+  <section class="capabilities" id="capabilities">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">ВОЗМОЖНОСТИ</span></p>
+        <h2 class="section-title">Что я делаю<br> с помощью <em>ИИ</em></h2>
+        <p class="section-desc">
+          Не просто «подключаю ChatGPT» — проектирую надёжные,
+          измеримые AI-системы, которые выдерживают реальную нагрузку и реальных пользователей.
+        </p>
+      </div>
+
+      <div class="cap-grid">
+        <article class="cap-card reveal">
+          <span class="cap-idx">01</span>
+          <h3>Интеграция LLM<br>и промпт-инжиниринг</h3>
+          <p>Проектирую промпты и цепочки вызовов моделей, которые стабильно работают в продакшне, а не только в демо.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">02</span>
+          <h3>Автономные<br>AI-агенты</h3>
+          <p>Строю агентов с доступом к инструментам и памятью — они самостоятельно решают многошаговые задачи.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">03</span>
+          <h3>RAG<br>и базы знаний</h3>
+          <p>Подключаю модели к внутренним данным компании, чтобы ответы были точными и проверяемыми.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">04</span>
+          <h3>Автоматизация<br>процессов</h3>
+          <p>Убираю рутину из бизнес-процессов с помощью AI-пайплайнов и интеграций между сервисами.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">05</span>
+          <h3>Дообучение<br>и оценка моделей</h3>
+          <p>Настраиваю модели под узкие задачи и выстраиваю метрики качества, чтобы доверять результату.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">06</span>
+          <h3>Данные<br>и аналитика</h3>
+          <p>Строю пайплайны обработки данных, на которых обучаются и работают AI-решения.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WORK ================= -->
+  <section class="work" id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">ИЗБРАННЫЕ РАБОТЫ</span></p>
+        <h2 class="section-title">Кейсы, где ИИ<br> решает <em>настоящие</em> задачи</h2>
+        <p class="section-desc">
+          Ниже — демонстрационная подборка формата кейсов. Замените на свои проекты,
+          ссылки и метрики (см. README) — вёрстка карточек уже готова.
+        </p>
+      </div>
+
+      <div class="work-grid">
+
+        <article class="work-card reveal" data-art="1">
+          <div class="work-art" aria-hidden="true">
+            <span class="work-id">PRJ_01</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Support</span>
+            </div>
+            <h3>Aria — AI-ассистент поддержки</h3>
+            <p>Chat-copilot для службы поддержки: понимает контекст обращения, ищет ответ в базе знаний и подсказывает оператору готовое решение.</p>
+            <div class="work-foot">
+              <span class="metric">−42% <small>время ответа</small></span>
+              <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal" data-art="2">
+          <div class="work-art" aria-hidden="true">
+            <span class="work-id">PRJ_02</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Agents</span><span class="tag">Analytics</span>
+            </div>
+            <h3>Pulse — аналитика в реальном времени</h3>
+            <p>AI-агент мониторит бизнес-метрики, находит аномалии и сам присылает инсайты в мессенджер команды.</p>
+            <div class="work-foot">
+              <span class="metric">10k+ <small>событий / день</small></span>
+              <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal" data-art="3">
+          <div class="work-art" aria-hidden="true">
+            <span class="work-id">PRJ_03</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Automation</span><span class="tag">No-code</span>
+            </div>
+            <h3>Flowcraft — конструктор AI-автоматизаций</h3>
+            <p>No-code платформа для маркетинга и продаж: собирает сценарии с генерацией контента и принятием решений моделью.</p>
+            <div class="work-foot">
+              <span class="metric">200+ <small>сценариев</small></span>
+              <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal" data-art="4">
+          <div class="work-art" aria-hidden="true">
+            <span class="work-id">PRJ_04</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">RAG</span><span class="tag">NLP</span><span class="tag">Search</span>
+            </div>
+            <h3>Lexis — умный поиск по документам</h3>
+            <p>RAG-система для поиска и анализа юридических документов с точными ссылками на первоисточник в ответе.</p>
+            <div class="work-foot">
+              <span class="metric">500k+ <small>страниц в индексе</small></span>
+              <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal" data-art="5">
+          <div class="work-art" aria-hidden="true">
+            <span class="work-id">PRJ_05</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Agents</span><span class="tag">Personalization</span>
+            </div>
+            <h3>Nomad — AI-планировщик путешествий</h3>
+            <p>Агент собирает маршрут под бюджет и предпочтения пользователя, бронирует и следит за изменениями цен.</p>
+            <div class="work-foot">
+              <span class="metric">4.9/5 <small>оценка пользователей</small></span>
+              <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal" data-art="6">
+          <div class="work-art" aria-hidden="true">
+            <span class="work-id">PRJ_06</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Generation</span><span class="tag">Fine-tuning</span>
+            </div>
+            <h3>Scribe — генерация контента</h3>
+            <p>Мультиформатная генерация текста и изображений для контент-команд с дообученной под tone-of-voice моделью.</p>
+            <div class="work-foot">
+              <span class="metric">3× <small>быстрее выпуск</small></span>
+              <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESS ================= -->
+  <section class="process" id="process">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">ПОДХОД</span></p>
+        <h2 class="section-title">Как я <em>работаю</em></h2>
+      </div>
+
+      <div class="process-list">
+        <div class="process-item reveal">
+          <span class="process-num">01</span>
+          <div class="process-text">
+            <h3>Исследование</h3>
+            <p>Разбираюсь в задаче, данных и ограничениях, чтобы выбрать правильный AI-подход, а не самый модный.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">02</span>
+          <div class="process-text">
+            <h3>Прототип</h3>
+            <p>Собираю рабочий прототип за дни, а не месяцы, чтобы как можно раньше проверить гипотезу на реальных данных.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">03</span>
+          <div class="process-text">
+            <h3>Продакшн</h3>
+            <p>Довожу решение до надёжной системы: мониторинг качества, обработка ошибок, отказоустойчивость.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">04</span>
+          <div class="process-text">
+            <h3>Итерации</h3>
+            <p>Улучшаю модели и промпты на основе реальных данных и обратной связи пользователей — без остановки.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="contact" id="contact">
+    <div class="wrap contact-inner">
+      <p class="eyebrow reveal"><span class="eyebrow-tag">НА СВЯЗИ</span></p>
+      <h2 class="contact-title reveal">Готовы обсудить<br><em>AI-проект?</em></h2>
+      <p class="contact-sub reveal">Открыт(а) для фриланс-проектов и полной занятости. Отвечаю обычно в течение дня.</p>
+
+      <div class="contact-email-row reveal">
+        <button class="email-copy" id="emailCopy" data-email="hello@example.dev" type="button">
+          <span id="emailText">hello@example.dev</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 10.5v-7A1.5 1.5 0 0 1 4 2h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="social-row reveal">
+        <a href="#" class="social-link" aria-label="GitHub" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.06 11.06 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.21.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
+        </a>
+        <a href="#" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM.5 8.98h8.96V23H.5V8.98ZM13.98 8.98h8.59v1.98h.12c.4-.76 2.05-1.98 4.22-1.98 4.9 0 5.79 3.19 5.79 7.34V23h-8.96v-6.03c0-1.44-.03-3.28-2-3.28-2.01 0-2.31 1.57-2.31 3.18V23h-5.45V8.98Z" transform="scale(0.83)"/></svg>
+        </a>
+        <a href="#" class="social-link" aria-label="Telegram" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.05 2.94 2.7 10.6c-1.32.53-1.31 1.27-.24 1.6l4.96 1.55 1.92 5.85c.23.63.12.88.78.88.5 0 .72-.23 1-.5l2.4-2.33 4.99 3.68c.92.51 1.58.25 1.81-.85l3.28-15.46c.33-1.36-.52-1.98-1.55-1.48Zm-13.02 11 -1.2-3.9 9.32-5.87c.44-.27.84-.12.51.18l-8.63 9.6Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>&copy; <span id="year"></span> AI Specialist. Портфолио.</span>
+    <a href="#home" class="to-top">Наверх ↑</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
