@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VinakovLab</title>
+<meta name="description" content="AI specialist portfolio: LLM agents, RAG systems, process automation, and production AI solutions.">
+<link rel="canonical" href="https://vinakovlab.ru/index-en.html">
+<link rel="alternate" hreflang="ru" href="https://vinakovlab.ru/">
+<link rel="alternate" hreflang="en" href="https://vinakovlab.ru/index-en.html">
+<link rel="alternate" hreflang="x-default" href="https://vinakovlab.ru/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VinakovLab">
+<meta property="og:title" content="VinakovLab — AI Specialist">
+<meta property="og:description" content="AI specialist portfolio: LLM agents, RAG systems, process automation, and production AI solutions.">
+<meta property="og:url" content="https://vinakovlab.ru/index-en.html">
+<meta property="og:image" content="https://vinakovlab.ru/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VinakovLab — AI Specialist">
+<meta name="twitter:description" content="AI specialist portfolio: LLM agents, RAG systems, process automation, and production AI solutions.">
+<meta name="twitter:image" content="https://vinakovlab.ru/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "VinakovLab",
+    "jobTitle": "AI Specialist",
+    "url": "https://vinakovlab.ru/",
+    "sameAs": ["https://t.me/ERogx"],
+    "knowsAbout": ["LLM", "RAG", "AI Agents", "Process Automation", "Machine Learning"]
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+</head>
+<body>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+<div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
+<canvas id="netCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+<header class="site-header" id="siteHeader">
+  <div class="wrap header-inner">
+    <a href="#home" class="brand">
+      <span class="brand-mark">[Vinakov<span class="dot">Lab</span>]</span>
+    </a>
+
+    <nav class="main-nav" id="mainNav">
+      <a href="#work" data-nav>Work</a>
+      <a href="#capabilities" data-nav>Skills</a>
+      <a href="#process" data-nav>Process</a>
+      <a href="#contact" data-nav>Contact</a>
+    </nav>
+
+    <a href="#contact" class="btn btn-ghost header-cta">Get in touch</a>
+    <a href="index.html" class="lang-switch" hreflang="ru" lang="ru">RU</a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="home">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-grid-overlay" aria-hidden="true"></div>
+
+    <div class="wrap hero-inner">
+      <p class="eyebrow reveal">
+        <span class="eyebrow-tag">SYSTEM.ROLE</span>
+        <span class="terminal-line">&gt; whoami <span class="caret">_</span></span>
+      </p>
+
+      <h1 class="hero-title reveal">
+        I build products<br>
+        that <em>think</em>.
+      </h1>
+
+      <p class="hero-sub reveal">
+        I design <span class="rotator" id="rotator"><span class="rotator-word">LLM agents</span></span>
+        and AI-powered systems that solve real business
+        problems — from a same-day prototype to production
+        traffic in the millions.
+      </p>
+
+      <div class="hero-actions reveal">
+        <a href="#work" class="btn btn-primary">
+          <span>View work</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#contact" class="btn btn-outline">Get in touch</a>
+      </div>
+
+      <div class="hero-stats reveal">
+        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">years with AI&nbsp;&amp;&nbsp;data</span></div>
+        <div class="stat-sep" aria-hidden="true">/</div>
+        <div class="stat"><span class="stat-num">30+</span><span class="stat-label">AI systems in production</span></div>
+        <div class="stat-sep" aria-hidden="true">/</div>
+        <div class="stat"><span class="stat-num">LLM · RAG · Agents</span><span class="stat-label">core stack</span></div>
+      </div>
+    </div>
+
+    <a href="#capabilities" class="scroll-hint" aria-label="Scroll down">
+      <span></span>
+    </a>
+  </section>
+
+  <!-- ================= CAPABILITIES ================= -->
+  <section class="capabilities" id="capabilities">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">CAPABILITIES</span></p>
+        <h2 class="section-title">What I build<br> with <em>AI</em></h2>
+        <p class="section-desc">
+          Not just "plugging in ChatGPT" — I design reliable,
+          measurable AI systems that hold up under real load and real users.
+        </p>
+      </div>
+
+      <div class="cap-grid">
+        <article class="cap-card reveal">
+          <span class="cap-idx">01</span>
+          <h3>LLM Integration<br>&amp; Prompt Engineering</h3>
+          <p>I design prompts and model call chains that hold up in production, not just in demos.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">02</span>
+          <h3>Autonomous<br>AI Agents</h3>
+          <p>I build agents with tool access and memory that independently handle multi-step tasks.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">03</span>
+          <h3>RAG<br>&amp; Knowledge Bases</h3>
+          <p>I connect models to a company's internal data so answers are accurate and verifiable.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">04</span>
+          <h3>Process<br>Automation</h3>
+          <p>I remove routine work from business processes with AI pipelines and service integrations.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">05</span>
+          <h3>Fine-tuning<br>&amp; Model Evaluation</h3>
+          <p>I tune models for narrow tasks and build quality metrics you can actually trust.</p>
+        </article>
+
+        <article class="cap-card reveal">
+          <span class="cap-idx">06</span>
+          <h3>Data<br>&amp; Analytics</h3>
+          <p>I build the data pipelines that AI solutions are trained and run on.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WORK ================= -->
+  <section class="work" id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">SELECTED WORK</span></p>
+        <h2 class="section-title">Case studies where AI<br> solves <em>real</em> problems</h2>
+        <p class="section-desc">
+          Below are a few case studies of AI solving concrete business
+          problems — from customer support to document analysis.
+        </p>
+      </div>
+
+      <div class="work-grid">
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">aria — chat</span>
+            </div>
+            <div class="window-body mock-aria">
+              <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Hi there! How can I help?</span></div>
+              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">I never got my payment receipt</span></div>
+              <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in chat-bubble--typing"><i></i><i></i><i></i></span></div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Support</span>
+            </div>
+            <h3>Aria — AI Support Assistant</h3>
+            <p>A support chat-copilot: understands the context of a request, searches the knowledge base, and suggests a ready answer to the agent.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Prompt engineering · RAG search over the knowledge base · Zendesk integration</p>
+            <div class="work-foot">
+              <span class="metric">−42% <small>response time</small></span>
+              <button type="button" class="work-link" data-case="aria">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">pulse — live</span>
+            </div>
+            <div class="window-body mock-pulse">
+              <div class="pulse-kpi"><span class="pulse-kpi-label">Orders today</span><span class="pulse-kpi-num">1 284</span><span class="pulse-kpi-delta">+12%</span></div>
+              <div class="pulse-bars">
+                <span style="--h:35%"></span><span style="--h:52%"></span><span style="--h:41%"></span>
+                <span style="--h:68%"></span><span style="--h:58%"></span><span style="--h:77%"></span>
+              </div>
+              <div class="pulse-alert"><span class="pulse-alert-dot"></span>Anomaly detected · 2:32 PM</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Agents</span><span class="tag">Analytics</span>
+            </div>
+            <h3>Pulse — Real-time Analytics</h3>
+            <p>An AI agent monitors business metrics, spots anomalies, and sends insights straight to the team's chat.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Metrics monitoring · anomaly detection · Slack alerts</p>
+            <div class="work-foot">
+              <span class="metric">10k+ <small>events / day</small></span>
+              <button type="button" class="work-link" data-case="pulse">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">flowcraft — canvas</span>
+            </div>
+            <div class="window-body mock-flow">
+              <div class="flow-node">Trigger</div>
+              <div class="flow-line flow-line--1"></div>
+              <div class="flow-node flow-node--accent">GPT analysis</div>
+              <div class="flow-line flow-line--2"></div>
+              <div class="flow-node">To CRM</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Automation</span><span class="tag">No-code</span>
+            </div>
+            <h3>Flowcraft — AI Automation Builder</h3>
+            <p>A no-code platform for marketing and sales: builds workflows with content generation and model-driven decisions.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> LLM call orchestration · visual workflow builder · API integrations</p>
+            <div class="work-foot">
+              <span class="metric">200+ <small>workflows</small></span>
+              <button type="button" class="work-link" data-case="flowcraft">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">lexis — search</span>
+            </div>
+            <div class="window-body mock-lexis">
+              <div class="lexis-search">lease agreement cl. 4.2</div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">Contract_2023.pdf</span>
+                <span class="lexis-result-snippet">…tenant must <mark>give 30 days' notice</mark> before termination…</span>
+                <span class="lexis-result-src">p. 12</span>
+              </div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">Appendix_B.pdf</span>
+                <span class="lexis-result-snippet">…the <mark>early termination</mark> procedure is agreed upon…</span>
+                <span class="lexis-result-src">p. 3</span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">RAG</span><span class="tag">NLP</span><span class="tag">Search</span>
+            </div>
+            <h3>Lexis — Smart Document Search</h3>
+            <p>A RAG system for searching and analyzing legal documents, with precise source citations in every answer.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Vector search · embeddings · domain model for legal text</p>
+            <div class="work-foot">
+              <span class="metric">500k+ <small>pages indexed</small></span>
+              <button type="button" class="work-link" data-case="lexis">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">nomad — trip</span>
+            </div>
+            <div class="window-body mock-nomad">
+              <svg class="nomad-route" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M30 90 C 80 30, 140 110, 190 40 S 250 20, 255 30" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
+              </svg>
+              <span class="nomad-pin" style="left:30px; top:90px;">Lisbon</span>
+              <span class="nomad-pin" style="left:170px; top:38px;">Porto</span>
+              <span class="nomad-pin" style="left:245px; top:22px;">Sintra</span>
+              <div class="nomad-card">Budget · €1,200</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Agents</span><span class="tag">Personalization</span>
+            </div>
+            <h3>Nomad — AI Trip Planner</h3>
+            <p>An agent builds an itinerary around the user's budget and preferences, books it, and tracks price changes.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Agent with function calling · API-based booking · itinerary personalization</p>
+            <div class="work-foot">
+              <span class="metric">4.9/5 <small>user rating</small></span>
+              <button type="button" class="work-link" data-case="nomad">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">scribe — draft</span>
+            </div>
+            <div class="window-body mock-scribe">
+              <div class="scribe-toolbar">
+                <span class="scribe-tool"></span><span class="scribe-tool"></span><span class="scribe-tool"></span>
+                <span class="scribe-gen">Generate</span>
+              </div>
+              <div class="scribe-line" style="width:92%"></div>
+              <div class="scribe-line" style="width:78%"></div>
+              <div class="scribe-line" style="width:85%"></div>
+              <div class="scribe-line" style="width:54%"></div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags">
+              <span class="tag">Generation</span><span class="tag">Fine-tuning</span>
+            </div>
+            <h3>Scribe — Content Generation</h3>
+            <p>Multi-format text and image generation for content teams, powered by a model fine-tuned to the brand's tone of voice.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Tone-of-voice fine-tuning · multi-format generation · quality control</p>
+            <div class="work-foot">
+              <span class="metric">3× <small>faster output</small></span>
+              <button type="button" class="work-link" data-case="scribe">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESS ================= -->
+  <section class="process" id="process">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">APPROACH</span></p>
+        <h2 class="section-title">How I <em>work</em></h2>
+      </div>
+
+      <div class="process-list">
+        <div class="process-item reveal">
+          <span class="process-num">01</span>
+          <div class="process-text">
+            <h3>Research</h3>
+            <p>I dig into the problem, the data, and the constraints to pick the right AI approach — not just the trendiest one.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">02</span>
+          <div class="process-text">
+            <h3>Prototype</h3>
+            <p>I build a working prototype in days, not months, to test the hypothesis against real data as early as possible.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">03</span>
+          <div class="process-text">
+            <h3>Production</h3>
+            <p>I turn it into a reliable system: quality monitoring, error handling, fault tolerance.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">04</span>
+          <div class="process-text">
+            <h3>Iteration</h3>
+            <p>I keep improving the models and prompts based on real data and user feedback — continuously.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="contact" id="contact">
+    <div class="wrap contact-inner">
+      <p class="eyebrow reveal"><span class="eyebrow-tag">GET IN TOUCH</span></p>
+      <h2 class="contact-title reveal">Ready to talk about<br><em>an AI project?</em></h2>
+      <p class="contact-sub reveal">Open to freelance projects and full-time roles. I usually reply within a day.</p>
+
+      <a href="https://t.me/ERogx" class="contact-tg reveal" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.05 2.94 2.7 10.6c-1.32.53-1.31 1.27-.24 1.6l4.96 1.55 1.92 5.85c.23.63.12.88.78.88.5 0 .72-.23 1-.5l2.4-2.33 4.99 3.68c.92.51 1.58.25 1.81-.85l3.28-15.46c.33-1.36-.52-1.98-1.55-1.48Zm-13.02 11-1.2-3.9 9.32-5.87c.44-.27.84-.12.51.18l-8.63 9.6Z"/></svg>
+        <span>@ERogx on Telegram</span>
+        <svg class="contact-tg-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+
+      <a href="agents-en.html" class="contact-secondary-link reveal">
+        See the offer: AI agents for your business
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<div class="case-overlay" id="caseOverlay" aria-hidden="true">
+  <div class="case-modal" id="caseModal" role="dialog" aria-modal="true">
+    <button type="button" class="case-close" id="caseClose" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="case-panel" data-case="aria">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">aria — chat</span>
+        </div>
+        <div class="window-body mock-aria">
+          <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Hi there! How can I help?</span></div>
+          <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">I never got my payment receipt</span></div>
+          <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Found order #4821, sending the receipt to your email</span></div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Support</span></div>
+      <h3 class="case-title" id="case-title-aria">Aria — AI Support Assistant</h3>
+      <p class="case-tagline">A chat-copilot that takes the routine off the support line.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>The support team was drowning in repetitive tickets: an average reply took 6 minutes, and some customers left before getting an answer.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Designed a RAG pipeline on top of the company's knowledge base and a prompt chain that understands conversation context, suggests a ready answer to the agent, and escalates complex cases to a human.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>Average response time dropped by 42%, and about a third of tickets now get resolved by the bot end-to-end.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Prompt engineering · RAG search over the knowledge base · Zendesk integration</p>
+    </div>
+
+    <div class="case-panel" data-case="pulse">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">pulse — live</span>
+        </div>
+        <div class="window-body mock-pulse">
+          <div class="pulse-kpi"><span class="pulse-kpi-label">Orders today</span><span class="pulse-kpi-num">1 284</span><span class="pulse-kpi-delta">+12%</span></div>
+          <div class="pulse-bars">
+            <span style="--h:35%"></span><span style="--h:52%"></span><span style="--h:41%"></span>
+            <span style="--h:68%"></span><span style="--h:58%"></span><span style="--h:77%"></span>
+          </div>
+          <div class="pulse-alert"><span class="pulse-alert-dot"></span>Anomaly detected · 2:32 PM</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Agents</span><span class="tag">Analytics</span></div>
+      <h3 class="case-title" id="case-title-pulse">Pulse — Real-time Analytics</h3>
+      <p class="case-tagline">An agent that watches the metrics so an on-call analyst doesn't have to.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Anomalies in sales and traffic were caught after the fact — sometimes a full day later, once the damage was done.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built an agent that continuously polls the data sources, statistically flags deviations from the norm, and posts a Slack insight with a plain-language explanation.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>Over 10,000 events processed daily; anomaly detection time dropped from a full day to minutes.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Metrics monitoring · anomaly detection · Slack alerts</p>
+    </div>
+
+    <div class="case-panel" data-case="flowcraft">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">flowcraft — canvas</span>
+        </div>
+        <div class="window-body mock-flow">
+          <div class="flow-node">Trigger</div>
+          <div class="flow-line flow-line--1"></div>
+          <div class="flow-node flow-node--accent">GPT analysis</div>
+          <div class="flow-line flow-line--2"></div>
+          <div class="flow-node">To CRM</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Automation</span><span class="tag">No-code</span></div>
+      <h3 class="case-title" id="case-title-flowcraft">Flowcraft — AI Automation Builder</h3>
+      <p class="case-tagline">A no-code canvas where the nodes are LLM calls, not just if/else.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>The marketing team depended on developers for every new campaign or lead-handling workflow.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built a visual workflow builder on top of an LLM-call orchestrator: trigger, content-generation, and model-decision nodes connect without code.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>The team shipped 200+ workflows on their own, without a single line of code from engineering.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> LLM call orchestration · visual workflow builder · API integrations</p>
+    </div>
+
+    <div class="case-panel" data-case="lexis">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">lexis — search</span>
+        </div>
+        <div class="window-body mock-lexis">
+          <div class="lexis-search">lease agreement cl. 4.2</div>
+          <div class="lexis-result">
+            <span class="lexis-result-title">Contract_2023.pdf</span>
+            <span class="lexis-result-snippet">…tenant must <mark>give 30 days' notice</mark> before termination…</span>
+            <span class="lexis-result-src">p. 12</span>
+          </div>
+          <div class="lexis-result">
+            <span class="lexis-result-title">Appendix_B.pdf</span>
+            <span class="lexis-result-snippet">…the <mark>early termination</mark> procedure is agreed upon…</span>
+            <span class="lexis-result-src">p. 3</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">RAG</span><span class="tag">NLP</span><span class="tag">Search</span></div>
+      <h3 class="case-title" id="case-title-lexis">Lexis — Smart Document Search</h3>
+      <p class="case-tagline">Search that answers with a quote from the source, not just a link.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Lawyers spent hours hunting for the right clause across thousands of contracts and appendices.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built a vector index and a RAG model tuned on legal terminology, with a mandatory source-page citation in every answer.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>An index of 500,000+ pages; finding the right clause now takes seconds instead of hours.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Vector search · embeddings · domain model for legal text</p>
+    </div>
+
+    <div class="case-panel" data-case="nomad">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">nomad — trip</span>
+        </div>
+        <div class="window-body mock-nomad">
+          <svg class="nomad-route" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M30 90 C 80 30, 140 110, 190 40 S 250 20, 255 30" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
+          </svg>
+          <span class="nomad-pin" style="left:30px; top:90px;">Lisbon</span>
+          <span class="nomad-pin" style="left:170px; top:38px;">Porto</span>
+          <span class="nomad-pin" style="left:245px; top:22px;">Sintra</span>
+          <div class="nomad-card">Budget · €1,200</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Agents</span><span class="tag">Personalization</span></div>
+      <h3 class="case-title" id="case-title-nomad">Nomad — AI Trip Planner</h3>
+      <p class="case-tagline">A function-calling agent that books, not just recommends.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Classic recommendation services only advise — booking and budget tracking are still left to the user.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built a function-calling agent on top of booking and price-monitoring APIs: it plans a route within budget, books it, and flags price changes.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>Average user rating of 4.9/5; a trip now comes together in minutes instead of hours of manual planning.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Agent with function calling · API-based booking · itinerary personalization</p>
+    </div>
+
+    <div class="case-panel" data-case="scribe">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">scribe — draft</span>
+        </div>
+        <div class="window-body mock-scribe">
+          <div class="scribe-toolbar">
+            <span class="scribe-tool"></span><span class="scribe-tool"></span><span class="scribe-tool"></span>
+            <span class="scribe-gen">Generate</span>
+          </div>
+          <div class="scribe-line" style="width:92%"></div>
+          <div class="scribe-line" style="width:78%"></div>
+          <div class="scribe-line" style="width:85%"></div>
+          <div class="scribe-line" style="width:54%"></div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Generation</span><span class="tag">Fine-tuning</span></div>
+      <h3 class="case-title" id="case-title-scribe">Scribe — Content Generation</h3>
+      <p class="case-tagline">A text-and-image generator that writes in the brand's voice.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>The content team couldn't keep up producing on-tone material across formats and channels.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Fine-tuned a model on the brand's tone of voice and built a multi-format text-and-image generation pipeline with a quality check before publishing.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>Content output tripled without losing consistency in brand voice.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Tone-of-voice fine-tuning · multi-format generation · quality control</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>&copy; <span id="year"></span> VinakovLab. Portfolio.</span>
+    <a href="#home" class="to-top">Back to top ↑</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

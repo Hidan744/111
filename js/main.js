@@ -73,7 +73,9 @@
   }
 
   /* ---------------- rotating hero words ---------------- */
-  const rotatorWords = ["LLM-агентов", "RAG-системы", "AI-ассистентов", "автоматизации", "AI-пайплайны"];
+  const rotatorWords = document.documentElement.lang === "en"
+    ? ["LLM agents", "RAG systems", "AI assistants", "automations", "AI pipelines"]
+    : ["LLM-агентов", "RAG-системы", "AI-ассистентов", "автоматизации", "AI-пайплайны"];
   const rotatorEl = document.getElementById("rotator");
   if (rotatorEl && !prefersReducedMotion) {
     let idx = 0;
