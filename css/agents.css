@@ -1,0 +1,79 @@
+/* ============================================================
+   AI-агенты для бизнеса — extends style.css with page-specific
+   layout variants. Uses the same design tokens (:root in style.css).
+   ============================================================ */
+
+/* ---- hero (shorter than home hero, no full-height canvas focus) ---- */
+.agents-hero {
+  position: relative;
+  padding-top: 76px;
+  overflow: hidden;
+}
+.agents-hero-inner {
+  position: relative;
+  z-index: 2;
+  padding-top: 100px;
+  padding-bottom: 72px;
+}
+.agents-hero-title {
+  max-width: 18ch;
+}
+
+/* ---- capability grid column variants ---- */
+.cap-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.cap-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.cap-grid--1 { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .cap-grid--3, .cap-grid--2 { grid-template-columns: 1fr; }
+}
+
+.agents-category .cap-card h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  max-width: none;
+}
+
+/* ---- problem / solve fields inside a card ---- */
+.agent-field { margin-top: 18px; }
+.agent-field:first-of-type { margin-top: 0; }
+.agent-field-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+.agent-field-label--solve { color: var(--accent); }
+.agent-field p {
+  font-size: 14.5px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.agent-field--solve p { color: #c9c6bd; }
+
+/* ---- skills callout under "how it works" ---- */
+.agents-skills-note {
+  margin-top: 40px;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 14.5px;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+/* ---- CTA row (telegram + pdf) ---- */
+.agents-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .agents-hero-inner { padding-top: 70px; padding-bottom: 50px; }
+}

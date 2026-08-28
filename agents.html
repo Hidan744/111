@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-агенты для бизнеса — VinakovLab</title>
+<meta name="description" content="Восемь AI-агентов для бизнеса: от поиска по документам до compliance-контроля. Claude Agent SDK + MCP, встраивается поверх 1С/CRM без миграции данных.">
+<link rel="canonical" href="https://vinakovlab.ru/agents.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VinakovLab">
+<meta property="og:title" content="AI-агенты для бизнеса — VinakovLab">
+<meta property="og:description" content="Восемь AI-агентов для бизнеса: от поиска по документам до compliance-контроля. Claude Agent SDK + MCP, встраивается поверх 1С/CRM без миграции данных.">
+<meta property="og:url" content="https://vinakovlab.ru/agents.html">
+<meta property="og:image" content="https://vinakovlab.ru/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/agents.css">
+
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+</head>
+<body>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+<div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
+<canvas id="netCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+<header class="site-header" id="siteHeader">
+  <div class="wrap header-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">[Vinakov<span class="dot">Lab</span>]</span>
+    </a>
+
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html#work">Работы</a>
+      <a href="index.html#capabilities">Навыки</a>
+      <a href="index.html#process">Процесс</a>
+      <a href="index.html#contact">Контакты</a>
+    </nav>
+
+    <a href="vinakov-agents.pdf" class="btn btn-ghost header-cta" download>Скачать PDF</a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="agents-hero">
+    <div class="hero-grid-overlay" aria-hidden="true"></div>
+    <div class="wrap agents-hero-inner">
+      <p class="eyebrow reveal">
+        <span class="eyebrow-tag">B2B · AI-АГЕНТЫ</span>
+      </p>
+      <h1 class="hero-title reveal agents-hero-title">
+        Агенты для бизнеса,<br>которые снимают <em>рутину</em>.
+      </h1>
+      <p class="hero-sub reveal">
+        Восемь агентов, каждый — под одну конкретную боль: от поиска в документах
+        до соответствия нормам. Не универсальный ассистент, а точечное решение.
+      </p>
+
+      <div class="hero-actions reveal">
+        <a href="#agent-01" class="btn btn-primary">
+          <span>Смотреть агентов</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="vinakov-agents.pdf" class="btn btn-outline" download>Скачать PDF</a>
+      </div>
+
+      <div class="hero-stats reveal">
+        <div class="stat"><span class="stat-num">4</span><span class="stat-label">направления</span></div>
+        <div class="stat-sep" aria-hidden="true">/</div>
+        <div class="stat"><span class="stat-num">8</span><span class="stat-label">агентов</span></div>
+        <div class="stat-sep" aria-hidden="true">/</div>
+        <div class="stat"><span class="stat-num">Claude Agent SDK + MCP</span><span class="stat-label">платформа</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= APPROACH ================= -->
+  <section class="capabilities agents-approach">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">ПОДХОД</span></p>
+        <h2 class="section-title">Каждый агент решает<br> <em>одну боль</em></h2>
+      </div>
+
+      <div class="cap-grid cap-grid--3">
+        <article class="cap-card reveal">
+          <span class="cap-idx">01</span>
+          <h3>Одна боль —<br>один продукт</h3>
+          <p>Не универсальный ассистент, а точечное решение конкретной операционной проблемы.</p>
+        </article>
+        <article class="cap-card reveal">
+          <span class="cap-idx">02</span>
+          <h3>Встраивается в то,<br>что уже есть</h3>
+          <p>Работает поверх существующих 1С, CRM и баз документов — без миграции данных.</p>
+        </article>
+        <article class="cap-card reveal">
+          <span class="cap-idx">03</span>
+          <h3>Продаётся<br>отдельно</h3>
+          <p>Каждый агент — самостоятельный продукт со своим тарифом, а не модуль внутри пакета.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 01 KNOWLEDGE ================= -->
+  <section class="work agents-category" id="agent-01">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">01 — ДАННЫЕ КОМПАНИИ</span></p>
+        <h2 class="section-title">Знания <em>и аналитика</em></h2>
+      </div>
+
+      <div class="cap-grid cap-grid--2">
+        <article class="cap-card reveal">
+          <h3>Поиск по внутренним документам</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>Регламенты, договоры и инструкции разбросаны по папкам и головах сотрудников. Новый человек неделями разбирается, «как у нас принято».</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Агент ищет ответ по смыслу во всех документах компании и отвечает со ссылкой на источник.</p>
+          </div>
+        </article>
+        <article class="cap-card reveal">
+          <h3>Аналитик для самообслуживания</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>В штате нет аналитика — руководитель сам копается в Excel, чтобы понять, почему упала маржа или выросли продажи.</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Агент подключается к 1С / CRM / складу и по вопросу на обычном языке сам строит нужный отчёт.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 OPERATIONS ================= -->
+  <section class="work agents-category">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">02 — ПРОЦЕССЫ</span></p>
+        <h2 class="section-title">Операционка <em>и риски</em></h2>
+      </div>
+
+      <div class="cap-grid cap-grid--3">
+        <article class="cap-card reveal">
+          <h3>Автоматизация документооборота</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>Заполнение и сверка договоров, счетов и актов вручную съедает часы и легко приводит к ошибкам.</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Агент сам заполняет документ по шаблону, проверяет на несоответствия и направляет на подпись.</p>
+          </div>
+        </article>
+        <article class="cap-card reveal">
+          <h3>Compliance-агент</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>У малого бизнеса нет штатного юриста по комплаенсу — нарушение находят уже во время проверки.</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Агент проверяет документы и процессы на соответствие нормам ещё до проверяющего органа.</p>
+          </div>
+        </article>
+        <article class="cap-card reveal">
+          <h3>Управление инцидентами</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>При сбое или жалобе время уходит на то, чтобы вспомнить, как решали похожий случай раньше.</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Агент фиксирует инцидент, находит похожие случаи в истории и предлагает готовое решение.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 INFRA ================= -->
+  <section class="work agents-category">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">03 — ПОДКЛЮЧЕНИЕ</span></p>
+        <h2 class="section-title"><em>Инфраструктура</em></h2>
+      </div>
+
+      <div class="cap-grid cap-grid--1">
+        <article class="cap-card reveal">
+          <h3>Интеграция агент + 1С / CRM</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>У бизнеса уже есть 1С, amoCRM или Битрикс24 — но подключить к ним ИИ-агента технически сложно, и именно это чаще всего останавливает внедрение.</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Настройка доступа агента к уже существующим системам заказчика через MCP — без миграции данных и переделки процессов. Разовая настройка плюс поддержка на подписке.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 04 EXPERTISE ================= -->
+  <section class="work agents-category">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">04 — УЗКИЕ НИШИ</span></p>
+        <h2 class="section-title">Отраслевая <em>экспертиза</em></h2>
+      </div>
+
+      <div class="cap-grid cap-grid--2">
+        <article class="cap-card reveal">
+          <h3>Отраслевые агенты по образцу нефтегаза</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>Узкие специалисты — геологи, технологи, инженеры — не хотят «обычный чат-бот», который не понимает профессиональный контекст.</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Готовая модель из нефтегазового кейса переносится на другую техническую отрасль: агент заранее знает терминологию и процессы.</p>
+          </div>
+        </article>
+        <article class="cap-card reveal">
+          <h3>Тестирование продуктовых гипотез</h3>
+          <div class="agent-field">
+            <span class="agent-field-label">Проблема</span>
+            <p>Продуктовые команды тратят много времени на ручной сбор и структурирование обратной связи вместо анализа.</p>
+          </div>
+          <div class="agent-field agent-field--solve">
+            <span class="agent-field-label agent-field-label--solve">Решение</span>
+            <p>Агент прогоняет варианты, собирает отзывы из разных источников и выдаёт вывод: гипотеза подтвердилась или нет.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="process">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">КАК ЭТО УСТРОЕНО</span></p>
+        <h2 class="section-title">Claude Agent SDK <em>+ MCP</em></h2>
+      </div>
+
+      <div class="process-list">
+        <div class="process-item reveal">
+          <span class="process-num">01</span>
+          <div class="process-text">
+            <h3>Источник данных</h3>
+            <p>Документы, база 1С/CRM, история инцидентов подключаются через MCP или прямую интеграцию.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">02</span>
+          <div class="process-text">
+            <h3>Обработка</h3>
+            <p>Claude через API обращается к данным, формирует ответ или выполняет действие — заполняет документ, строит отчёт, ищет похожий инцидент.</p>
+          </div>
+        </div>
+        <div class="process-item reveal">
+          <span class="process-num">03</span>
+          <div class="process-text">
+            <h3>Интерфейс</h3>
+            <p>Чат на сайте, Telegram-бот или встройка в уже используемый клиентом инструмент.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="agents-skills-note reveal">
+        <span class="work-role-label">Skills</span>
+        Для отраслевых агентов (нефтегаз и другие технические ниши) заранее собирается набор терминологии,
+        документов и типовых процессов — агент сразу работает как эксперт, а не учится с нуля на каждом запросе.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="contact">
+    <div class="wrap contact-inner">
+      <p class="eyebrow reveal"><span class="eyebrow-tag">СЛЕДУЮЩИЙ ШАГ</span></p>
+      <h2 class="contact-title reveal">Выбрать одного агента<br>и собрать <em>MVP</em></h2>
+      <p class="contact-sub reveal">
+        Лучший старт — не все восемь сразу, а один продукт под быстрый первый результат,
+        плюс отраслевая экспертиза как долгосрочное конкурентное преимущество.
+      </p>
+
+      <div class="agents-cta-row reveal">
+        <a href="https://t.me/ERogx" class="contact-tg" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.05 2.94 2.7 10.6c-1.32.53-1.31 1.27-.24 1.6l4.96 1.55 1.92 5.85c.23.63.12.88.78.88.5 0 .72-.23 1-.5l2.4-2.33 4.99 3.68c.92.51 1.58.25 1.81-.85l3.28-15.46c.33-1.36-.52-1.98-1.55-1.48Zm-13.02 11-1.2-3.9 9.32-5.87c.44-.27.84-.12.51.18l-8.63 9.6Z"/></svg>
+          <span>Обсудить внедрение</span>
+        </a>
+        <a href="vinakov-agents.pdf" class="btn btn-outline" download>Скачать PDF</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>&copy; <span id="year"></span> VinakovLab. AI-агенты для бизнеса.</span>
+    <a href="index.html" class="to-top">← На главную</a>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

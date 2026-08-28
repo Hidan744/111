@@ -708,6 +708,18 @@ section { position: relative; z-index: 1; padding: 130px 0; }
 .contact-tg-arrow { transition: transform 0.25s var(--ease); }
 .contact-tg:hover .contact-tg-arrow { transform: translateX(3px); }
 
+.contact-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: color 0.2s var(--ease), gap 0.2s var(--ease);
+}
+.contact-secondary-link:hover { color: var(--accent); gap: 12px; }
+
 /* ================= CASE MODAL ================= */
 .case-overlay {
   position: fixed;
