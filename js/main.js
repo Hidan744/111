@@ -90,6 +90,47 @@
     }, 2600);
   }
 
+  /* ---------------- case detail modal ---------------- */
+  const caseOverlay = document.getElementById("caseOverlay");
+  const caseModal = document.getElementById("caseModal");
+  const caseClose = document.getElementById("caseClose");
+  const casePanels = document.querySelectorAll(".case-panel");
+  let lastCaseTrigger = null;
+
+  function openCase(key, trigger) {
+    casePanels.forEach((panel) => {
+      panel.classList.toggle("is-active", panel.dataset.case === key);
+    });
+    const title = document.getElementById(`case-title-${key}`);
+    if (title) caseModal.setAttribute("aria-labelledby", title.id);
+
+    lastCaseTrigger = trigger || null;
+    caseOverlay.classList.add("is-open");
+    caseOverlay.setAttribute("aria-hidden", "false");
+    document.documentElement.style.overflow = "hidden";
+    caseClose.focus();
+  }
+
+  function closeCase() {
+    caseOverlay.classList.remove("is-open");
+    caseOverlay.setAttribute("aria-hidden", "true");
+    document.documentElement.style.overflow = "";
+    if (lastCaseTrigger) lastCaseTrigger.focus();
+  }
+
+  if (caseOverlay) {
+    document.querySelectorAll(".work-link[data-case]").forEach((btn) => {
+      btn.addEventListener("click", () => openCase(btn.dataset.case, btn));
+    });
+    caseClose.addEventListener("click", closeCase);
+    caseOverlay.addEventListener("click", (e) => {
+      if (e.target === caseOverlay) closeCase();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && caseOverlay.classList.contains("is-open")) closeCase();
+    });
+  }
+
   /* ---------------- footer year ---------------- */
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
