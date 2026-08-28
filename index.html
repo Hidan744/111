@@ -153,9 +153,17 @@
 
       <div class="work-grid">
 
-        <article class="work-card reveal" data-art="1">
-          <div class="work-art" aria-hidden="true">
-            <span class="work-id">PRJ_01</span>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">aria — chat</span>
+            </div>
+            <div class="window-body mock-aria">
+              <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Здравствуйте! Чем могу помочь?</span></div>
+              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Не пришёл чек об оплате заказа</span></div>
+              <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in chat-bubble--typing"><i></i><i></i><i></i></span></div>
+            </div>
           </div>
           <div class="work-body">
             <div class="work-tags">
@@ -163,6 +171,7 @@
             </div>
             <h3>Aria — AI-ассистент поддержки</h3>
             <p>Chat-copilot для службы поддержки: понимает контекст обращения, ищет ответ в базе знаний и подсказывает оператору готовое решение.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Промпт-инжиниринг · RAG-поиск по базе знаний · интеграция с Zendesk</p>
             <div class="work-foot">
               <span class="metric">−42% <small>время ответа</small></span>
               <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -170,9 +179,20 @@
           </div>
         </article>
 
-        <article class="work-card reveal" data-art="2">
-          <div class="work-art" aria-hidden="true">
-            <span class="work-id">PRJ_02</span>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">pulse — live</span>
+            </div>
+            <div class="window-body mock-pulse">
+              <div class="pulse-kpi"><span class="pulse-kpi-label">Заказы сегодня</span><span class="pulse-kpi-num">1 284</span><span class="pulse-kpi-delta">+12%</span></div>
+              <div class="pulse-bars">
+                <span style="--h:35%"></span><span style="--h:52%"></span><span style="--h:41%"></span>
+                <span style="--h:68%"></span><span style="--h:58%"></span><span style="--h:77%"></span>
+              </div>
+              <div class="pulse-alert"><span class="pulse-alert-dot"></span>Аномалия обнаружена · 14:32</div>
+            </div>
           </div>
           <div class="work-body">
             <div class="work-tags">
@@ -180,6 +200,7 @@
             </div>
             <h3>Pulse — аналитика в реальном времени</h3>
             <p>AI-агент мониторит бизнес-метрики, находит аномалии и сам присылает инсайты в мессенджер команды.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Мониторинг метрик · детекция аномалий · алерты в Slack</p>
             <div class="work-foot">
               <span class="metric">10k+ <small>событий / день</small></span>
               <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -187,9 +208,19 @@
           </div>
         </article>
 
-        <article class="work-card reveal" data-art="3">
-          <div class="work-art" aria-hidden="true">
-            <span class="work-id">PRJ_03</span>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">flowcraft — canvas</span>
+            </div>
+            <div class="window-body mock-flow">
+              <div class="flow-node">Триггер</div>
+              <div class="flow-line flow-line--1"></div>
+              <div class="flow-node flow-node--accent">GPT-анализ</div>
+              <div class="flow-line flow-line--2"></div>
+              <div class="flow-node">В CRM</div>
+            </div>
           </div>
           <div class="work-body">
             <div class="work-tags">
@@ -197,6 +228,7 @@
             </div>
             <h3>Flowcraft — конструктор AI-автоматизаций</h3>
             <p>No-code платформа для маркетинга и продаж: собирает сценарии с генерацией контента и принятием решений моделью.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Оркестрация LLM-вызовов · визуальный конструктор сценариев · интеграции API</p>
             <div class="work-foot">
               <span class="metric">200+ <small>сценариев</small></span>
               <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -204,9 +236,25 @@
           </div>
         </article>
 
-        <article class="work-card reveal" data-art="4">
-          <div class="work-art" aria-hidden="true">
-            <span class="work-id">PRJ_04</span>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">lexis — search</span>
+            </div>
+            <div class="window-body mock-lexis">
+              <div class="lexis-search">договор аренды п.4.2</div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">Договор_2023.pdf</span>
+                <span class="lexis-result-snippet">…арендатор обязан <mark>уведомить за 30 дней</mark> до расторжения…</span>
+                <span class="lexis-result-src">стр. 12</span>
+              </div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">Приложение_Б.pdf</span>
+                <span class="lexis-result-snippet">…порядок <mark>досрочного расторжения</mark> согласовывается…</span>
+                <span class="lexis-result-src">стр. 3</span>
+              </div>
+            </div>
           </div>
           <div class="work-body">
             <div class="work-tags">
@@ -214,6 +262,7 @@
             </div>
             <h3>Lexis — умный поиск по документам</h3>
             <p>RAG-система для поиска и анализа юридических документов с точными ссылками на первоисточник в ответе.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Векторный поиск · эмбеддинги · доменная модель для юр. текстов</p>
             <div class="work-foot">
               <span class="metric">500k+ <small>страниц в индексе</small></span>
               <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -221,9 +270,21 @@
           </div>
         </article>
 
-        <article class="work-card reveal" data-art="5">
-          <div class="work-art" aria-hidden="true">
-            <span class="work-id">PRJ_05</span>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">nomad — trip</span>
+            </div>
+            <div class="window-body mock-nomad">
+              <svg class="nomad-route" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M30 90 C 80 30, 140 110, 190 40 S 250 20, 255 30" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
+              </svg>
+              <span class="nomad-pin" style="left:30px; top:90px;">Лиссабон</span>
+              <span class="nomad-pin" style="left:170px; top:38px;">Порту</span>
+              <span class="nomad-pin" style="left:245px; top:22px;">Синтра</span>
+              <div class="nomad-card">Бюджет · 1 200 €</div>
+            </div>
           </div>
           <div class="work-body">
             <div class="work-tags">
@@ -231,6 +292,7 @@
             </div>
             <h3>Nomad — AI-планировщик путешествий</h3>
             <p>Агент собирает маршрут под бюджет и предпочтения пользователя, бронирует и следит за изменениями цен.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Агент с function calling · бронирование через API · персонализация маршрута</p>
             <div class="work-foot">
               <span class="metric">4.9/5 <small>оценка пользователей</small></span>
               <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -238,9 +300,22 @@
           </div>
         </article>
 
-        <article class="work-card reveal" data-art="6">
-          <div class="work-art" aria-hidden="true">
-            <span class="work-id">PRJ_06</span>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">scribe — draft</span>
+            </div>
+            <div class="window-body mock-scribe">
+              <div class="scribe-toolbar">
+                <span class="scribe-tool"></span><span class="scribe-tool"></span><span class="scribe-tool"></span>
+                <span class="scribe-gen">Сгенерировать</span>
+              </div>
+              <div class="scribe-line" style="width:92%"></div>
+              <div class="scribe-line" style="width:78%"></div>
+              <div class="scribe-line" style="width:85%"></div>
+              <div class="scribe-line" style="width:54%"></div>
+            </div>
           </div>
           <div class="work-body">
             <div class="work-tags">
@@ -248,6 +323,7 @@
             </div>
             <h3>Scribe — генерация контента</h3>
             <p>Мультиформатная генерация текста и изображений для контент-команд с дообученной под tone-of-voice моделью.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Дообучение под tone-of-voice · мультиформатная генерация · контроль качества</p>
             <div class="work-foot">
               <span class="metric">3× <small>быстрее выпуск</small></span>
               <a href="#" class="work-link">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -307,24 +383,11 @@
       <h2 class="contact-title reveal">Готовы обсудить<br><em>AI-проект?</em></h2>
       <p class="contact-sub reveal">Открыт(а) для фриланс-проектов и полной занятости. Отвечаю обычно в течение дня.</p>
 
-      <div class="contact-email-row reveal">
-        <button class="email-copy" id="emailCopy" data-email="hello@example.dev" type="button">
-          <span id="emailText">hello@example.dev</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 10.5v-7A1.5 1.5 0 0 1 4 2h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-
-      <div class="social-row reveal">
-        <a href="#" class="social-link" aria-label="GitHub" target="_blank" rel="noopener">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.06 11.06 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.21.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
-        </a>
-        <a href="#" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM.5 8.98h8.96V23H.5V8.98ZM13.98 8.98h8.59v1.98h.12c.4-.76 2.05-1.98 4.22-1.98 4.9 0 5.79 3.19 5.79 7.34V23h-8.96v-6.03c0-1.44-.03-3.28-2-3.28-2.01 0-2.31 1.57-2.31 3.18V23h-5.45V8.98Z" transform="scale(0.83)"/></svg>
-        </a>
-        <a href="#" class="social-link" aria-label="Telegram" target="_blank" rel="noopener">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.05 2.94 2.7 10.6c-1.32.53-1.31 1.27-.24 1.6l4.96 1.55 1.92 5.85c.23.63.12.88.78.88.5 0 .72-.23 1-.5l2.4-2.33 4.99 3.68c.92.51 1.58.25 1.81-.85l3.28-15.46c.33-1.36-.52-1.98-1.55-1.48Zm-13.02 11 -1.2-3.9 9.32-5.87c.44-.27.84-.12.51.18l-8.63 9.6Z"/></svg>
-        </a>
-      </div>
+      <a href="https://t.me/ERogx" class="contact-tg reveal" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.05 2.94 2.7 10.6c-1.32.53-1.31 1.27-.24 1.6l4.96 1.55 1.92 5.85c.23.63.12.88.78.88.5 0 .72-.23 1-.5l2.4-2.33 4.99 3.68c.92.51 1.58.25 1.81-.85l3.28-15.46c.33-1.36-.52-1.98-1.55-1.48Zm-13.02 11-1.2-3.9 9.32-5.87c.44-.27.84-.12.51.18l-8.63 9.6Z"/></svg>
+        <span>@ERogx в Telegram</span>
+        <svg class="contact-tg-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
     </div>
   </section>
 

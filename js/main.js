@@ -90,23 +90,6 @@
     }, 2600);
   }
 
-  /* ---------------- email copy ---------------- */
-  const emailBtn = document.getElementById("emailCopy");
-  const emailText = document.getElementById("emailText");
-  if (emailBtn) {
-    emailBtn.addEventListener("click", async () => {
-      const email = emailBtn.dataset.email;
-      const original = emailText.textContent;
-      try {
-        await navigator.clipboard.writeText(email);
-        emailText.textContent = "Скопировано ✓";
-      } catch (e) {
-        window.location.href = `mailto:${email}`;
-      }
-      setTimeout(() => { emailText.textContent = original; }, 1800);
-    });
-  }
-
   /* ---------------- footer year ---------------- */
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
