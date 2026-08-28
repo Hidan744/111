@@ -711,14 +711,23 @@ section { position: relative; z-index: 1; padding: 130px 0; }
 .contact-secondary-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-top: 24px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 12px 20px;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--text-dim);
-  transition: color 0.2s var(--ease), gap 0.2s var(--ease);
+  transition: border-color 0.25s var(--ease), color 0.25s var(--ease), transform 0.25s var(--ease), gap 0.2s var(--ease);
 }
-.contact-secondary-link:hover { color: var(--accent); gap: 12px; }
+.contact-secondary-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+  gap: 14px;
+}
 
 /* ================= CASE MODAL ================= */
 .case-overlay {
