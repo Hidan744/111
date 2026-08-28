@@ -254,10 +254,11 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .hero-canvas {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 0;
-  opacity: 0.55;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .hero-grid-overlay {

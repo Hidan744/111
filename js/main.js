@@ -150,9 +150,8 @@
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas.parentElement.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
+      width = window.innerWidth;
+      height = window.innerHeight;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = width + "px";
@@ -225,12 +224,11 @@
       step();
     });
 
-    canvas.parentElement.addEventListener("mousemove", (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+    window.addEventListener("mousemove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     });
-    canvas.parentElement.addEventListener("mouseleave", () => {
+    document.addEventListener("mouseleave", () => {
       mouse.x = null;
       mouse.y = null;
     });
