@@ -181,11 +181,12 @@
   <section class="work" id="work">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">SELECTED WORK</span></p>
-        <h2 class="section-title">Case studies where AI<br> solves <em>real</em> problems</h2>
+        <p class="eyebrow"><span class="eyebrow-tag">REAL PROJECTS</span></p>
+        <h2 class="section-title">AI agents<br> for <em>small and mid-size business</em></h2>
         <p class="section-desc">
-          Below are a few case studies of AI solving concrete business
-          problems — from customer support to document analysis.
+          Twenty agents are planned, seven are already built and tested
+          live in practice — from document search to 1C/CRM integration via MCP.
+          <a href="agents-en.html">See all the offers and how it works →</a>
         </p>
       </div>
 
@@ -195,53 +196,24 @@
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">aria — chat</span>
+              <span class="window-title">01 — document search</span>
             </div>
-            <div class="window-body mock-aria">
-              <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Hi there! How can I help?</span></div>
-              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">I never got my payment receipt</span></div>
-              <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in chat-bubble--typing"><i></i><i></i><i></i></span></div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags">
-              <span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Support</span>
-            </div>
-            <h3>Aria — AI Support Assistant</h3>
-            <p>A support chat-copilot: understands the context of a request, searches the knowledge base, and suggests a ready answer to the agent.</p>
-            <p class="work-role"><span class="work-role-label">Role</span> Prompt engineering · RAG search over the knowledge base · Zendesk integration</p>
-            <div class="work-foot">
-              <span class="metric">−42% <small>response time</small></span>
-              <button type="button" class="work-link" data-case="aria">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
-          </div>
-        </article>
-
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">pulse — live</span>
-            </div>
-            <div class="window-body mock-pulse">
-              <div class="pulse-kpi"><span class="pulse-kpi-label">Orders today</span><span class="pulse-kpi-num">1 284</span><span class="pulse-kpi-delta">+12%</span></div>
-              <div class="pulse-bars">
-                <span style="--h:35%"></span><span style="--h:52%"></span><span style="--h:41%"></span>
-                <span style="--h:68%"></span><span style="--h:58%"></span><span style="--h:77%"></span>
+            <div class="window-body mock-docsearch">
+              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">How many vacation days do I get, and can I roll them over?</span></div>
+              <div class="chat-row chat-row--in">
+                <span class="chat-avatar"></span>
+                <span class="chat-bubble chat-bubble--in">28 days a year, up to 14 days can be carried over<div class="chat-cite">vacation_policy.md</div></span>
               </div>
-              <div class="pulse-alert"><span class="pulse-alert-dot"></span>Anomaly detected · 2:32 PM</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags">
-              <span class="tag">Agents</span><span class="tag">Analytics</span>
-            </div>
-            <h3>Pulse — Real-time Analytics</h3>
-            <p>An AI agent monitors business metrics, spots anomalies, and sends insights straight to the team's chat.</p>
-            <p class="work-role"><span class="work-role-label">Role</span> Metrics monitoring · anomaly detection · Slack alerts</p>
+            <div class="work-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Search</span></div>
+            <h3>Document Search — search over internal documents</h3>
+            <p>Answers employee questions about policies and internal procedures — and always cites the source file instead of making details up.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Claude tool-use · Chroma vector search · multilingual embeddings</p>
             <div class="work-foot">
-              <span class="metric">10k+ <small>events / day</small></span>
-              <button type="button" class="work-link" data-case="pulse">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <span class="metric">Source <small>in every answer</small></span>
+              <button type="button" class="work-link" data-case="agent-docsearch">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
         </article>
@@ -250,121 +222,148 @@
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">flowcraft — canvas</span>
+              <span class="window-title">02 — compliance</span>
+            </div>
+            <div class="window-body mock-compliance">
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Consent to process personal data</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Data controller appointed</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Technical security measures</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Regulator notification</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Compliance</span><span class="tag">RAG</span><span class="tag">JSON</span></div>
+            <h3>Compliance Checklist — data-protection law compliance check</h3>
+            <p>Checks a company's process description against a regulatory checklist and returns not free text, but a status for every item with a citation to the exact article of law.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Regulation search · strict JSON output · deterministic verification pipeline</p>
+            <div class="work-foot">
+              <span class="metric">4/4 <small>requirements cited to an article</small></span>
+              <button type="button" class="work-link" data-case="agent-compliance">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">03 — hypothesis lab</span>
+            </div>
+            <div class="window-body mock-hypothesis">
+              <div class="hyp-verdict">✓ Confirmed</div>
+              <div class="hyp-split"><span class="hyp-for" style="width:71%"></span><span class="hyp-against" style="width:29%"></span></div>
+              <div class="hyp-quote">"my eyes get tired from the bright screen in the evening. Add a dark theme!"</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Product</span><span class="tag">LLM Judge</span></div>
+            <h3>Hypothesis Lab — testing product hypotheses</h3>
+            <p>Tests a hypothesis about users against a corpus of reviews and returns a verdict with real supporting and opposing quotes — not vague reasoning.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Claude-based review classification · protection against hallucinated quotes</p>
+            <div class="work-foot">
+              <span class="metric">5 for / 2 against <small>out of 16 reviews</small></span>
+              <button type="button" class="work-link" data-case="agent-hypothesis">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">04 — act automation</span>
+            </div>
+            <div class="window-body mock-docauto">
+              <div class="docauto-sheet"><div class="l l--h"></div><div class="l" style="width:90%"></div><div class="l" style="width:60%"></div><div class="l" style="width:75%"></div></div>
+              <div class="docauto-status">
+                <span class="docauto-status-title">⛔ BLOCKED</span>
+                <span class="docauto-status-item">Amount mismatch: 73,000 ≠ 70,000 ₽</span>
+                <span class="docauto-status-item">2 line items outside the contract scope</span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Docx</span><span class="tag">Deterministic</span></div>
+            <h3>Act Automation — auto-filling work-completion acts</h3>
+            <p>Fills out a work-completion act from order data and cross-checks it for discrepancies — the model never writes the numbers, only deterministic code does.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> python-docx with no LLM in the numbers · Claude used only to verify the scope of work</p>
+            <div class="work-foot">
+              <span class="metric">3/3 <small>discrepancies found</small></span>
+              <button type="button" class="work-link" data-case="agent-docauto">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">05 — self-service analyst</span>
+            </div>
+            <div class="window-body mock-analyst">
+              <div class="analyst-q">&gt; Why did margin drop in July?</div>
+              <div class="analyst-sql">SELECT month, SUM(margin)&#10;FROM order_items JOIN...</div>
+              <div class="analyst-answer">Laptop sales dropped: 5 → 1 unit</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Text-to-SQL</span><span class="tag">Read-only</span></div>
+            <h3>Self-Service Analyst — natural-language data analyst</h3>
+            <p>Answers sales questions by writing its own SQL queries against the database — instead of a fixed dashboard with a limited set of metrics.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Claude tool-use · text-to-SQL · read-only database access</p>
+            <div class="work-foot">
+              <span class="metric">SELECT only <small>double-guarded</small></span>
+              <button type="button" class="work-link" data-case="agent-analyst">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">06 — incident copilot</span>
+            </div>
+            <div class="window-body mock-incident">
+              <div class="incident-new">New: "Freezes after yesterday's update"</div>
+              <div class="incident-match">Found precedent #1</div>
+              <div class="incident-resolution">Resolution: roll back the update, restart the service</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Ops</span></div>
+            <h3>Incident Copilot — incident management</h3>
+            <p>Finds a similar past incident from the description of a new one and suggests a resolution — or honestly says there's no precedent.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> Semantic search over incident history · protection against far-fetched matches</p>
+            <div class="work-foot">
+              <span class="metric">Precedent <small>found on the first try</small></span>
+              <button type="button" class="work-link" data-case="agent-incident">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">07 — mcp connector</span>
             </div>
             <div class="window-body mock-flow">
-              <div class="flow-node">Trigger</div>
+              <div class="flow-node">Claude</div>
               <div class="flow-line flow-line--1"></div>
-              <div class="flow-node flow-node--accent">GPT analysis</div>
+              <div class="flow-node flow-node--accent">MCP server</div>
               <div class="flow-line flow-line--2"></div>
-              <div class="flow-node">To CRM</div>
+              <div class="flow-node">1C / CRM</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags">
-              <span class="tag">Automation</span><span class="tag">No-code</span>
-            </div>
-            <h3>Flowcraft — AI Automation Builder</h3>
-            <p>A no-code platform for marketing and sales: builds workflows with content generation and model-driven decisions.</p>
-            <p class="work-role"><span class="work-role-label">Role</span> LLM call orchestration · visual workflow builder · API integrations</p>
+            <div class="work-tags"><span class="tag">MCP</span><span class="tag">Protocol</span><span class="tag">Integration</span></div>
+            <h3>MCP Connector — agent + 1C/CRM integration</h3>
+            <p>The same analyst agent, but the data source is connected through a real MCP protocol — a pattern that carries over to 1C, amoCRM, and Bitrix24.</p>
+            <p class="work-role"><span class="work-role-label">Role</span> A real MCP server (stdio) · schema and tools served live, not hardcoded</p>
             <div class="work-foot">
-              <span class="metric">200+ <small>workflows</small></span>
-              <button type="button" class="work-link" data-case="flowcraft">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
-          </div>
-        </article>
-
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">lexis — search</span>
-            </div>
-            <div class="window-body mock-lexis">
-              <div class="lexis-search">lease agreement cl. 4.2</div>
-              <div class="lexis-result">
-                <span class="lexis-result-title">Contract_2023.pdf</span>
-                <span class="lexis-result-snippet">…tenant must <mark>give 30 days' notice</mark> before termination…</span>
-                <span class="lexis-result-src">p. 12</span>
-              </div>
-              <div class="lexis-result">
-                <span class="lexis-result-title">Appendix_B.pdf</span>
-                <span class="lexis-result-snippet">…the <mark>early termination</mark> procedure is agreed upon…</span>
-                <span class="lexis-result-src">p. 3</span>
-              </div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags">
-              <span class="tag">RAG</span><span class="tag">NLP</span><span class="tag">Search</span>
-            </div>
-            <h3>Lexis — Smart Document Search</h3>
-            <p>A RAG system for searching and analyzing legal documents, with precise source citations in every answer.</p>
-            <p class="work-role"><span class="work-role-label">Role</span> Vector search · embeddings · domain model for legal text</p>
-            <div class="work-foot">
-              <span class="metric">500k+ <small>pages indexed</small></span>
-              <button type="button" class="work-link" data-case="lexis">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
-          </div>
-        </article>
-
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">nomad — trip</span>
-            </div>
-            <div class="window-body mock-nomad">
-              <svg class="nomad-route" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M30 90 C 80 30, 140 110, 190 40 S 250 20, 255 30" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
-              </svg>
-              <span class="nomad-pin" style="left:30px; top:90px;">Lisbon</span>
-              <span class="nomad-pin" style="left:170px; top:38px;">Porto</span>
-              <span class="nomad-pin" style="left:245px; top:22px;">Sintra</span>
-              <div class="nomad-card">Budget · €1,200</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags">
-              <span class="tag">Agents</span><span class="tag">Personalization</span>
-            </div>
-            <h3>Nomad — AI Trip Planner</h3>
-            <p>An agent builds an itinerary around the user's budget and preferences, books it, and tracks price changes.</p>
-            <p class="work-role"><span class="work-role-label">Role</span> Agent with function calling · API-based booking · itinerary personalization</p>
-            <div class="work-foot">
-              <span class="metric">4.9/5 <small>user rating</small></span>
-              <button type="button" class="work-link" data-case="nomad">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
-          </div>
-        </article>
-
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">scribe — draft</span>
-            </div>
-            <div class="window-body mock-scribe">
-              <div class="scribe-toolbar">
-                <span class="scribe-tool"></span><span class="scribe-tool"></span><span class="scribe-tool"></span>
-                <span class="scribe-gen">Generate</span>
-              </div>
-              <div class="scribe-line" style="width:92%"></div>
-              <div class="scribe-line" style="width:78%"></div>
-              <div class="scribe-line" style="width:85%"></div>
-              <div class="scribe-line" style="width:54%"></div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags">
-              <span class="tag">Generation</span><span class="tag">Fine-tuning</span>
-            </div>
-            <h3>Scribe — Content Generation</h3>
-            <p>Multi-format text and image generation for content teams, powered by a model fine-tuned to the brand's tone of voice.</p>
-            <p class="work-role"><span class="work-role-label">Role</span> Tone-of-voice fine-tuning · multi-format generation · quality control</p>
-            <div class="work-foot">
-              <span class="metric">3× <small>faster output</small></span>
-              <button type="button" class="work-link" data-case="scribe">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <span class="metric">1 protocol <small>any client's system</small></span>
+              <button type="button" class="work-link" data-case="agent-mcp">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
         </article>
@@ -442,152 +441,159 @@
       <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     </button>
 
-    <div class="case-panel" data-case="aria">
+    <div class="case-panel" data-case="agent-docsearch">
       <div class="work-window case-window" aria-hidden="true">
         <div class="window-bar">
           <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-          <span class="window-title">aria — chat</span>
+          <span class="window-title">01 — document search</span>
         </div>
-        <div class="window-body mock-aria">
-          <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Hi there! How can I help?</span></div>
-          <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">I never got my payment receipt</span></div>
-          <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Found order #4821, sending the receipt to your email</span></div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Support</span></div>
-      <h3 class="case-title" id="case-title-aria">Aria — AI Support Assistant</h3>
-      <p class="case-tagline">A chat-copilot that takes the routine off the support line.</p>
-      <div class="case-block"><span class="case-label">Problem</span><p>The support team was drowning in repetitive tickets: an average reply took 6 minutes, and some customers left before getting an answer.</p></div>
-      <div class="case-block"><span class="case-label">Solution</span><p>Designed a RAG pipeline on top of the company's knowledge base and a prompt chain that understands conversation context, suggests a ready answer to the agent, and escalates complex cases to a human.</p></div>
-      <div class="case-block"><span class="case-label">Result</span><p>Average response time dropped by 42%, and about a third of tickets now get resolved by the bot end-to-end.</p></div>
-      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Prompt engineering · RAG search over the knowledge base · Zendesk integration</p>
-    </div>
-
-    <div class="case-panel" data-case="pulse">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar">
-          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-          <span class="window-title">pulse — live</span>
-        </div>
-        <div class="window-body mock-pulse">
-          <div class="pulse-kpi"><span class="pulse-kpi-label">Orders today</span><span class="pulse-kpi-num">1 284</span><span class="pulse-kpi-delta">+12%</span></div>
-          <div class="pulse-bars">
-            <span style="--h:35%"></span><span style="--h:52%"></span><span style="--h:41%"></span>
-            <span style="--h:68%"></span><span style="--h:58%"></span><span style="--h:77%"></span>
+        <div class="window-body mock-docsearch">
+          <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">How many vacation days do I get, and can I roll them over?</span></div>
+          <div class="chat-row chat-row--in">
+            <span class="chat-avatar"></span>
+            <span class="chat-bubble chat-bubble--in">28 days a year, up to 14 days can be carried over<div class="chat-cite">vacation_policy.md</div></span>
           </div>
-          <div class="pulse-alert"><span class="pulse-alert-dot"></span>Anomaly detected · 2:32 PM</div>
         </div>
       </div>
-      <div class="case-tags"><span class="tag">Agents</span><span class="tag">Analytics</span></div>
-      <h3 class="case-title" id="case-title-pulse">Pulse — Real-time Analytics</h3>
-      <p class="case-tagline">An agent that watches the metrics so an on-call analyst doesn't have to.</p>
-      <div class="case-block"><span class="case-label">Problem</span><p>Anomalies in sales and traffic were caught after the fact — sometimes a full day later, once the damage was done.</p></div>
-      <div class="case-block"><span class="case-label">Solution</span><p>Built an agent that continuously polls the data sources, statistically flags deviations from the norm, and posts a Slack insight with a plain-language explanation.</p></div>
-      <div class="case-block"><span class="case-label">Result</span><p>Over 10,000 events processed daily; anomaly detection time dropped from a full day to minutes.</p></div>
-      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Metrics monitoring · anomaly detection · Slack alerts</p>
+      <div class="case-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Search</span></div>
+      <h3 class="case-title" id="case-title-agent-docsearch">Document Search — search over internal documents</h3>
+      <p class="case-tagline">An agent that answers with a source citation, not from memory.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Policies, contracts, and procedures are scattered across folders and employees' heads — a new hire spends weeks figuring out "how we do things here."</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built an agent on Claude tool-use over a local Chroma store: documents are chunked, and the system prompt hard-bans answering without a retrieved fragment and requires citing the source every time.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>A live run on demo policy documents: the agent correctly cited the one relevant document for every test question — without a single made-up figure.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Claude tool-use · Chroma vector search · multilingual embeddings</p>
     </div>
 
-    <div class="case-panel" data-case="flowcraft">
+    <div class="case-panel" data-case="agent-compliance">
       <div class="work-window case-window" aria-hidden="true">
         <div class="window-bar">
           <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-          <span class="window-title">flowcraft — canvas</span>
+          <span class="window-title">02 — compliance</span>
+        </div>
+        <div class="window-body mock-compliance">
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Consent to process personal data</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Data controller appointed</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Technical security measures</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Regulator notification</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Compliance</span><span class="tag">RAG</span><span class="tag">JSON</span></div>
+      <h3 class="case-title" id="case-title-agent-compliance">Compliance Checklist — data-protection law compliance check</h3>
+      <p class="case-tagline">Not a text answer, but a checklist with a status and a citation to the article of law.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Small businesses don't have an in-house compliance lawyer — violations get discovered only during an audit.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built a pipeline where, for every checklist item, Claude looks up the relevant article of the data-protection law and returns a verdict as a strict JSON object — no item can be silently skipped by the model, unlike in a free-form chat.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>On a test case for an online store with real violations, the agent correctly flagged all 4 non-compliant items — each with an exact article citation and a quote from the process description.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Regulation search · strict JSON output · deterministic verification pipeline</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-hypothesis">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">03 — hypothesis lab</span>
+        </div>
+        <div class="window-body mock-hypothesis">
+          <div class="hyp-verdict">✓ Confirmed</div>
+          <div class="hyp-split"><span class="hyp-for" style="width:71%"></span><span class="hyp-against" style="width:29%"></span></div>
+          <div class="hyp-quote">"my eyes get tired from the bright screen in the evening. Add a dark theme!"</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Product</span><span class="tag">LLM Judge</span></div>
+      <h3 class="case-title" id="case-title-agent-hypothesis">Hypothesis Lab — testing product hypotheses</h3>
+      <p class="case-tagline">A verdict backed by real quotes, not vague reasoning.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Product teams spend most of their time manually collecting and structuring feedback instead of analyzing it.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built an agent that, in a single call to Claude, filters relevant reviews out of the noise and returns a verdict — confirmed / not confirmed / mixed — with quotes, guarded against "hallucinated" review numbers.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>On a demo dark-theme hypothesis, the agent correctly found all 5 clearly supporting reviews and 2 opposing ones out of 16 — and correctly ignored the 9 off-topic reviews.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Claude-based review classification · protection against hallucinated quotes · binary verdict</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-docauto">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">04 — act automation</span>
+        </div>
+        <div class="window-body mock-docauto">
+          <div class="docauto-sheet"><div class="l l--h"></div><div class="l" style="width:90%"></div><div class="l" style="width:60%"></div><div class="l" style="width:75%"></div></div>
+          <div class="docauto-status">
+            <span class="docauto-status-title">⛔ BLOCKED</span>
+            <span class="docauto-status-item">Amount mismatch: 73,000 ≠ 70,000 ₽</span>
+            <span class="docauto-status-item">2 line items outside the contract scope</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Docx</span><span class="tag">Deterministic</span></div>
+      <h3 class="case-title" id="case-title-agent-docauto">Act Automation — auto-filling work-completion acts</h3>
+      <p class="case-tagline">Code writes the numbers, not the model — Claude only checks the meaning.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Manually filling out and cross-checking contracts, invoices, and acts eats hours and is error-prone.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built an agent where the .docx itself is filled in by plain code (no risk of the model "inventing" a number), while Claude is responsible only for the substantive check — whether the act's line items fall within the contract's scope.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>On a test order, the agent found an amount discrepancy and two line items outside the contract's scope — and blocked the document from being sent for signature until fixed.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> python-docx with no LLM in the numbers · Claude used only to verify the scope of work</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-analyst">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">05 — self-service analyst</span>
+        </div>
+        <div class="window-body mock-analyst">
+          <div class="analyst-q">&gt; Why did margin drop in July?</div>
+          <div class="analyst-sql">SELECT month, SUM(margin)&#10;FROM order_items JOIN...</div>
+          <div class="analyst-answer">Laptop sales dropped: 5 → 1 unit</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Text-to-SQL</span><span class="tag">Read-only</span></div>
+      <h3 class="case-title" id="case-title-agent-analyst">Self-Service Analyst — natural-language data analyst</h3>
+      <p class="case-tagline">Writes its own SQL for the question — instead of a fixed dashboard.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>There's no analyst on staff — the manager digs through Excel themselves to figure out why margin dropped or sales grew.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built an agent that writes and runs its own SQL queries against the sales database via Claude tool-use, instead of just reading pre-built reports. Access is read-only: query validation plus a read-only database connection.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>On a demo database with a deliberate July margin drop, the agent correctly found the cause — a sales shift from laptops to cheaper items — building the necessary queries on its own.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Claude tool-use · text-to-SQL · read-only database access</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-incident">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">06 — incident copilot</span>
+        </div>
+        <div class="window-body mock-incident">
+          <div class="incident-new">New: "Freezes after yesterday's update"</div>
+          <div class="incident-match">Found precedent #1</div>
+          <div class="incident-resolution">Resolution: roll back the update, restart the service</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">RAG</span><span class="tag">Ops</span></div>
+      <h3 class="case-title" id="case-title-agent-incident">Incident Copilot — incident management</h3>
+      <p class="case-tagline">A precedent from history — or an honest "this hasn't happened before."</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>When something breaks or a complaint comes in, time is wasted trying to recall how a similar case was resolved before.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Built an agent that searches for similar incidents by meaning and uses a separate Claude call to verify that the match is genuinely similar in substance — not just sharing similar words.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>On a new "freeze after update" incident, the agent correctly found the precedent among a history of 10 cases and suggested the same fix — rolling back the update.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Semantic search over incident history · protection against far-fetched matches</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-mcp">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">07 — mcp connector</span>
         </div>
         <div class="window-body mock-flow">
-          <div class="flow-node">Trigger</div>
+          <div class="flow-node">Claude</div>
           <div class="flow-line flow-line--1"></div>
-          <div class="flow-node flow-node--accent">GPT analysis</div>
+          <div class="flow-node flow-node--accent">MCP server</div>
           <div class="flow-line flow-line--2"></div>
-          <div class="flow-node">To CRM</div>
+          <div class="flow-node">1C / CRM</div>
         </div>
       </div>
-      <div class="case-tags"><span class="tag">Automation</span><span class="tag">No-code</span></div>
-      <h3 class="case-title" id="case-title-flowcraft">Flowcraft — AI Automation Builder</h3>
-      <p class="case-tagline">A no-code canvas where the nodes are LLM calls, not just if/else.</p>
-      <div class="case-block"><span class="case-label">Problem</span><p>The marketing team depended on developers for every new campaign or lead-handling workflow.</p></div>
-      <div class="case-block"><span class="case-label">Solution</span><p>Built a visual workflow builder on top of an LLM-call orchestrator: trigger, content-generation, and model-decision nodes connect without code.</p></div>
-      <div class="case-block"><span class="case-label">Result</span><p>The team shipped 200+ workflows on their own, without a single line of code from engineering.</p></div>
-      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> LLM call orchestration · visual workflow builder · API integrations</p>
-    </div>
-
-    <div class="case-panel" data-case="lexis">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar">
-          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-          <span class="window-title">lexis — search</span>
-        </div>
-        <div class="window-body mock-lexis">
-          <div class="lexis-search">lease agreement cl. 4.2</div>
-          <div class="lexis-result">
-            <span class="lexis-result-title">Contract_2023.pdf</span>
-            <span class="lexis-result-snippet">…tenant must <mark>give 30 days' notice</mark> before termination…</span>
-            <span class="lexis-result-src">p. 12</span>
-          </div>
-          <div class="lexis-result">
-            <span class="lexis-result-title">Appendix_B.pdf</span>
-            <span class="lexis-result-snippet">…the <mark>early termination</mark> procedure is agreed upon…</span>
-            <span class="lexis-result-src">p. 3</span>
-          </div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">RAG</span><span class="tag">NLP</span><span class="tag">Search</span></div>
-      <h3 class="case-title" id="case-title-lexis">Lexis — Smart Document Search</h3>
-      <p class="case-tagline">Search that answers with a quote from the source, not just a link.</p>
-      <div class="case-block"><span class="case-label">Problem</span><p>Lawyers spent hours hunting for the right clause across thousands of contracts and appendices.</p></div>
-      <div class="case-block"><span class="case-label">Solution</span><p>Built a vector index and a RAG model tuned on legal terminology, with a mandatory source-page citation in every answer.</p></div>
-      <div class="case-block"><span class="case-label">Result</span><p>An index of 500,000+ pages; finding the right clause now takes seconds instead of hours.</p></div>
-      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Vector search · embeddings · domain model for legal text</p>
-    </div>
-
-    <div class="case-panel" data-case="nomad">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar">
-          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-          <span class="window-title">nomad — trip</span>
-        </div>
-        <div class="window-body mock-nomad">
-          <svg class="nomad-route" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M30 90 C 80 30, 140 110, 190 40 S 250 20, 255 30" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
-          </svg>
-          <span class="nomad-pin" style="left:30px; top:90px;">Lisbon</span>
-          <span class="nomad-pin" style="left:170px; top:38px;">Porto</span>
-          <span class="nomad-pin" style="left:245px; top:22px;">Sintra</span>
-          <div class="nomad-card">Budget · €1,200</div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">Agents</span><span class="tag">Personalization</span></div>
-      <h3 class="case-title" id="case-title-nomad">Nomad — AI Trip Planner</h3>
-      <p class="case-tagline">A function-calling agent that books, not just recommends.</p>
-      <div class="case-block"><span class="case-label">Problem</span><p>Classic recommendation services only advise — booking and budget tracking are still left to the user.</p></div>
-      <div class="case-block"><span class="case-label">Solution</span><p>Built a function-calling agent on top of booking and price-monitoring APIs: it plans a route within budget, books it, and flags price changes.</p></div>
-      <div class="case-block"><span class="case-label">Result</span><p>Average user rating of 4.9/5; a trip now comes together in minutes instead of hours of manual planning.</p></div>
-      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Agent with function calling · API-based booking · itinerary personalization</p>
-    </div>
-
-    <div class="case-panel" data-case="scribe">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar">
-          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-          <span class="window-title">scribe — draft</span>
-        </div>
-        <div class="window-body mock-scribe">
-          <div class="scribe-toolbar">
-            <span class="scribe-tool"></span><span class="scribe-tool"></span><span class="scribe-tool"></span>
-            <span class="scribe-gen">Generate</span>
-          </div>
-          <div class="scribe-line" style="width:92%"></div>
-          <div class="scribe-line" style="width:78%"></div>
-          <div class="scribe-line" style="width:85%"></div>
-          <div class="scribe-line" style="width:54%"></div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">Generation</span><span class="tag">Fine-tuning</span></div>
-      <h3 class="case-title" id="case-title-scribe">Scribe — Content Generation</h3>
-      <p class="case-tagline">A text-and-image generator that writes in the brand's voice.</p>
-      <div class="case-block"><span class="case-label">Problem</span><p>The content team couldn't keep up producing on-tone material across formats and channels.</p></div>
-      <div class="case-block"><span class="case-label">Solution</span><p>Fine-tuned a model on the brand's tone of voice and built a multi-format text-and-image generation pipeline with a quality check before publishing.</p></div>
-      <div class="case-block"><span class="case-label">Result</span><p>Content output tripled without losing consistency in brand voice.</p></div>
-      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> Tone-of-voice fine-tuning · multi-format generation · quality control</p>
+      <div class="case-tags"><span class="tag">MCP</span><span class="tag">Protocol</span><span class="tag">Integration</span></div>
+      <h3 class="case-title" id="case-title-agent-mcp">MCP Connector — agent + 1C/CRM integration</h3>
+      <p class="case-tagline">The same analyst agent, but the data flows through a real protocol.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Businesses already run 1C, amoCRM, or Bitrix24 — but connecting an AI agent to them is technically hard, and that's usually what stalls adoption.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Stood up a real MCP server on top of the same demo database: the agent learns the schema and tool list from the server over the protocol, not from hardcoded code — for a given client's 1C/CRM, only the server changes, not the agent itself.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>A full client-server MCP round trip was tested live and returned the same correct answer as a direct call — the architecture carries over without losing quality.</p></div>
+      <p class="case-role"><span class="work-role-label">Role &amp; stack</span> A real MCP server (stdio) · schema and tools served live, not hardcoded</p>
     </div>
 
   </div>
