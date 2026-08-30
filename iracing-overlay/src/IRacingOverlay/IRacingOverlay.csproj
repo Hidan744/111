@@ -17,4 +17,17 @@
     <PackageReference Include="YamlDotNet" Version="15.1.6" />
   </ItemGroup>
 
+  <!--
+    Combining UseWPF and UseWindowsForms (needed only for the tray NotifyIcon in App.xaml.cs, where
+    WinForms/Drawing types are always fully qualified) makes the SDK implicitly global-`using` both
+    System.Windows.Forms and System.Drawing, which collides with WPF's System.Windows/System.Windows.Media
+    types of the same name (Application, UserControl, CheckBox, Point, Brush, MouseEventArgs, ...).
+    Removing those two implicit usings keeps the WinForms/Drawing assemblies available while letting
+    unqualified WPF type names resolve unambiguously.
+  -->
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
 </Project>
