@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace IRacingOverlay.Models;
 
 public enum SpeedUnit { Kmh, Mph }
