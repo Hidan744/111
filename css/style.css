@@ -583,6 +583,60 @@ section { position: relative; z-index: 1; padding: 130px 0; }
 }
 .scribe-line { height: 7px; border-radius: 4px; background: var(--surface-hover); }
 
+/* ---- real AI-agents mocks (VinakovLab agent line) ---- */
+.mock-docsearch { --mock-tint: rgba(201,255,61,0.1); display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.chat-cite {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 7px;
+  font-family: var(--mono); font-size: 9px; color: var(--text-faint);
+  background: var(--surface); border: 1px solid var(--border); padding: 2px 7px; border-radius: 20px;
+}
+.chat-cite::before { content: "⌁"; color: var(--accent-2); }
+
+.mock-compliance { --mock-tint: rgba(255,122,107,0.1); display: flex; flex-direction: column; gap: 11px; justify-content: center; }
+.compliance-row { display: flex; align-items: center; gap: 9px; font-size: 11px; color: var(--text-dim); }
+.compliance-dot {
+  width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700;
+}
+.compliance-dot--fail { background: rgba(255,122,107,0.16); color: #ff7a6b; }
+.compliance-dot--ok { background: rgba(139,209,124,0.16); color: #8bd17c; }
+
+.mock-hypothesis { --mock-tint: rgba(110,231,255,0.12); display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+.hyp-verdict {
+  align-self: flex-start; font-family: var(--mono); font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase; color: #8bd17c;
+  background: rgba(139,209,124,0.14); padding: 5px 11px; border-radius: 20px;
+}
+.hyp-split { display: flex; gap: 3px; height: 6px; }
+.hyp-split span { border-radius: 3px; }
+.hyp-split .hyp-for { background: #8bd17c; }
+.hyp-split .hyp-against { background: var(--border-strong); }
+.hyp-quote { font-size: 11px; color: var(--text-faint); line-height: 1.4; }
+
+.mock-docauto { --mock-tint: rgba(255,209,102,0.1); display: flex; align-items: center; gap: 16px; justify-content: center; }
+.docauto-sheet {
+  flex-shrink: 0; width: 64px; height: 84px; border-radius: 4px; background: #fff;
+  padding: 10px 8px; box-shadow: 0 10px 22px -8px rgba(0,0,0,0.55);
+}
+.docauto-sheet .l { height: 4px; background: #dcdcdc; border-radius: 2px; margin-bottom: 5px; }
+.docauto-sheet .l--h { background: #8a8a8a; height: 5px; width: 65%; margin-bottom: 8px; }
+.docauto-status { display: flex; flex-direction: column; gap: 6px; }
+.docauto-status-title { font-family: var(--mono); font-size: 10px; font-weight: 700; color: #ff7a6b; }
+.docauto-status-item { font-size: 11px; color: var(--text-faint); line-height: 1.4; }
+
+.mock-analyst { --mock-tint: rgba(183,164,255,0.12); display: flex; flex-direction: column; gap: 9px; justify-content: center; font-family: var(--mono); }
+.analyst-q { font-size: 10.5px; color: var(--text-faint); }
+.analyst-sql { font-size: 10px; color: var(--accent-2); line-height: 1.45; white-space: pre-wrap; }
+.analyst-answer { font-size: 10.5px; color: var(--text); line-height: 1.4; }
+
+.mock-incident { --mock-tint: rgba(255,179,207,0.12); display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.incident-new { font-size: 11.5px; color: var(--text-dim); line-height: 1.4; }
+.incident-match {
+  display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px; color: var(--accent-2);
+}
+.incident-match::before { content: "⌁"; }
+.incident-resolution { font-size: 11px; color: var(--text-faint); line-height: 1.4; }
+
 .work-body { padding: 26px 26px 28px; }
 .work-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .tag {

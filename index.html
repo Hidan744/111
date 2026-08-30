@@ -370,6 +370,196 @@
         </article>
 
       </div>
+
+      <div class="section-head reveal" style="margin-top: 96px;">
+        <p class="eyebrow"><span class="eyebrow-tag">РЕАЛЬНЫЕ ПРОЕКТЫ</span></p>
+        <h2 class="section-title">AI-агенты<br> для <em>малого и среднего бизнеса</em></h2>
+        <p class="section-desc">
+          Восемь агентов задуманы, семь уже собраны и живьём проверены на реальных
+          ответах Claude — от поиска по документам до интеграции с 1С/CRM через MCP.
+          <a href="agents.html">Все предложения и как это работает →</a>
+        </p>
+      </div>
+
+      <div class="work-grid">
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">01 — document search</span>
+            </div>
+            <div class="window-body mock-docsearch">
+              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Сколько дней отпуска положено и можно перенести?</span></div>
+              <div class="chat-row chat-row--in">
+                <span class="chat-avatar"></span>
+                <span class="chat-bubble chat-bubble--in">28 дней в год, перенос — не более 14 дней<div class="chat-cite">vacation_policy.md</div></span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Search</span></div>
+            <h3>Document Search — поиск по внутренним документам</h3>
+            <p>Отвечает на вопросы сотрудников по регламентам и инструкциям — и всегда указывает файл-источник, а не выдумывает детали.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Claude tool-use · Chroma векторный поиск · мультиязычные эмбеддинги</p>
+            <div class="work-foot">
+              <span class="metric">Источник <small>в каждом ответе</small></span>
+              <button type="button" class="work-link" data-case="agent-docsearch">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">02 — compliance</span>
+            </div>
+            <div class="window-body mock-compliance">
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Согласие на обработку ПДн</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Ответственный за обработку</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Технические меры защиты</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Уведомление Роскомнадзора</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Compliance</span><span class="tag">RAG</span><span class="tag">JSON</span></div>
+            <h3>Compliance Checklist — проверка на соответствие 152-ФЗ</h3>
+            <p>Проверяет описание процесса компании по чек-листу норм и возвращает не текст, а статус по каждому пункту со ссылкой на статью закона.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Поиск по нормам · строгий JSON-вывод · детерминированный пайплайн проверки</p>
+            <div class="work-foot">
+              <span class="metric">4/4 <small>нормы со ссылкой на статью</small></span>
+              <button type="button" class="work-link" data-case="agent-compliance">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">03 — hypothesis lab</span>
+            </div>
+            <div class="window-body mock-hypothesis">
+              <div class="hyp-verdict">✓ Подтвердилась</div>
+              <div class="hyp-split"><span class="hyp-for" style="width:71%"></span><span class="hyp-against" style="width:29%"></span></div>
+              <div class="hyp-quote">«глаза устают вечером от яркого экрана. Добавьте тёмную тему!»</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Product</span><span class="tag">LLM Judge</span></div>
+            <h3>Hypothesis Lab — тестирование продуктовых гипотез</h3>
+            <p>Проверяет гипотезу о пользователях по корпусу отзывов и выносит вердикт с реальными цитатами за и против — а не общими рассуждениями.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Классификация отзывов Claude · защита от галлюцинированных цитат</p>
+            <div class="work-foot">
+              <span class="metric">5 за / 2 против <small>из 16 отзывов</small></span>
+              <button type="button" class="work-link" data-case="agent-hypothesis">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">04 — act automation</span>
+            </div>
+            <div class="window-body mock-docauto">
+              <div class="docauto-sheet"><div class="l l--h"></div><div class="l" style="width:90%"></div><div class="l" style="width:60%"></div><div class="l" style="width:75%"></div></div>
+              <div class="docauto-status">
+                <span class="docauto-status-title">⛔ ЗАБЛОКИРОВАНО</span>
+                <span class="docauto-status-item">Сумма не сходится: 73 000 ≠ 70 000 ₽</span>
+                <span class="docauto-status-item">2 позиции вне предмета договора</span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Docx</span><span class="tag">Deterministic</span></div>
+            <h3>Act Automation — автозаполнение актов</h3>
+            <p>Заполняет акт выполненных работ по данным заказа и сверяет его на несоответствия — суммы никогда не пишет модель, только детерминированный код.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> python-docx без LLM в цифрах · Claude — только для сверки состава работ</p>
+            <div class="work-foot">
+              <span class="metric">3/3 <small>несоответствия найдены</small></span>
+              <button type="button" class="work-link" data-case="agent-docauto">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">05 — self-service analyst</span>
+            </div>
+            <div class="window-body mock-analyst">
+              <div class="analyst-q">&gt; Почему в июле упала маржа?</div>
+              <div class="analyst-sql">SELECT month, SUM(margin)&#10;FROM order_items JOIN...</div>
+              <div class="analyst-answer">Упали продажи ноутбуков: 5 → 1 шт.</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Text-to-SQL</span><span class="tag">Read-only</span></div>
+            <h3>Self-Service Analyst — аналитик на естественном языке</h3>
+            <p>Отвечает на вопросы о продажах, сам составляя SQL-запросы к базе — вместо фиксированного дашборда с ограниченным набором метрик.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Claude tool-use · text-to-SQL · read-only доступ к базе</p>
+            <div class="work-foot">
+              <span class="metric">Только SELECT <small>двойная защита</small></span>
+              <button type="button" class="work-link" data-case="agent-analyst">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">06 — incident copilot</span>
+            </div>
+            <div class="window-body mock-incident">
+              <div class="incident-new">Новое: «Зависает после вчерашнего обновления»</div>
+              <div class="incident-match">Найден прецедент #1</div>
+              <div class="incident-resolution">Решение: откатить обновление, перезапустить службу</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Ops</span></div>
+            <h3>Incident Copilot — управление инцидентами</h3>
+            <p>Находит похожий инцидент в истории по описанию нового и предлагает решение — или честно говорит, что прецедента нет.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Семантический поиск по истории · защита от натянутых совпадений</p>
+            <div class="work-foot">
+              <span class="metric">Прецедент <small>найден с 1-й попытки</small></span>
+              <button type="button" class="work-link" data-case="agent-incident">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">07 — mcp connector</span>
+            </div>
+            <div class="window-body mock-flow">
+              <div class="flow-node">Claude</div>
+              <div class="flow-line flow-line--1"></div>
+              <div class="flow-node flow-node--accent">MCP-сервер</div>
+              <div class="flow-line flow-line--2"></div>
+              <div class="flow-node">1С / CRM</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">MCP</span><span class="tag">Protocol</span><span class="tag">Integration</span></div>
+            <h3>MCP Connector — интеграция агент + 1С/CRM</h3>
+            <p>Тот же агент-аналитик, но источник данных подключён через настоящий протокол MCP — паттерн, который переносится на 1С, amoCRM и Битрикс24.</p>
+            <p class="work-role"><span class="work-role-label">Роль</span> Настоящий MCP-сервер (stdio) · схема и инструменты — не хардкод, а с сервера</p>
+            <div class="work-foot">
+              <span class="metric">1 протокол <small>любая система клиента</small></span>
+              <button type="button" class="work-link" data-case="agent-mcp">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </article>
+
+      </div>
     </div>
   </section>
 
@@ -588,6 +778,161 @@
       <div class="case-block"><span class="case-label">Решение</span><p>Дообучил(а) модель под tone-of-voice бренда и собрал(а) мультиформатный пайплайн генерации текста и изображений с контролем качества перед публикацией.</p></div>
       <div class="case-block"><span class="case-label">Результат</span><p>Скорость выпуска контента выросла в 3 раза без потери консистентности голоса бренда.</p></div>
       <p class="case-role"><span class="work-role-label">Роль и стек</span> Дообучение под tone-of-voice · мультиформатная генерация · контроль качества</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-docsearch">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">01 — document search</span>
+        </div>
+        <div class="window-body mock-docsearch">
+          <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Сколько дней отпуска положено и можно перенести?</span></div>
+          <div class="chat-row chat-row--in">
+            <span class="chat-avatar"></span>
+            <span class="chat-bubble chat-bubble--in">28 дней в год, перенос — не более 14 дней<div class="chat-cite">vacation_policy.md</div></span>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Search</span></div>
+      <h3 class="case-title" id="case-title-agent-docsearch">Document Search — поиск по внутренним документам</h3>
+      <p class="case-tagline">Агент, который отвечает со ссылкой на источник, а не по памяти.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Регламенты, договоры и инструкции разбросаны по папкам и головах сотрудников — новый человек неделями разбирается, «как у нас принято».</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Собрал(а) агента на Claude tool-use поверх локальной Chroma: документы режутся на чанки, а в системном промпте — жёсткий запрет отвечать без найденного фрагмента и требование всегда указывать источник.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Живой прогон на демо-регламентах: агент верно процитировал единственный релевантный документ на все проверочные вопросы — без единой придуманной цифры.</p></div>
+      <p class="case-role"><span class="work-role-label">Роль и стек</span> Claude tool-use · Chroma векторный поиск · мультиязычные эмбеддинги</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-compliance">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">02 — compliance</span>
+        </div>
+        <div class="window-body mock-compliance">
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Согласие на обработку ПДн</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Ответственный за обработку</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Технические меры защиты</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Уведомление Роскомнадзора</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Compliance</span><span class="tag">RAG</span><span class="tag">JSON</span></div>
+      <h3 class="case-title" id="case-title-agent-compliance">Compliance Checklist — проверка на соответствие 152-ФЗ</h3>
+      <p class="case-tagline">Не текстовый ответ, а чек-лист со статусом и ссылкой на статью закона.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>У малого бизнеса нет штатного юриста по комплаенсу — нарушение находят уже во время проверки.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Собрал(а) пайплайн, где под каждый пункт чек-листа Claude ищет релевантную статью 152-ФЗ и выносит вердикт строго JSON-объектом — ни один пункт не может быть случайно пропущен моделью, как это возможно в свободном диалоге.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>На тестовом кейсе интернет-магазина с реальными нарушениями агент верно нашёл все 4 несоответствия — с точной ссылкой на статью и цитатой из описания процесса.</p></div>
+      <p class="case-role"><span class="work-role-label">Роль и стек</span> Поиск по нормам · строгий JSON-вывод · детерминированный пайплайн проверки</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-hypothesis">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">03 — hypothesis lab</span>
+        </div>
+        <div class="window-body mock-hypothesis">
+          <div class="hyp-verdict">✓ Подтвердилась</div>
+          <div class="hyp-split"><span class="hyp-for" style="width:71%"></span><span class="hyp-against" style="width:29%"></span></div>
+          <div class="hyp-quote">«глаза устают вечером от яркого экрана. Добавьте тёмную тему!»</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Product</span><span class="tag">LLM Judge</span></div>
+      <h3 class="case-title" id="case-title-agent-hypothesis">Hypothesis Lab — тестирование продуктовых гипотез</h3>
+      <p class="case-tagline">Вердикт с реальными цитатами, а не общими рассуждениями.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Продуктовые команды тратят много времени на ручной сбор и структурирование обратной связи вместо анализа.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Собрал(а) агента, который одним запросом к Claude отбирает релевантные отзывы среди шума и выносит вердикт «подтвердилась / не подтвердилась / неоднозначно» с цитатами — с защитой от «галлюцинированных» номеров отзывов.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>На демо-гипотезе про тёмную тему агент верно нашёл все 5 явно поддерживающих отзывов и 2 противоположных среди 16 — и корректно проигнорировал 9 отзывов не по теме.</p></div>
+      <p class="case-role"><span class="work-role-label">Роль и стек</span> Классификация отзывов Claude · защита от галлюцинированных цитат · бинарный вердикт</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-docauto">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">04 — act automation</span>
+        </div>
+        <div class="window-body mock-docauto">
+          <div class="docauto-sheet"><div class="l l--h"></div><div class="l" style="width:90%"></div><div class="l" style="width:60%"></div><div class="l" style="width:75%"></div></div>
+          <div class="docauto-status">
+            <span class="docauto-status-title">⛔ ЗАБЛОКИРОВАНО</span>
+            <span class="docauto-status-item">Сумма не сходится: 73 000 ≠ 70 000 ₽</span>
+            <span class="docauto-status-item">2 позиции вне предмета договора</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Docx</span><span class="tag">Deterministic</span></div>
+      <h3 class="case-title" id="case-title-agent-docauto">Act Automation — автозаполнение актов</h3>
+      <p class="case-tagline">Числа пишет код, а не модель — Claude только сверяет смысл.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Заполнение и сверка договоров, счетов и актов вручную съедает часы и легко приводит к ошибкам.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Собрал(а) агента, где сам .docx заполняется обычным кодом (без риска, что модель «придумает» сумму), а Claude отвечает только за содержательную проверку — входят ли позиции акта в предмет договора.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>На тестовом заказе агент нашёл расхождение по сумме и две позиции вне предмета договора — и заблокировал отправку на подпись до исправления.</p></div>
+      <p class="case-role"><span class="work-role-label">Роль и стек</span> python-docx без LLM в цифрах · Claude — только для сверки состава работ</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-analyst">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">05 — self-service analyst</span>
+        </div>
+        <div class="window-body mock-analyst">
+          <div class="analyst-q">&gt; Почему в июле упала маржа?</div>
+          <div class="analyst-sql">SELECT month, SUM(margin)&#10;FROM order_items JOIN...</div>
+          <div class="analyst-answer">Упали продажи ноутбуков: 5 → 1 шт.</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Text-to-SQL</span><span class="tag">Read-only</span></div>
+      <h3 class="case-title" id="case-title-agent-analyst">Self-Service Analyst — аналитик на естественном языке</h3>
+      <p class="case-tagline">Сам пишет SQL под вопрос — вместо фиксированного дашборда.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>В штате нет аналитика — руководитель сам копается в Excel, чтобы понять, почему упала маржа или выросли продажи.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Собрал(а) агента, который сам пишет и выполняет SQL-запросы к базе продаж через tool-use у Claude, а не просто читает заранее заданные отчёты. Доступ — только на чтение: проверка запроса плюс read-only соединение с базой.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>На демо-базе с намеренным провалом маржи в июле агент верно нашёл причину — сдвиг продаж от ноутбуков к дешёвым товарам — самостоятельно построив нужные запросы.</p></div>
+      <p class="case-role"><span class="work-role-label">Роль и стек</span> Claude tool-use · text-to-SQL · read-only доступ к базе</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-incident">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">06 — incident copilot</span>
+        </div>
+        <div class="window-body mock-incident">
+          <div class="incident-new">Новое: «Зависает после вчерашнего обновления»</div>
+          <div class="incident-match">Найден прецедент #1</div>
+          <div class="incident-resolution">Решение: откатить обновление, перезапустить службу</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">RAG</span><span class="tag">Ops</span></div>
+      <h3 class="case-title" id="case-title-agent-incident">Incident Copilot — управление инцидентами</h3>
+      <p class="case-tagline">Прецедент из истории — или честное «такого раньше не было».</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>При сбое или жалобе время уходит на то, чтобы вспомнить, как решали похожий случай раньше.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Собрал(а) агента, который ищет похожие инциденты по смыслу и отдельным вызовом Claude проверяет, действительно ли найденный случай похож по сути — а не просто содержит похожие слова.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>На новом инциденте «зависание после обновления» агент верно нашёл прецедент в истории из 10 случаев и предложил то же решение — откат обновления.</p></div>
+      <p class="case-role"><span class="work-role-label">Роль и стек</span> Семантический поиск по истории · защита от натянутых совпадений</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-mcp">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar">
+          <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+          <span class="window-title">07 — mcp connector</span>
+        </div>
+        <div class="window-body mock-flow">
+          <div class="flow-node">Claude</div>
+          <div class="flow-line flow-line--1"></div>
+          <div class="flow-node flow-node--accent">MCP-сервер</div>
+          <div class="flow-line flow-line--2"></div>
+          <div class="flow-node">1С / CRM</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">MCP</span><span class="tag">Protocol</span><span class="tag">Integration</span></div>
+      <h3 class="case-title" id="case-title-agent-mcp">MCP Connector — интеграция агент + 1С/CRM</h3>
+      <p class="case-tagline">Тот же агент-аналитик, но данные — через настоящий протокол.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>У бизнеса уже есть 1С, amoCRM или Битрикс24 — но подключить к ним ИИ-агента технически сложно, и именно это чаще всего останавливает внедрение.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Поднял(а) настоящий MCP-сервер поверх той же демо-базы: агент узнаёт схему и список инструментов у сервера по протоколу, а не из захардкоженного кода — под 1С/CRM клиента меняется только сервер, а не сам агент.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Полный клиент-серверный раунд-трип по MCP протестирован вживую и дал тот же верный ответ, что и прямой вызов — архитектура переносится без потери качества.</p></div>
+      <p class="case-role"><span class="work-role-label">Роль и стек</span> Настоящий MCP-сервер (stdio) · схема и инструменты — не хардкод, а с сервера</p>
     </div>
 
   </div>
