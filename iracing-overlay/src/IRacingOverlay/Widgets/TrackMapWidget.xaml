@@ -6,12 +6,29 @@
         <conv:LapDistPctToXConverter x:Key="PctToX" />
         <conv:LapDistPctToYConverter x:Key="PctToY" />
         <conv:IsPlayerToBrushConverter x:Key="PlayerBrush" />
+
+        <Style x:Key="CarMarkerStyle" TargetType="Ellipse">
+            <Setter Property="Width" Value="9" />
+            <Setter Property="Height" Value="9" />
+            <Setter Property="Fill" Value="{Binding IsPlayer, Converter={StaticResource PlayerBrush}}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPlayer}" Value="True">
+                    <Setter Property="Width" Value="13" />
+                    <Setter Property="Height" Value="13" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="#FF4D4F" ShadowDepth="0" BlurRadius="14" Opacity="0.9" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Border Style="{StaticResource WidgetPanelStyle}">
         <StackPanel>
             <TextBlock Text="{Binding TrackDisplayName}" Style="{StaticResource WidgetLabelStyle}" />
-            <Grid Width="120" Height="120" Margin="0,4,0,0">
-                <Ellipse Width="110" Height="110" Stroke="#33FFFFFF" StrokeThickness="2" />
+            <Grid Width="120" Height="120" Margin="0,6,0,0">
+                <Ellipse Width="106" Height="106" Stroke="#2A3040" StrokeThickness="9" />
                 <ItemsControl ItemsSource="{Binding CarsOnTrack}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -26,7 +43,7 @@
                     </ItemsControl.ItemContainerStyle>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Ellipse Width="10" Height="10" Fill="{Binding IsPlayer, Converter={StaticResource PlayerBrush}}" />
+                            <Ellipse Style="{StaticResource CarMarkerStyle}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -37,6 +37,6 @@ public sealed class TelemetrySnapshot
     public float EstimateLapsRemaining() => FuelCalculator.EstimateLapsRemaining(FuelLevelL, FuelUsePerHourL, LapLastTimeSec);
 }
 
-public readonly record struct StandingRow(int Position, int CarIdx, string DriverName, string CarNumber, bool IsPlayer, float GapSec);
+public readonly record struct StandingRow(int Position, int CarIdx, string DriverName, string CarNumber, bool IsPlayer, float GapSec, float BestLapSec, float LastLapSec);
 
 public readonly record struct CarPositionOnTrack(int CarIdx, float LapDistPct, bool IsPlayer);

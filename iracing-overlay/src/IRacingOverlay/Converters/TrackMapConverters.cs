@@ -38,13 +38,29 @@ public sealed class LapDistPctToYConverter : IValueConverter
         throw new NotSupportedException();
 }
 
+/// <summary>Car marker color on the track map: the player's car stands out (red), everyone else is a neutral blue dot.</summary>
 public sealed class IsPlayerToBrushConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         var isPlayer = value is bool b && b;
-        var key = isPlayer ? "AccentBrush" : "TextSecondaryBrush";
+        var key = isPlayer ? "DangerBrush" : "NeutralMarkerBrush";
         return (Brush)System.Windows.Application.Current.Resources[key];
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}
+
+/// <summary>Standings row background: the player's row gets a subtle red tint, like track-impulse's "you" row.</summary>
+public sealed class IsPlayerToRowBackgroundConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var isPlayer = value is bool b && b;
+        return isPlayer
+            ? (Brush)System.Windows.Application.Current.Resources["PlayerRowBrush"]
+            : Brushes.Transparent;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>

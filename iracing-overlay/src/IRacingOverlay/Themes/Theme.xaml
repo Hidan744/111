@@ -1,26 +1,39 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#CC12151C" />
-    <SolidColorBrush x:Key="PanelBorderBrush" Color="#33FFFFFF" />
-    <SolidColorBrush x:Key="AccentBrush" Color="#FF3ED9B8" />
-    <SolidColorBrush x:Key="WarnBrush" Color="#FFE7C24B" />
-    <SolidColorBrush x:Key="DangerBrush" Color="#FFE5484D" />
-    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FFF3F5F7" />
-    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#99F3F5F7" />
+    <!--
+        Palette matched against track-impulse.com/overlays screenshots: dark navy cards (not pure
+        black), restrained color used only for meaningful data (green = faster/good, red = slower/bad,
+        orange = position/time highlight, purple = session-best, cyan = personal-best highlight).
+    -->
+    <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#F0171B26" />
+    <SolidColorBrush x:Key="PanelBackgroundAltBrush" Color="#F01D2230" />
+    <SolidColorBrush x:Key="PanelBorderBrush" Color="#262B3B" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#2FE0C7" />
+    <SolidColorBrush x:Key="WarnBrush" Color="#FFB020" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#FF4D4F" />
+    <SolidColorBrush x:Key="GoodBrush" Color="#33D17E" />
+    <SolidColorBrush x:Key="BestOverallBrush" Color="#B18CFF" />
+    <SolidColorBrush x:Key="NeutralMarkerBrush" Color="#4C8DFF" />
+    <SolidColorBrush x:Key="PlayerRowBrush" Color="#4D2A1A22" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F5F7FA" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#7C8598" />
+
+    <DropShadowEffect x:Key="CardShadow" Color="#000000" Direction="270" ShadowDepth="4" BlurRadius="16" Opacity="0.45" />
 
     <Style x:Key="WidgetPanelStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource PanelBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource PanelBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="10" />
-        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="16,12" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Effect" Value="{StaticResource CardShadow}" />
     </Style>
 
     <Style x:Key="WidgetLabelStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="Segoe UI Semibold" />
         <Setter Property="FontSize" Value="10" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Typography.Capitals" Value="AllSmallCaps" />
@@ -28,13 +41,20 @@
 
     <Style x:Key="WidgetValueStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontSize" Value="26" />
     </Style>
 
     <Style x:Key="WidgetValueSmallStyle" TargetType="TextBlock" BasedOn="{StaticResource WidgetValueStyle}">
         <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style x:Key="WidgetValueMonoStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="14" />
     </Style>
 
 </ResourceDictionary>

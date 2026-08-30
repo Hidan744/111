@@ -3,9 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border Style="{StaticResource WidgetPanelStyle}">
         <StackPanel Orientation="Horizontal">
-            <StackPanel Margin="0,0,16,0">
+            <StackPanel Margin="0,0,20,0">
                 <TextBlock Text="Position" Style="{StaticResource WidgetLabelStyle}" />
-                <TextBlock Text="{Binding Position, StringFormat={}P{0}}" Style="{StaticResource WidgetValueStyle}" />
+                <TextBlock Text="{Binding Position, StringFormat={}P{0}}"
+                           FontFamily="Segoe UI" FontWeight="Bold" FontSize="34"
+                           Foreground="{StaticResource WarnBrush}" />
             </StackPanel>
             <StackPanel>
                 <TextBlock Text="Class" Style="{StaticResource WidgetLabelStyle}" />

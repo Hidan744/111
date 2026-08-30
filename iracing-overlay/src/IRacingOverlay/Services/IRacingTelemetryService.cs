@@ -56,6 +56,9 @@ public sealed class IRacingTelemetryService : ITelemetryService
         var carIdxLapDistPct = frame.GetFloatArray("CarIdxLapDistPct");
         var carIdxPosition = frame.GetIntArray("CarIdxPosition");
         var carIdxClassPosition = frame.GetIntArray("CarIdxClassPosition");
+        var carIdxBestLapTime = frame.GetFloatArray("CarIdxBestLapTime");
+        var carIdxLastLapTime = frame.GetFloatArray("CarIdxLastLapTime");
+        var carIdxGapToLeader = frame.GetFloatArray("CarIdxF2Time");
         var playerCarIdx = frame.GetInt("PlayerCarIdx", -1);
 
         var carsOnTrack = new List<CarPositionOnTrack>();
@@ -66,7 +69,7 @@ public sealed class IRacingTelemetryService : ITelemetryService
             carsOnTrack.Add(new CarPositionOnTrack(i, carIdxLapDistPct[i], i == playerCarIdx));
         }
 
-        var standings = BuildStandings(carIdxPosition, carIdxClassPosition, playerCarIdx);
+        var standings = BuildStandings(carIdxPosition, carIdxClassPosition, carIdxBestLapTime, carIdxLastLapTime, carIdxGapToLeader, playerCarIdx);
 
         return new TelemetrySnapshot
         {
@@ -102,7 +105,10 @@ public sealed class IRacingTelemetryService : ITelemetryService
         return (l + m + r) / 3f;
     }
 
-    private IReadOnlyList<StandingRow> BuildStandings(int[] carIdxPosition, int[] carIdxClassPosition, int playerCarIdx)
+    private IReadOnlyList<StandingRow> BuildStandings(
+        int[] carIdxPosition, int[] carIdxClassPosition,
+        float[] carIdxBestLapTime, float[] carIdxLastLapTime, float[] carIdxGapToLeader,
+        int playerCarIdx)
     {
         if (carIdxPosition.Length == 0 || _sessionInfo.Drivers.Count == 0)
             return Array.Empty<StandingRow>();
@@ -120,12 +126,20 @@ public sealed class IRacingTelemetryService : ITelemetryService
             if (position <= 0)
                 continue;
 
-            rows.Add(new StandingRow(position, driver.CarIdx, driver.UserName, driver.CarNumber, driver.CarIdx == playerCarIdx, 0f));
+            var bestLap = ArrayValueOrZero(carIdxBestLapTime, driver.CarIdx);
+            var lastLap = ArrayValueOrZero(carIdxLastLapTime, driver.CarIdx);
+            var gap = ArrayValueOrZero(carIdxGapToLeader, driver.CarIdx);
+
+            rows.Add(new StandingRow(position, driver.CarIdx, driver.UserName, driver.CarNumber,
+                driver.CarIdx == playerCarIdx, gap, bestLap, lastLap));
         }
 
         rows.Sort((a, b) => a.Position.CompareTo(b.Position));
         return rows;
     }
+
+    private static float ArrayValueOrZero(float[] array, int index) =>
+        index >= 0 && index < array.Length ? array[index] : 0f;
 
     public void Dispose()
     {

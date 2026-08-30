@@ -40,7 +40,7 @@ public sealed class DeltaSecondsToBrushConverter : IValueConverter
     {
         var seconds = value is float f ? f : 0f;
         if (seconds < -0.02f)
-            return GetBrush("AccentBrush");
+            return GetBrush("GoodBrush");
         if (seconds > 0.02f)
             return GetBrush("DangerBrush");
         return GetBrush("TextPrimaryBrush");

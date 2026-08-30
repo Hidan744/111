@@ -33,9 +33,9 @@ public sealed class MockTelemetryService : ITelemetryService
 
         var standings = new List<StandingRow>
         {
-            new(1, 0, "A. Driver", "12", false, 0f),
-            new(2, 1, "You", "07", true, 1.2f),
-            new(3, 2, "C. Racer", "44", false, 2.8f),
+            new(1, 0, "A. Driver", "12", false, 0f, _bestLap - 0.4f, _bestLap + 0.1f),
+            new(2, 1, "You", "07", true, 1.2f, _bestLap, _bestLap + 0.6f),
+            new(3, 2, "C. Racer", "44", false, 2.8f, _bestLap + 0.5f, _bestLap + 0.9f),
         };
 
         var cars = new List<CarPositionOnTrack>

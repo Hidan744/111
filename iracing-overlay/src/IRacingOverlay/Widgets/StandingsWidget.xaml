@@ -3,29 +3,84 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:conv="clr-namespace:IRacingOverlay.Converters">
     <UserControl.Resources>
-        <conv:IsPlayerToBrushConverter x:Key="PlayerBrush" />
+        <conv:SecondsToLapTimeConverter x:Key="LapTime" />
+        <conv:DeltaSecondsToTextConverter x:Key="DeltaText" />
+        <conv:IsPlayerToRowBackgroundConverter x:Key="RowBackground" />
+
+        <Style x:Key="ColHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource WidgetLabelStyle}">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+        <Style x:Key="ColCellStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
     </UserControl.Resources>
-    <Border Style="{StaticResource WidgetPanelStyle}">
-        <StackPanel>
-            <TextBlock Text="Standings" Style="{StaticResource WidgetLabelStyle}" />
-            <ItemsControl ItemsSource="{Binding Standings}" Margin="0,4,0,0">
+    <Border Style="{StaticResource WidgetPanelStyle}" Padding="0" MinWidth="320">
+        <StackPanel Margin="16,12">
+            <TextBlock Text="Standings" Style="{StaticResource WidgetLabelStyle}" Margin="0,0,0,6" />
+
+            <Grid Margin="0,0,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="26" />
+                    <ColumnDefinition Width="34" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="56" />
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="60" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1" Text="#" Style="{StaticResource WidgetLabelStyle}" />
+                <TextBlock Grid.Column="2" Text="Name" Style="{StaticResource WidgetLabelStyle}" />
+                <TextBlock Grid.Column="3" Text="Gap" Style="{StaticResource ColHeaderStyle}" />
+                <TextBlock Grid.Column="4" Text="Best" Style="{StaticResource ColHeaderStyle}" />
+                <TextBlock Grid.Column="5" Text="Last" Style="{StaticResource ColHeaderStyle}" />
+            </Grid>
+
+            <ItemsControl ItemsSource="{Binding Standings}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="28" />
-                                <ColumnDefinition Width="140" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding Position}"
-                                       Foreground="{Binding IsPlayer, Converter={StaticResource PlayerBrush}}"
-                                       FontFamily="Consolas" FontWeight="Bold" />
-                            <TextBlock Grid.Column="1" Text="{Binding DriverName}"
-                                       Foreground="{Binding IsPlayer, Converter={StaticResource PlayerBrush}}"
-                                       TextTrimming="CharacterEllipsis" />
-                            <TextBlock Grid.Column="2" Text="{Binding GapSec, StringFormat={}+{0:0.0}}"
-                                       Foreground="{StaticResource TextSecondaryBrush}" FontFamily="Consolas" />
-                        </Grid>
+                        <Border Background="{Binding IsPlayer, Converter={StaticResource RowBackground}}"
+                                BorderThickness="3,0,0,0"
+                                CornerRadius="4"
+                                Margin="-16,1,-16,1"
+                                Padding="13,3,16,3">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPlayer}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource DangerBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="26" />
+                                    <ColumnDefinition Width="34" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="56" />
+                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Position, StringFormat={}P{0}}"
+                                           Style="{StaticResource ColCellStyle}" HorizontalAlignment="Left"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Grid.Column="1" Text="{Binding CarNumber}" Style="{StaticResource ColCellStyle}"
+                                           HorizontalAlignment="Left" FontWeight="Bold" />
+                                <TextBlock Grid.Column="2" Text="{Binding DriverName}" TextTrimming="CharacterEllipsis"
+                                           HorizontalAlignment="Left" VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextPrimaryBrush}" FontWeight="SemiBold" FontSize="12" />
+                                <TextBlock Grid.Column="3" Text="{Binding GapSec, Converter={StaticResource DeltaText}}"
+                                           Style="{StaticResource ColCellStyle}" Foreground="{StaticResource TextSecondaryBrush}" />
+                                <TextBlock Grid.Column="4" Text="{Binding BestLapSec, Converter={StaticResource LapTime}}"
+                                           Style="{StaticResource ColCellStyle}" Foreground="{StaticResource AccentBrush}" />
+                                <TextBlock Grid.Column="5" Text="{Binding LastLapSec, Converter={StaticResource LapTime}}"
+                                           Style="{StaticResource ColCellStyle}" />
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
