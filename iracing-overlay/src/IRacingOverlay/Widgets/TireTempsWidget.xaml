@@ -1,0 +1,27 @@
+<UserControl x:Class="IRacingOverlay.Widgets.TireTempsWidget"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource WidgetPanelStyle}">
+        <StackPanel>
+            <TextBlock Text="Tire Temps (°C)" Style="{StaticResource WidgetLabelStyle}" />
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,14,0"
+                           Text="{Binding LfTempC, StringFormat={}LF {0:0}}" Style="{StaticResource WidgetValueSmallStyle}" />
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                           Text="{Binding RfTempC, StringFormat={}RF {0:0}}" Style="{StaticResource WidgetValueSmallStyle}" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,14,0"
+                           Text="{Binding LrTempC, StringFormat={}LR {0:0}}" Style="{StaticResource WidgetValueSmallStyle}" />
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           Text="{Binding RrTempC, StringFormat={}RR {0:0}}" Style="{StaticResource WidgetValueSmallStyle}" />
+            </Grid>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,28 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRacingOverlay", "src\IRacingOverlay\IRacingOverlay.csproj", "{A1E5C6B1-8B0B-4C2A-9B0E-1F2A3B4C5D6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRacingOverlay.Tests", "tests\IRacingOverlay.Tests\IRacingOverlay.Tests.csproj", "{B2F6D7C2-9C1C-4D3B-8C1F-2A3B4C5D6E7F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1E5C6B1-8B0B-4C2A-9B0E-1F2A3B4C5D6E}.Debug|x64.ActiveCfg = Debug|x64
+		{A1E5C6B1-8B0B-4C2A-9B0E-1F2A3B4C5D6E}.Debug|x64.Build.0 = Debug|x64
+		{A1E5C6B1-8B0B-4C2A-9B0E-1F2A3B4C5D6E}.Release|x64.ActiveCfg = Release|x64
+		{A1E5C6B1-8B0B-4C2A-9B0E-1F2A3B4C5D6E}.Release|x64.Build.0 = Release|x64
+		{B2F6D7C2-9C1C-4D3B-8C1F-2A3B4C5D6E7F}.Debug|x64.ActiveCfg = Debug|x64
+		{B2F6D7C2-9C1C-4D3B-8C1F-2A3B4C5D6E7F}.Debug|x64.Build.0 = Debug|x64
+		{B2F6D7C2-9C1C-4D3B-8C1F-2A3B4C5D6E7F}.Release|x64.ActiveCfg = Release|x64
+		{B2F6D7C2-9C1C-4D3B-8C1F-2A3B4C5D6E7F}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

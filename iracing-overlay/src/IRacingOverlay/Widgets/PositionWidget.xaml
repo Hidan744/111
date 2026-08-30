@@ -1,0 +1,17 @@
+<UserControl x:Class="IRacingOverlay.Widgets.PositionWidget"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource WidgetPanelStyle}">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="0,0,16,0">
+                <TextBlock Text="Position" Style="{StaticResource WidgetLabelStyle}" />
+                <TextBlock Text="{Binding Position, StringFormat={}P{0}}" Style="{StaticResource WidgetValueStyle}" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Class" Style="{StaticResource WidgetLabelStyle}" />
+                <TextBlock Text="{Binding ClassPosition, StringFormat={}P{0}}" Style="{StaticResource WidgetValueStyle}"
+                           Foreground="{StaticResource AccentBrush}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

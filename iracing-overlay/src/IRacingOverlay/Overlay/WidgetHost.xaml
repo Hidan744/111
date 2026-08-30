@@ -1,0 +1,15 @@
+<ContentControl x:Class="IRacingOverlay.Overlay.WidgetHost"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                Focusable="False">
+    <ContentControl.Template>
+        <ControlTemplate TargetType="ContentControl">
+            <Border x:Name="EditBorder"
+                    BorderBrush="{StaticResource AccentBrush}"
+                    BorderThickness="0"
+                    CornerRadius="10">
+                <ContentPresenter />
+            </Border>
+        </ControlTemplate>
+    </ContentControl.Template>
+</ContentControl>

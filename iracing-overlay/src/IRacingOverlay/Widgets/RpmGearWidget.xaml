@@ -1,0 +1,17 @@
+<UserControl x:Class="IRacingOverlay.Widgets.RpmGearWidget"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource WidgetPanelStyle}">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="0,0,16,0">
+                <TextBlock Text="Gear" Style="{StaticResource WidgetLabelStyle}" />
+                <TextBlock Text="{Binding GearDisplay}" Style="{StaticResource WidgetValueStyle}"
+                           Foreground="{StaticResource AccentBrush}" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="RPM" Style="{StaticResource WidgetLabelStyle}" />
+                <TextBlock Text="{Binding Rpm, StringFormat={}{0:0}}" Style="{StaticResource WidgetValueStyle}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,14 @@
+<UserControl x:Class="IRacingOverlay.Widgets.FuelWidget"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource WidgetPanelStyle}">
+        <StackPanel>
+            <TextBlock Text="Fuel" Style="{StaticResource WidgetLabelStyle}" />
+            <TextBlock Text="{Binding FuelLevelL, StringFormat={}{0:0.0} L}" Style="{StaticResource WidgetValueStyle}" />
+            <TextBlock Style="{StaticResource WidgetLabelStyle}">
+                <Run Text="{Binding LapsRemaining, StringFormat={}{0:0.0}}" />
+                <Run Text="laps left" />
+            </TextBlock>
+        </StackPanel>
+    </Border>
+</UserControl>
