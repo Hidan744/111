@@ -260,7 +260,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ================= HERO ================= */
 .hero {
   position: relative;
-  min-height: 100svh;
+  min-height: min(100svh, 860px);
   display: flex;
   align-items: center;
   padding-top: 76px;
@@ -352,21 +352,23 @@ button { font-family: inherit; cursor: pointer; }
 
 .scroll-hint {
   position: absolute;
-  bottom: 32px;
+  bottom: 36px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
-  width: 22px;
-  height: 36px;
-  border: 1px solid var(--border-strong);
-  border-radius: 20px;
+  width: 28px;
+  height: 46px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 24px;
   display: flex;
   justify-content: center;
-  padding-top: 8px;
+  padding-top: 10px;
+  transition: border-color 0.2s var(--ease);
 }
+.scroll-hint:hover { border-color: var(--accent); }
 .scroll-hint span {
-  width: 3px;
-  height: 8px;
+  width: 4px;
+  height: 10px;
   border-radius: 2px;
   background: var(--accent);
   animation: scrollhint 1.8s ease-in-out infinite;
