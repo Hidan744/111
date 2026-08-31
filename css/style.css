@@ -285,6 +285,7 @@ button { font-family: inherit; cursor: pointer; }
 .hero-inner {
   position: relative;
   z-index: 2;
+  width: 100%;
   padding-top: 40px;
   padding-bottom: 60px;
 }
@@ -354,8 +355,7 @@ button { font-family: inherit; cursor: pointer; }
 .scroll-hint {
   position: absolute;
   bottom: 36px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: max(28px, calc((100% - 1180px) / 2 + 28px));
   z-index: 2;
   width: 32px;
   height: 52px;
