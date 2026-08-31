@@ -19,19 +19,25 @@
   max-width: 18ch;
 }
 
-/* ---- capability grid column variants ---- */
+/* ---- capability grid column variants (approach section) ---- */
 .cap-grid--3 { grid-template-columns: repeat(3, 1fr); }
-.cap-grid--2 { grid-template-columns: repeat(2, 1fr); }
-.cap-grid--1 { grid-template-columns: 1fr; }
 @media (max-width: 900px) {
-  .cap-grid--3, .cap-grid--2 { grid-template-columns: 1fr; }
+  .cap-grid--3 { grid-template-columns: 1fr; }
 }
 
-.agents-category .cap-card h3 {
-  font-size: 22px;
-  margin-bottom: 20px;
-  max-width: none;
+/* ---- agent card grid column variants ---- */
+.work-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.work-grid--1 { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .work-grid--3 { grid-template-columns: 1fr; }
 }
+
+/* ---- industry-skills mockup (нефтегаз agent) ---- */
+.mock-industry { --mock-tint: rgba(255,179,102,0.1); display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.industry-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+.industry-terms { display: flex; flex-wrap: wrap; gap: 6px; }
+.industry-term { font-family: var(--mono); font-size: 10px; color: var(--accent); background: rgba(255,179,102,0.12); border: 1px solid rgba(255,179,102,0.3); padding: 4px 9px; border-radius: 999px; }
+.industry-term--muted { color: var(--text-faint); background: transparent; border-color: var(--border-strong); }
 
 /* ---- problem / solve fields inside a card ---- */
 .agent-field { margin-top: 18px; }

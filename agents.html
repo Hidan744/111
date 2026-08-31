@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css?v=2">
-<link rel="stylesheet" href="css/agents.css">
+<link rel="stylesheet" href="css/agents.css?v=2">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
@@ -124,29 +124,75 @@
         <h2 class="section-title">Знания <em>и аналитика</em></h2>
       </div>
 
-      <div class="cap-grid cap-grid--2">
-        <article class="cap-card reveal">
-          <h3>Поиск по внутренним документам</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>Регламенты, договоры и инструкции разбросаны по папкам и головах сотрудников. Новый человек неделями разбирается, «как у нас принято».</p>
+      <div class="work-grid">
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">document search</span>
+            </div>
+            <div class="window-body mock-docsearch">
+              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Сколько дней отпуска положено и можно перенести?</span></div>
+              <div class="chat-row chat-row--in">
+                <span class="chat-avatar"></span>
+                <span class="chat-bubble chat-bubble--in">28 дней в год, перенос — не более 14 дней<div class="chat-cite">vacation_policy.md</div></span>
+              </div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Агент ищет ответ по смыслу во всех документах компании и отвечает со ссылкой на источник.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Search</span></div>
+            <h3>Поиск по внутренним документам</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Регламенты, договоры и инструкции разбросаны по папкам и головах сотрудников. Новый человек неделями разбирается, «как у нас принято».</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент ищет ответ по смыслу во всех документах компании и отвечает со ссылкой на источник.</p>
+            </div>
           </div>
         </article>
-        <article class="cap-card reveal">
-          <h3>Аналитик для самообслуживания</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>В штате нет аналитика — руководитель сам копается в Excel, чтобы понять, почему упала маржа или выросли продажи.</p>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">self-service analyst</span>
+            </div>
+            <div class="window-body mock-analyst">
+              <div class="analyst-q">&gt; Почему в июле упала маржа?</div>
+              <div class="analyst-sql">SELECT month, SUM(margin)&#10;FROM order_items JOIN...</div>
+              <div class="analyst-answer">Упали продажи ноутбуков: 5 → 1 шт.</div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Агент подключается к 1С / CRM / складу и по вопросу на обычном языке сам строит нужный отчёт.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Text-to-SQL</span><span class="tag">Read-only</span></div>
+            <h3>Аналитик для самообслуживания</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>В штате нет аналитика — руководитель сам копается в Excel, чтобы понять, почему упала маржа или выросли продажи.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент подключается к 1С / CRM / складу и по вопросу на обычном языке сам строит нужный отчёт.</p>
+            </div>
           </div>
         </article>
+      </div>
+
+      <!-- ================= LIVE AGENT DEMO ================= -->
+      <div class="demo-section" id="demo">
+        <div class="demo-connect">↑ живой пример именно этого агента — поиск по документам</div>
+        <div class="demo-shell reveal">
+          <div class="demo-bar">
+            <span class="demo-dot demo-dot--r"></span><span class="demo-dot demo-dot--y"></span><span class="demo-dot demo-dot--g"></span>
+            <span class="demo-title">agent — document search</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q"><span id="demoQText"></span><span class="demo-cursor" id="demoCursor"></span></div>
+            <div class="demo-a" id="demoA"></div>
+            <div class="demo-hint">↺ перезапустится при повторном входе в блок</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -159,38 +205,84 @@
         <h2 class="section-title">Операционка <em>и риски</em></h2>
       </div>
 
-      <div class="cap-grid cap-grid--3">
-        <article class="cap-card reveal">
-          <h3>Автоматизация документооборота</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>Заполнение и сверка договоров, счетов и актов вручную съедает часы и легко приводит к ошибкам.</p>
+      <div class="work-grid work-grid--3">
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">act automation</span>
+            </div>
+            <div class="window-body mock-docauto">
+              <div class="docauto-sheet"><div class="l l--h"></div><div class="l" style="width:90%"></div><div class="l" style="width:60%"></div><div class="l" style="width:75%"></div></div>
+              <div class="docauto-status">
+                <span class="docauto-status-title">⛔ ЗАБЛОКИРОВАНО</span>
+                <span class="docauto-status-item">Сумма не сходится: 73 000 ≠ 70 000 ₽</span>
+                <span class="docauto-status-item">2 позиции вне предмета договора</span>
+              </div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Агент сам заполняет документ по шаблону, проверяет на несоответствия и направляет на подпись.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Docx</span><span class="tag">Deterministic</span></div>
+            <h3>Автоматизация документооборота</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Заполнение и сверка договоров, счетов и актов вручную съедает часы и легко приводит к ошибкам.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент сам заполняет документ по шаблону, проверяет на несоответствия и направляет на подпись.</p>
+            </div>
           </div>
         </article>
-        <article class="cap-card reveal">
-          <h3>Compliance-агент</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>У малого бизнеса нет штатного юриста по комплаенсу — нарушение находят уже во время проверки.</p>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">compliance</span>
+            </div>
+            <div class="window-body mock-compliance">
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Согласие на обработку ПДн</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Ответственный за обработку</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Технические меры защиты</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Уведомление Роскомнадзора</div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Агент проверяет документы и процессы на соответствие нормам ещё до проверяющего органа.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Compliance</span><span class="tag">RAG</span><span class="tag">JSON</span></div>
+            <h3>Compliance-агент</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>У малого бизнеса нет штатного юриста по комплаенсу — нарушение находят уже во время проверки.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент проверяет документы и процессы на соответствие нормам ещё до проверяющего органа.</p>
+            </div>
           </div>
         </article>
-        <article class="cap-card reveal">
-          <h3>Управление инцидентами</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>При сбое или жалобе время уходит на то, чтобы вспомнить, как решали похожий случай раньше.</p>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">incident copilot</span>
+            </div>
+            <div class="window-body mock-incident">
+              <div class="incident-new">Новое: «Зависает после вчерашнего обновления»</div>
+              <div class="incident-match">Найден прецедент #1</div>
+              <div class="incident-resolution">Решение: откатить обновление, перезапустить службу</div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Агент фиксирует инцидент, находит похожие случаи в истории и предлагает готовое решение.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Ops</span></div>
+            <h3>Управление инцидентами</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>При сбое или жалобе время уходит на то, чтобы вспомнить, как решали похожий случай раньше.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент фиксирует инцидент, находит похожие случаи в истории и предлагает готовое решение.</p>
+            </div>
           </div>
         </article>
       </div>
@@ -205,16 +297,32 @@
         <h2 class="section-title"><em>Инфраструктура</em></h2>
       </div>
 
-      <div class="cap-grid cap-grid--1">
-        <article class="cap-card reveal">
-          <h3>Интеграция агент + 1С / CRM</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>У бизнеса уже есть 1С, amoCRM или Битрикс24 — но подключить к ним ИИ-агента технически сложно, и именно это чаще всего останавливает внедрение.</p>
+      <div class="work-grid work-grid--1">
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">mcp connector</span>
+            </div>
+            <div class="window-body mock-flow">
+              <div class="flow-node">Claude</div>
+              <div class="flow-line flow-line--1"></div>
+              <div class="flow-node flow-node--accent">MCP-сервер</div>
+              <div class="flow-line flow-line--2"></div>
+              <div class="flow-node">1С / CRM</div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Настройка доступа агента к уже существующим системам заказчика через MCP — без миграции данных и переделки процессов. Разовая настройка плюс поддержка на подписке.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">MCP</span><span class="tag">Protocol</span><span class="tag">Integration</span></div>
+            <h3>Интеграция агент + 1С / CRM</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>У бизнеса уже есть 1С, amoCRM или Битрикс24 — но подключить к ним ИИ-агента технически сложно, и именно это чаще всего останавливает внедрение.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Настройка доступа агента к уже существующим системам заказчика через MCP — без миграции данных и переделки процессов. Разовая настройка плюс поддержка на подписке.</p>
+            </div>
           </div>
         </article>
       </div>
@@ -229,27 +337,56 @@
         <h2 class="section-title">Отраслевая <em>экспертиза</em></h2>
       </div>
 
-      <div class="cap-grid cap-grid--2">
-        <article class="cap-card reveal">
-          <h3>Отраслевые агенты по образцу нефтегаза</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>Узкие специалисты — геологи, технологи, инженеры — не хотят «обычный чат-бот», который не понимает профессиональный контекст.</p>
+      <div class="work-grid">
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">industry skills</span>
+            </div>
+            <div class="window-body mock-industry">
+              <div class="industry-label">Домен: нефтегаз</div>
+              <div class="industry-terms">
+                <span class="industry-term">каротаж</span><span class="industry-term">ГРП</span><span class="industry-term">штуцер</span><span class="industry-term industry-term--muted">буровой раствор</span>
+              </div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Готовая модель из нефтегазового кейса переносится на другую техническую отрасль: агент заранее знает терминологию и процессы.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Skills</span><span class="tag">Custom</span></div>
+            <h3>Отраслевые агенты по образцу нефтегаза</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Узкие специалисты — геологи, технологи, инженеры — не хотят «обычный чат-бот», который не понимает профессиональный контекст.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Готовая модель из нефтегазового кейса переносится на другую техническую отрасль: агент заранее знает терминологию и процессы.</p>
+            </div>
           </div>
         </article>
-        <article class="cap-card reveal">
-          <h3>Тестирование продуктовых гипотез</h3>
-          <div class="agent-field">
-            <span class="agent-field-label">Проблема</span>
-            <p>Продуктовые команды тратят много времени на ручной сбор и структурирование обратной связи вместо анализа.</p>
+        <article class="work-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">hypothesis lab</span>
+            </div>
+            <div class="window-body mock-hypothesis">
+              <div class="hyp-verdict">✓ Подтвердилась</div>
+              <div class="hyp-split"><span class="hyp-for" style="width:71%"></span><span class="hyp-against" style="width:29%"></span></div>
+              <div class="hyp-quote">«глаза устают вечером от яркого экрана. Добавьте тёмную тему!»</div>
+            </div>
           </div>
-          <div class="agent-field agent-field--solve">
-            <span class="agent-field-label agent-field-label--solve">Решение</span>
-            <p>Агент прогоняет варианты, собирает отзывы из разных источников и выдаёт вывод: гипотеза подтвердилась или нет.</p>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">Product</span><span class="tag">LLM Judge</span></div>
+            <h3>Тестирование продуктовых гипотез</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Продуктовые команды тратят много времени на ручной сбор и структурирование обратной связи вместо анализа.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент прогоняет варианты, собирает отзывы из разных источников и выдаёт вывод: гипотеза подтвердилась или нет.</p>
+            </div>
           </div>
         </article>
       </div>
