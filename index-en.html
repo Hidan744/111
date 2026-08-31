@@ -113,9 +113,9 @@
       </div>
 
       <div class="hero-stats reveal">
-        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">years with AI&nbsp;&amp;&nbsp;data</span></div>
+        <div class="stat"><span class="stat-num" data-count="6" data-suffix="+">0</span><span class="stat-label">years with AI&nbsp;&amp;&nbsp;data</span></div>
         <div class="stat-sep" aria-hidden="true">/</div>
-        <div class="stat"><span class="stat-num">10+</span><span class="stat-label">AI systems in production</span></div>
+        <div class="stat"><span class="stat-num" data-count="10" data-suffix="+">0</span><span class="stat-label">AI systems in production</span></div>
         <div class="stat-sep" aria-hidden="true">/</div>
         <div class="stat"><span class="stat-num">LLM · RAG · Agents</span><span class="stat-label">core stack</span></div>
       </div>
@@ -213,7 +213,10 @@
             <p>Answers employee questions about policies and internal procedures — and always cites the source file instead of making details up.</p>
             <p class="work-role"><span class="work-role-label">Role</span> Claude tool-use · Chroma vector search · multilingual embeddings</p>
             <div class="work-foot">
-              <span class="metric">Source <small>in every answer</small></span>
+              <div class="metric-viz">
+                <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--border-strong)" stroke-width="3"/><circle cx="17" cy="17" r="14" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-dasharray="87.9" stroke-dashoffset="0" transform="rotate(-90 17 17)"/></svg>
+                <span class="metric-viz-text">100%<small>of answers cite a source</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-docsearch">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -238,7 +241,10 @@
             <p>Checks a company's process description against a regulatory checklist and returns not free text, but a status for every item with a citation to the exact article of law.</p>
             <p class="work-role"><span class="work-role-label">Role</span> Regulation search · strict JSON output · deterministic verification pipeline</p>
             <div class="work-foot">
-              <span class="metric">4/4 <small>requirements cited to an article</small></span>
+              <div class="metric-viz">
+                <svg width="52" height="26" viewBox="0 0 52 26" fill="none"><polyline points="0,20 13,16 26,12 39,6 52,3" stroke="var(--accent)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="3" r="2.4" fill="var(--accent)"/></svg>
+                <span class="metric-viz-text">4/4<small>requirements cited to an article</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-compliance">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -262,7 +268,10 @@
             <p>Tests a hypothesis about users against a corpus of reviews and returns a verdict with real supporting and opposing quotes — not vague reasoning.</p>
             <p class="work-role"><span class="work-role-label">Role</span> Claude-based review classification · protection against hallucinated quotes</p>
             <div class="work-foot">
-              <span class="metric">5 for / 2 against <small>out of 16 reviews</small></span>
+              <div class="metric-viz">
+                <svg width="44" height="16" viewBox="0 0 44 16"><rect x="0" y="0" width="31" height="16" rx="2" fill="#8bd17c"/><rect x="33" y="0" width="11" height="16" rx="2" fill="var(--border-strong)"/></svg>
+                <span class="metric-viz-text">5 / 2<small>for / against out of 16 reviews</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-hypothesis">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -289,7 +298,10 @@
             <p>Fills out a work-completion act from order data and cross-checks it for discrepancies — the model never writes the numbers, only deterministic code does.</p>
             <p class="work-role"><span class="work-role-label">Role</span> python-docx with no LLM in the numbers · Claude used only to verify the scope of work</p>
             <div class="work-foot">
-              <span class="metric">3/3 <small>discrepancies found</small></span>
+              <div class="metric-viz">
+                <svg width="52" height="26" viewBox="0 0 52 26" fill="none"><polyline points="0,22 17,17 35,10 52,3" stroke="var(--accent)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="3" r="2.4" fill="var(--accent)"/></svg>
+                <span class="metric-viz-text">3/3<small>discrepancies found</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-docauto">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -313,7 +325,10 @@
             <p>Answers sales questions by writing its own SQL queries against the database — instead of a fixed dashboard with a limited set of metrics.</p>
             <p class="work-role"><span class="work-role-label">Role</span> Claude tool-use · text-to-SQL · read-only database access</p>
             <div class="work-foot">
-              <span class="metric">SELECT only <small>double-guarded</small></span>
+              <div class="metric-viz">
+                <svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 4 6v6c0 6 4 9.5 9 11 5-1.5 9-5 9-11V6l-9-4Z" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 13l3 3 6-6.5" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="metric-viz-text">Read-only<small>SELECT only, double-guarded</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-analyst">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -337,7 +352,10 @@
             <p>Finds a similar past incident from the description of a new one and suggests a resolution — or honestly says there's no precedent.</p>
             <p class="work-role"><span class="work-role-label">Role</span> Semantic search over incident history · protection against far-fetched matches</p>
             <div class="work-foot">
-              <span class="metric">Precedent <small>found on the first try</small></span>
+              <div class="metric-viz">
+                <svg width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10" fill="none" stroke="var(--border-strong)" stroke-width="1.4"/><circle cx="13" cy="13" r="6" fill="none" stroke="var(--border-strong)" stroke-width="1.4"/><circle cx="13" cy="13" r="2.2" fill="var(--accent)"/></svg>
+                <span class="metric-viz-text">1st try<small>precedent found right away</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-incident">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -363,12 +381,31 @@
             <p>The same analyst agent, but the data source is connected through a real MCP protocol — a pattern that carries over to 1C, amoCRM, and Bitrix24.</p>
             <p class="work-role"><span class="work-role-label">Role</span> A real MCP server (stdio) · schema and tools served live, not hardcoded</p>
             <div class="work-foot">
-              <span class="metric">1 protocol <small>any client's system</small></span>
+              <div class="metric-viz">
+                <svg width="30" height="26" viewBox="0 0 30 26"><circle cx="4" cy="13" r="3" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="15" cy="4" r="3" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="15" cy="22" r="3" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="26" cy="13" r="3" fill="var(--accent)"/><path d="M6.6 11.5 12.5 6M6.6 14.5 12.5 20M17.6 6 23.5 11.5M17.6 20 23.5 14.5" stroke="var(--border-strong)" stroke-width="1.2"/></svg>
+                <span class="metric-viz-text">1 protocol<small>any client's system</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-mcp">Learn more <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
         </article>
 
+      </div>
+
+      <!-- ================= LIVE AGENT DEMO ================= -->
+      <div class="demo-section" id="demo">
+        <div class="demo-connect">↑ a live example of this exact agent — Document Search</div>
+        <div class="demo-shell reveal">
+          <div class="demo-bar">
+            <span class="demo-dot demo-dot--r"></span><span class="demo-dot demo-dot--y"></span><span class="demo-dot demo-dot--g"></span>
+            <span class="demo-title">agent — document search</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q"><span id="demoQText"></span><span class="demo-cursor" id="demoCursor"></span></div>
+            <div class="demo-a" id="demoA"></div>
+            <div class="demo-hint">↺ restarts when you scroll back into view</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -607,6 +644,7 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/128/three.min.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

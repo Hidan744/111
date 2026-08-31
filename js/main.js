@@ -137,9 +137,10 @@
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---------------- hero particle network ---------------- */
+  /* ---------------- hero background: 3D depth particles, 2D canvas fallback ---------------- */
   const canvas = document.getElementById("netCanvas");
-  if (canvas && !prefersReducedMotion) {
+
+  function init2DParticles() {
     const ctx = canvas.getContext("2d");
     let particles = [];
     let width, height, dpr;
@@ -243,4 +244,161 @@
       }
     });
   }
+
+  function init3DParticles() {
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+    camera.position.z = 20;
+
+    function makeLayer(count, spread, size, color, opacity) {
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        pos[i * 3] = (Math.random() - 0.5) * spread;
+        pos[i * 3 + 1] = (Math.random() - 0.5) * spread * 0.55;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * spread;
+      }
+      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({ color, size, transparent: true, opacity, depthWrite: false });
+      return new THREE.Points(geo, mat);
+    }
+
+    const far = makeLayer(160, 46, 0.1, 0x6ee7ff, 0.3);
+    const near = makeLayer(80, 26, 0.15, 0xc9ff3d, 0.5);
+    scene.add(far, near);
+
+    function resize() {
+      const w = window.innerWidth, h = window.innerHeight;
+      renderer.setSize(w, h, false);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    let mx = 0, my = 0;
+    window.addEventListener("mousemove", (e) => {
+      mx = (e.clientX / window.innerWidth - 0.5) * 2;
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+    document.addEventListener("mouseleave", () => { mx = 0; my = 0; });
+
+    let animId;
+    function animate() {
+      animId = requestAnimationFrame(animate);
+      far.rotation.y += 0.0004;
+      near.rotation.y += 0.0009;
+      camera.position.x += (mx * 2.4 - camera.position.x) * 0.02;
+      camera.position.y += (-my * 1.4 - camera.position.y) * 0.02;
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) cancelAnimationFrame(animId);
+      else animate();
+    });
+  }
+
+  if (canvas && !prefersReducedMotion) {
+    if (typeof THREE !== "undefined") {
+      init3DParticles();
+    } else {
+      init2DParticles();
+    }
+  }
+
+  /* ---------------- hero stat count-up ---------------- */
+  (function countUpStats() {
+    const els = document.querySelectorAll(".stat-num[data-count]");
+    if (!els.length) return;
+    if (!("IntersectionObserver" in window)) {
+      els.forEach((el) => { el.textContent = el.dataset.count + (el.dataset.suffix || ""); });
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const target = parseInt(el.dataset.count, 10);
+        const suffix = el.dataset.suffix || "";
+        if (prefersReducedMotion) {
+          el.textContent = target + suffix;
+        } else {
+          let cur = 0;
+          const step = Math.max(1, Math.round(target / 24));
+          const timer = setInterval(() => {
+            cur += step;
+            if (cur >= target) { cur = target; clearInterval(timer); }
+            el.textContent = cur + suffix;
+          }, 35);
+        }
+        io.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    els.forEach((el) => io.observe(el));
+  })();
+
+  /* ---------------- live agent demo terminal ---------------- */
+  (function agentDemo() {
+    const section = document.getElementById("demo");
+    const qEl = document.getElementById("demoQText");
+    const aEl = document.getElementById("demoA");
+    const cursor = document.getElementById("demoCursor");
+    if (!section || !qEl || !aEl || !cursor) return;
+
+    const isEn = document.documentElement.lang === "en";
+    const question = isEn
+      ? "How many vacation days do I get, and can I roll them over?"
+      : "Сколько дней отпуска положено и можно перенести?";
+    const answerText = isEn
+      ? "28 days a year, up to 14 days can be carried over."
+      : "28 дней в год, перенос — не более 14 дней.";
+    const cite = "vacation_policy.md";
+
+    let timers = [];
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+    function play() {
+      clearTimers();
+      qEl.textContent = "";
+      aEl.innerHTML = "";
+      cursor.style.display = "inline-block";
+      let i = 0;
+      function typeChar() {
+        if (i <= question.length) {
+          qEl.textContent = question.slice(0, i);
+          i++;
+          timers.push(setTimeout(typeChar, 26));
+        } else {
+          cursor.style.display = "none";
+          timers.push(setTimeout(() => {
+            aEl.innerHTML = answerText + '<div class="cite">' + cite + "</div>";
+          }, 480));
+        }
+      }
+      typeChar();
+    }
+
+    if (prefersReducedMotion) {
+      qEl.textContent = question;
+      aEl.innerHTML = answerText + '<div class="cite">' + cite + "</div>";
+      return;
+    }
+
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) play();
+          else clearTimers();
+        });
+      }, { threshold: 0.5 });
+      io.observe(section);
+    } else {
+      play();
+    }
+  })();
 })();

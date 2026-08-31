@@ -113,9 +113,9 @@
       </div>
 
       <div class="hero-stats reveal">
-        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">лет с ИИ&nbsp;и&nbsp;данными</span></div>
+        <div class="stat"><span class="stat-num" data-count="6" data-suffix="+">0</span><span class="stat-label">лет с ИИ&nbsp;и&nbsp;данными</span></div>
         <div class="stat-sep" aria-hidden="true">/</div>
-        <div class="stat"><span class="stat-num">10+</span><span class="stat-label">AI-систем в продакшне</span></div>
+        <div class="stat"><span class="stat-num" data-count="10" data-suffix="+">0</span><span class="stat-label">AI-систем в продакшне</span></div>
         <div class="stat-sep" aria-hidden="true">/</div>
         <div class="stat"><span class="stat-num">LLM · RAG · Agents</span><span class="stat-label">основной стек</span></div>
       </div>
@@ -213,7 +213,10 @@
             <p>Отвечает на вопросы сотрудников по регламентам и инструкциям — и всегда указывает файл-источник, а не выдумывает детали.</p>
             <p class="work-role"><span class="work-role-label">Роль</span> Claude tool-use · Chroma векторный поиск · мультиязычные эмбеддинги</p>
             <div class="work-foot">
-              <span class="metric">Источник <small>в каждом ответе</small></span>
+              <div class="metric-viz">
+                <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="var(--border-strong)" stroke-width="3"/><circle cx="17" cy="17" r="14" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-dasharray="87.9" stroke-dashoffset="0" transform="rotate(-90 17 17)"/></svg>
+                <span class="metric-viz-text">100%<small>ответов с источником</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-docsearch">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -238,7 +241,10 @@
             <p>Проверяет описание процесса компании по чек-листу норм и возвращает не текст, а статус по каждому пункту со ссылкой на статью закона.</p>
             <p class="work-role"><span class="work-role-label">Роль</span> Поиск по нормам · строгий JSON-вывод · детерминированный пайплайн проверки</p>
             <div class="work-foot">
-              <span class="metric">4/4 <small>нормы со ссылкой на статью</small></span>
+              <div class="metric-viz">
+                <svg width="52" height="26" viewBox="0 0 52 26" fill="none"><polyline points="0,20 13,16 26,12 39,6 52,3" stroke="var(--accent)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="3" r="2.4" fill="var(--accent)"/></svg>
+                <span class="metric-viz-text">4/4<small>нормы со ссылкой на статью</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-compliance">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -262,7 +268,10 @@
             <p>Проверяет гипотезу о пользователях по корпусу отзывов и выносит вердикт с реальными цитатами за и против — а не общими рассуждениями.</p>
             <p class="work-role"><span class="work-role-label">Роль</span> Классификация отзывов Claude · защита от галлюцинированных цитат</p>
             <div class="work-foot">
-              <span class="metric">5 за / 2 против <small>из 16 отзывов</small></span>
+              <div class="metric-viz">
+                <svg width="44" height="16" viewBox="0 0 44 16"><rect x="0" y="0" width="31" height="16" rx="2" fill="#8bd17c"/><rect x="33" y="0" width="11" height="16" rx="2" fill="var(--border-strong)"/></svg>
+                <span class="metric-viz-text">5 / 2<small>за / против из 16 отзывов</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-hypothesis">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -289,7 +298,10 @@
             <p>Заполняет акт выполненных работ по данным заказа и сверяет его на несоответствия — суммы никогда не пишет модель, только детерминированный код.</p>
             <p class="work-role"><span class="work-role-label">Роль</span> python-docx без LLM в цифрах · Claude — только для сверки состава работ</p>
             <div class="work-foot">
-              <span class="metric">3/3 <small>несоответствия найдены</small></span>
+              <div class="metric-viz">
+                <svg width="52" height="26" viewBox="0 0 52 26" fill="none"><polyline points="0,22 17,17 35,10 52,3" stroke="var(--accent)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="3" r="2.4" fill="var(--accent)"/></svg>
+                <span class="metric-viz-text">3/3<small>несоответствия найдены</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-docauto">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -313,7 +325,10 @@
             <p>Отвечает на вопросы о продажах, сам составляя SQL-запросы к базе — вместо фиксированного дашборда с ограниченным набором метрик.</p>
             <p class="work-role"><span class="work-role-label">Роль</span> Claude tool-use · text-to-SQL · read-only доступ к базе</p>
             <div class="work-foot">
-              <span class="metric">Только SELECT <small>двойная защита</small></span>
+              <div class="metric-viz">
+                <svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 4 6v6c0 6 4 9.5 9 11 5-1.5 9-5 9-11V6l-9-4Z" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 13l3 3 6-6.5" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="metric-viz-text">Read-only<small>только SELECT, двойная защита</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-analyst">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -337,7 +352,10 @@
             <p>Находит похожий инцидент в истории по описанию нового и предлагает решение — или честно говорит, что прецедента нет.</p>
             <p class="work-role"><span class="work-role-label">Роль</span> Семантический поиск по истории · защита от натянутых совпадений</p>
             <div class="work-foot">
-              <span class="metric">Прецедент <small>найден с 1-й попытки</small></span>
+              <div class="metric-viz">
+                <svg width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10" fill="none" stroke="var(--border-strong)" stroke-width="1.4"/><circle cx="13" cy="13" r="6" fill="none" stroke="var(--border-strong)" stroke-width="1.4"/><circle cx="13" cy="13" r="2.2" fill="var(--accent)"/></svg>
+                <span class="metric-viz-text">1-я попытка<small>прецедент найден сразу</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-incident">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
@@ -363,12 +381,31 @@
             <p>Тот же агент-аналитик, но источник данных подключён через настоящий протокол MCP — паттерн, который переносится на 1С, amoCRM и Битрикс24.</p>
             <p class="work-role"><span class="work-role-label">Роль</span> Настоящий MCP-сервер (stdio) · схема и инструменты — не хардкод, а с сервера</p>
             <div class="work-foot">
-              <span class="metric">1 протокол <small>любая система клиента</small></span>
+              <div class="metric-viz">
+                <svg width="30" height="26" viewBox="0 0 30 26"><circle cx="4" cy="13" r="3" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="15" cy="4" r="3" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="15" cy="22" r="3" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="26" cy="13" r="3" fill="var(--accent)"/><path d="M6.6 11.5 12.5 6M6.6 14.5 12.5 20M17.6 6 23.5 11.5M17.6 20 23.5 14.5" stroke="var(--border-strong)" stroke-width="1.2"/></svg>
+                <span class="metric-viz-text">1 протокол<small>любая система клиента</small></span>
+              </div>
               <button type="button" class="work-link" data-case="agent-mcp">Подробнее <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
         </article>
 
+      </div>
+
+      <!-- ================= LIVE AGENT DEMO ================= -->
+      <div class="demo-section" id="demo">
+        <div class="demo-connect">↑ живой пример именно этого агента — Document Search</div>
+        <div class="demo-shell reveal">
+          <div class="demo-bar">
+            <span class="demo-dot demo-dot--r"></span><span class="demo-dot demo-dot--y"></span><span class="demo-dot demo-dot--g"></span>
+            <span class="demo-title">agent — document search</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q"><span id="demoQText"></span><span class="demo-cursor" id="demoCursor"></span></div>
+            <div class="demo-a" id="demoA"></div>
+            <div class="demo-hint">↺ перезапустится при повторном входе в блок</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -607,6 +644,7 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/128/three.min.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
