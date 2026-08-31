@@ -403,6 +403,8 @@ button { font-family: inherit; cursor: pointer; }
 
 section { position: relative; z-index: 1; padding: 130px 0; }
 
+.capabilities { padding-top: 210px; }
+
 /* ================= CAPABILITIES ================= */
 .cap-grid {
   display: grid;
