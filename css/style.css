@@ -984,9 +984,26 @@ section { position: relative; z-index: 1; padding: 130px 0; }
   font-family: var(--mono);
   font-size: 12.5px;
   color: var(--text-faint);
+  gap: 20px;
+  flex-wrap: wrap;
 }
 .to-top { color: var(--text-dim); transition: color 0.2s var(--ease); }
 .to-top:hover { color: var(--accent); }
+.footer-social { display: flex; align-items: center; gap: 18px; }
+.footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--text-faint);
+  transition: color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.footer-social a:hover { color: var(--bg); }
+.footer-social a.vk:hover { background: var(--accent-2); }
+.footer-social a.ig:hover { background: linear-gradient(45deg, var(--accent), var(--accent-2)); }
+.footer-social svg { width: 17px; height: 17px; }
 
 /* ================= REVEAL ANIMATION ================= */
 .reveal {
