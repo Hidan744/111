@@ -6,10 +6,12 @@
   /* ---------------- header state ---------------- */
   const header = document.getElementById("siteHeader");
   const scrollBar = document.getElementById("scrollBar");
+  const scrollHint = document.querySelector(".scroll-hint");
 
   function onScroll() {
     const y = window.scrollY;
     header.classList.toggle("scrolled", y > 8);
+    if (scrollHint) scrollHint.classList.toggle("is-hidden", y > 24);
 
     const doc = document.documentElement;
     const max = doc.scrollHeight - doc.clientHeight;
