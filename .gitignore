@@ -8,3 +8,6 @@ env/
 # Environment secrets
 .env
 neftegaz-agent/.env
+
+# Test run reports (contain real model output, not source)
+neftegaz-agent/tests/results/
