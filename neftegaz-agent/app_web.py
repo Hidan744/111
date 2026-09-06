@@ -14,12 +14,41 @@
 хостинг (Streamlit Community Cloud и т.п.) — дать клиентам прямую ссылку.
 """
 
+import hmac
+import os
+
 import streamlit as st
 
 from core import Assistant
 
 st.set_page_config(page_title="Нефтегазовый ассистент", page_icon="🛢️")
 st.title("🛢️ Нефтегазовый ИИ-ассистент")
+
+
+def check_password() -> bool:
+    """Простая защита паролем — чтобы по ссылке чужими руками не тратили
+    баланс Yandex Cloud, привязанный к API-ключу."""
+
+    def password_entered():
+        entered = st.session_state.get("password", "")
+        expected = os.environ.get("APP_PASSWORD", "")
+        if expected and hmac.compare_digest(entered, expected):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]
+        else:
+            st.session_state["password_correct"] = False
+
+    if st.session_state.get("password_correct"):
+        return True
+
+    st.text_input("Пароль", type="password", on_change=password_entered, key="password")
+    if "password_correct" in st.session_state:
+        st.error("Неверный пароль")
+    return False
+
+
+if not check_password():
+    st.stop()
 
 
 @st.cache_resource
