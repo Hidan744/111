@@ -72,6 +72,20 @@ pip install -r requirements.txt
    (`MAX_BOT_TOKEN` и `TELEGRAM_BOT_TOKEN` нужны только для соответствующих
    ботов — см. ниже)
 
+По умолчанию ассистент работает через YandexGPT. Чтобы попробовать
+российский агрегатор **AITunnel** (доступ к DeepSeek/GPT/Claude, оплата
+в рублях) — впиши в `.env`:
+```
+LLM_PROVIDER=aitunnel
+AITUNNEL_API_KEY=твой_ключ_с_aitunnel.ru
+AITUNNEL_MODEL=deepseek-r1
+LLM_MAX_TOKENS=50000
+```
+Переключить обратно на YandexGPT — просто `LLM_PROVIDER=yandex` (или
+удалить эту строку). После смены провайдера обязательно прогони
+`tests/run_cases.py` заново — другая модель может иначе следовать
+правилам из `kb/`.
+
 ## Шаг 6. Запусти нужный интерфейс
 
 ### Вариант А — консоль (быстрый тест)

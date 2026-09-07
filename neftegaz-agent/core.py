@@ -1,13 +1,15 @@
 """
 Общая логика нефтегазового ассистента: загрузка базы знаний из kb/,
-сборка системного промпта и обращение к YandexGPT через OpenAI-совместимый
-API Yandex AI Studio.
+сборка системного промпта и обращение к модели через OpenAI-совместимый
+API — по умолчанию Yandex AI Studio, либо российский агрегатор AITunnel
+(переключается через LLM_PROVIDER в .env, см. .env.example).
 
 Используется всеми интерфейсами проекта, чтобы логика и база знаний
 не расходились между ними:
-    - bot.py      — консольная версия (быстрый тест)
-    - bot_max.py  — бот для мессенджера MAX
-    - app_web.py  — отдельное веб-приложение (браузер)
+    - bot.py           — консольная версия (быстрый тест)
+    - bot_max.py        — бот для мессенджера MAX
+    - bot_telegram.py   — бот для Telegram
+    - app_web.py         — отдельное веб-приложение (браузер)
 """
 
 import glob
@@ -20,11 +22,25 @@ load_dotenv()  # подхватывает переменные из файла .
 
 KB_FOLDER = os.path.join(os.path.dirname(__file__), "kb")
 
-# Данные для подключения. Проще всего задать их через переменные окружения
-# (см. .env.example), но можно и напрямую вписать сюда для быстрого теста.
+# Какого провайдера использовать: "yandex" (по умолчанию) или "aitunnel".
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "yandex").strip().lower()
+
+# Данные для подключения к Yandex AI Studio. Проще всего задать их через
+# переменные окружения (см. .env.example), но можно и напрямую вписать
+# сюда для быстрого теста.
 YANDEX_API_KEY = os.environ.get("YANDEX_API_KEY", "<ВСТАВЬ_СВОЙ_API_KEY>")
 YANDEX_FOLDER_ID = os.environ.get("YANDEX_FOLDER_ID", "<ВСТАВЬ_СВОЙ_FOLDER_ID>")
 YANDEX_MODEL = os.environ.get("YANDEX_MODEL", "yandexgpt/latest")
+
+# Данные для подключения к AITunnel (agregator с оплатой в рублях,
+# доступ к DeepSeek/GPT/Claude через OpenAI-совместимый API).
+AITUNNEL_API_KEY = os.environ.get("AITUNNEL_API_KEY", "")
+AITUNNEL_MODEL = os.environ.get("AITUNNEL_MODEL", "deepseek-r1")
+
+# Необязательно: сколько максимум токенов модель может сгенерировать за
+# один ответ. DeepSeek-R1 тратит часть токенов на скрытые "рассуждения",
+# поэтому для него AITunnel рекомендует ставить не меньше 50000.
+LLM_MAX_TOKENS = os.environ.get("LLM_MAX_TOKENS")
 
 
 def load_knowledge_base() -> str:
@@ -65,12 +81,20 @@ class Assistant:
 
     def __init__(self):
         self.system_prompt = build_system_prompt(load_knowledge_base())
-        self.client = OpenAI(
-            api_key=YANDEX_API_KEY,
-            base_url="https://ai.api.cloud.yandex.net/v1",
-            project=YANDEX_FOLDER_ID,
-        )
-        self.model = f"gpt://{YANDEX_FOLDER_ID}/{YANDEX_MODEL}"
+
+        if LLM_PROVIDER == "aitunnel":
+            self.client = OpenAI(
+                api_key=AITUNNEL_API_KEY,
+                base_url="https://api.aitunnel.ru/v1/",
+            )
+            self.model = AITUNNEL_MODEL
+        else:
+            self.client = OpenAI(
+                api_key=YANDEX_API_KEY,
+                base_url="https://ai.api.cloud.yandex.net/v1",
+                project=YANDEX_FOLDER_ID,
+            )
+            self.model = f"gpt://{YANDEX_FOLDER_ID}/{YANDEX_MODEL}"
 
     def ask(self, history: list[dict]) -> str:
         """
@@ -80,9 +104,14 @@ class Assistant:
         без системного промпта — он подставляется автоматически.
         """
         messages = [{"role": "system", "content": self.system_prompt}, *history]
+        extra = {}
+        if LLM_MAX_TOKENS:
+            extra["max_tokens"] = int(LLM_MAX_TOKENS)
+
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,
             temperature=0.2,
+            **extra,
         )
         return response.choices[0].message.content
