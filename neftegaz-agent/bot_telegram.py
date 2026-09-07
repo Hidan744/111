@@ -17,6 +17,11 @@
 нагрузки; для прода Telegram Bot API поддерживает и вебхуки, но polling
 проще в настройке и для одного бота хватает с запасом.
 
+Сначала бот просит выбрать тему (категорию) — дальше отвечает только по
+базе знаний этой темы, а не по всей базе сразу (быстрее, дешевле, без
+"каши" из несвязанных разделов). Команда /menu меняет тему в любой
+момент (и сбрасывает историю диалога).
+
 История диалога хранится в памяти процесса отдельно по каждому чату —
 при перезапуске бота она сбрасывается.
 
@@ -36,11 +41,9 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
-from core import Assistant
+from core import Assistant, CATEGORY_BY_ID, format_category_menu
 
 logging.basicConfig(level=logging.INFO)
-
-GREETING = "Нефтегазовый ассистент готов. Напиши вопрос, например про дебит скважины."
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
@@ -50,13 +53,18 @@ ALLOWED_USER_IDS = {
 
 bot = Bot(token=TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
-assistant = Assistant()
 
-sessions: dict[int, list[dict]] = {}
+# chat_id -> {"assistant": Assistant | None, "history": [...]}
+# assistant=None значит "ждём выбора темы от пользователя"
+sessions: dict[int, dict] = {}
 
 
 def is_allowed(user_id: int) -> bool:
     return not ALLOWED_USER_IDS or user_id in ALLOWED_USER_IDS
+
+
+def start_menu(chat_id: int) -> None:
+    sessions[chat_id] = {"assistant": None, "history": []}
 
 
 @dp.message(Command("myid"))
@@ -68,6 +76,7 @@ async def on_myid(message: Message):
 
 
 @dp.message(CommandStart())
+@dp.message(Command("menu"))
 async def on_start(message: Message):
     if not is_allowed(message.from_user.id):
         await message.answer(
@@ -75,8 +84,8 @@ async def on_start(message: Message):
             "и попроси владельца добавить его в список допущенных."
         )
         return
-    sessions[message.chat.id] = []
-    await message.answer(GREETING)
+    start_menu(message.chat.id)
+    await message.answer(format_category_menu())
 
 
 @dp.message(F.text)
@@ -89,13 +98,32 @@ async def on_message(message: Message):
         return
 
     chat_id = message.chat.id
-    history = sessions.setdefault(chat_id, [])
+    session = sessions.get(chat_id)
+
+    if session is None or session["assistant"] is None:
+        choice = message.text.strip()
+        if choice not in CATEGORY_BY_ID:
+            start_menu(chat_id)
+            await message.answer(
+                "Не понял номер темы. " + format_category_menu()
+            )
+            return
+        assistant = Assistant(choice)
+        sessions[chat_id] = {"assistant": assistant, "history": []}
+        await message.answer(
+            f"Тема: {assistant.category_name}\n"
+            "Пиши вопрос. Команда /menu — сменить тему."
+        )
+        return
+
+    assistant = session["assistant"]
+    history = session["history"]
     history.append({"role": "user", "content": message.text})
 
     try:
         answer = assistant.ask(history)
     except Exception:
-        logging.exception("Ошибка обращения к YandexGPT")
+        logging.exception("Ошибка обращения к модели")
         history.pop()
         await message.answer(
             "Не получилось получить ответ от модели, попробуй ещё раз чуть позже."

@@ -12,6 +12,10 @@
 Откроется страница в браузере (по умолчанию http://localhost:8501) —
 её можно открывать с любого устройства в той же сети, а при деплое на
 хостинг (Streamlit Community Cloud и т.п.) — дать клиентам прямую ссылку.
+
+Сверху — выбор темы (категории): ассистент отвечает только по базе
+знаний выбранной темы, а не по всей базе сразу. При смене темы история
+чата сбрасывается (правила/формулы разных тем не должны смешиваться).
 """
 
 import hmac
@@ -19,7 +23,7 @@ import os
 
 import streamlit as st
 
-from core import Assistant
+from core import Assistant, CATEGORIES
 
 st.set_page_config(page_title="Нефтегазовый ассистент", page_icon="🛢️")
 st.title("🛢️ Нефтегазовый ИИ-ассистент")
@@ -52,11 +56,23 @@ if not check_password():
 
 
 @st.cache_resource
-def get_assistant() -> Assistant:
-    return Assistant()
+def get_assistant(category_id: str) -> Assistant:
+    return Assistant(category_id)
 
 
-assistant = get_assistant()
+category_names = {c["id"]: c["name"] for c in CATEGORIES}
+
+selected_id = st.selectbox(
+    "Тема",
+    options=list(category_names.keys()),
+    format_func=lambda cid: category_names[cid],
+)
+
+if st.session_state.get("current_category") != selected_id:
+    st.session_state.current_category = selected_id
+    st.session_state.history = []
+
+assistant = get_assistant(selected_id)
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -65,7 +81,7 @@ for message in st.session_state.history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-question = st.chat_input("Напиши вопрос, например про дебит скважины...")
+question = st.chat_input("Напиши вопрос по выбранной теме...")
 
 if question:
     st.session_state.history.append({"role": "user", "content": question})

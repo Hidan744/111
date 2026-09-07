@@ -43,9 +43,88 @@ AITUNNEL_MODEL = os.environ.get("AITUNNEL_MODEL", "deepseek-r1")
 LLM_MAX_TOKENS = os.environ.get("LLM_MAX_TOKENS")
 
 
-def load_knowledge_base() -> str:
-    """Читает все .md файлы из папки kb/ и склеивает их в один текст."""
-    files = sorted(glob.glob(os.path.join(KB_FOLDER, "*.md")))
+# Категории для выбора в боте — каждая подключает только своё правило
+# (00_metodologiya_yadro.md подключается всегда, отдельно перечислять не
+# нужно). "Общий режим" — старое поведение, вся база сразу.
+CATEGORIES = [
+    {
+        "id": "1",
+        "name": "Расчёт дебита нефти и эффекта ГТМ",
+        "files": ["02_raschety_debit_gtm.md"],
+    },
+    {
+        "id": "2",
+        "name": "Нормативная проверка (промбезопасность)",
+        "files": ["03_normativka.md"],
+    },
+    {
+        "id": "3",
+        "name": "Подбор оборудования механизированной добычи (ШГН/ЭЦН/газлифт)",
+        "files": ["04_podbor_oborudovaniya.md"],
+    },
+    {
+        "id": "4",
+        "name": "Обучение стажёра",
+        "files": ["05_obuchenie_stazhera.md"],
+    },
+    {
+        "id": "5",
+        "name": "КРС: категория скважины по степени опасности ГНВП",
+        "files": ["06_krs_kategoriya_skvazhiny.md"],
+    },
+    {
+        "id": "6",
+        "name": "КРС: глушение скважин",
+        "files": ["07_krs_glushenie_skvazhin.md"],
+    },
+    {
+        "id": "7",
+        "name": "КРС: безопасный статический уровень (БСУ)",
+        "files": ["08_krs_staticheskiy_uroven.md"],
+    },
+    {
+        "id": "8",
+        "name": "КРС: монтаж и спуск ЭПУ (УЭЦН)",
+        "files": ["09_krs_montazh_epu.md"],
+    },
+    {
+        "id": "9",
+        "name": "КРС: определение пластового давления",
+        "files": ["10_krs_plastovoe_davlenie.md"],
+    },
+    {
+        "id": "0",
+        "name": "Общий режим (вся база сразу, без выбора темы)",
+        "files": None,
+    },
+]
+
+CATEGORY_BY_ID = {c["id"]: c for c in CATEGORIES}
+
+CORE_FILE = "00_metodologiya_yadro.md"
+
+
+def format_category_menu() -> str:
+    """Готовый текст меню выбора категории для любого из ботов."""
+    lines = ["Выбери тему (пришли номер):"]
+    for c in CATEGORIES:
+        lines.append(f"{c['id']}. {c['name']}")
+    return "\n".join(lines)
+
+
+def load_knowledge_base(filenames: list[str] | None = None) -> str:
+    """
+    Читает .md файлы из папки kb/ и склеивает их в один текст.
+
+    filenames — список конкретных имён файлов (без пути) в нужном
+    порядке. Если None — читаются ВСЕ .md файлы в папке по алфавиту
+    (старое поведение, "общий режим").
+    """
+    if filenames is None:
+        files = sorted(glob.glob(os.path.join(KB_FOLDER, "*.md")))
+    else:
+        files = [os.path.join(KB_FOLDER, name) for name in filenames]
+
     if not files:
         raise FileNotFoundError(
             f"Не найдено ни одного .md файла в {KB_FOLDER}. "
@@ -77,10 +156,28 @@ def build_system_prompt(knowledge_base: str) -> str:
 
 
 class Assistant:
-    """Обёртка над YandexGPT с уже встроенной базой знаний."""
+    """
+    Обёртка над LLM с уже встроенной базой знаний.
 
-    def __init__(self):
-        self.system_prompt = build_system_prompt(load_knowledge_base())
+    category_id — id из CATEGORIES (см. выше). Если задан, в системный
+    промпт попадает только ядро методологии (00_...) + файлы этой
+    категории — вместо всей базы сразу. Если None или id не найден —
+    старое поведение: вся база знаний целиком ("общий режим").
+    """
+
+    def __init__(self, category_id: str | None = None):
+        category = CATEGORY_BY_ID.get(category_id) if category_id else None
+
+        if category and category["files"] is not None:
+            self.category_name = category["name"]
+            filenames = [CORE_FILE] + category["files"]
+        else:
+            self.category_name = (
+                category["name"] if category else "Общий режим (вся база сразу)"
+            )
+            filenames = None
+
+        self.system_prompt = build_system_prompt(load_knowledge_base(filenames))
 
         if LLM_PROVIDER == "aitunnel":
             self.client = OpenAI(
