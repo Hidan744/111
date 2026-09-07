@@ -15,15 +15,16 @@
     3. python bot.py
 """
 
-from core import Assistant, CATEGORY_BY_ID, format_category_menu
+from core import Assistant, CATEGORY_BY_ID, format_category_menu, resolve_category_choice
 
 
 def choose_category() -> str:
     print(format_category_menu())
     while True:
-        choice = input("Номер темы: ").strip()
-        if choice in CATEGORY_BY_ID:
-            return choice
+        choice = input("Номер темы: ")
+        category = resolve_category_choice(choice)
+        if category is not None:
+            return category["id"]
         print("Не понял номер, попробуй ещё раз.")
 
 

@@ -31,7 +31,7 @@ from maxapi import Bot, Dispatcher, F
 from maxapi.filters.command import Command, CommandStart
 from maxapi.types import BotStarted, MessageCreated
 
-from core import Assistant, CATEGORY_BY_ID, format_category_menu
+from core import Assistant, CATEGORY_BY_ID, format_category_menu, resolve_category_choice
 
 logging.basicConfig(level=logging.INFO)
 
@@ -67,12 +67,12 @@ async def on_message(event: MessageCreated):
     session = sessions.get(chat_id)
 
     if session is None or session["assistant"] is None:
-        choice = event.message.body.text.strip()
-        if choice not in CATEGORY_BY_ID:
+        category = resolve_category_choice(event.message.body.text)
+        if category is None:
             start_menu(chat_id)
             await event.message.answer("Не понял номер темы. " + format_category_menu())
             return
-        assistant = Assistant(choice)
+        assistant = Assistant(category["id"])
         sessions[chat_id] = {"assistant": assistant, "history": []}
         await event.message.answer(
             f"Тема: {assistant.category_name}\n"
