@@ -99,6 +99,11 @@ async def on_message(event: MessageCreated):
 
 
 async def main():
+    import core
+    logging.info(
+        "Бот запущен [версия: меню тем, категорий: %d]. core.py загружен из: %s",
+        len(CATEGORY_BY_ID), core.__file__,
+    )
     await dp.start_polling(bot)
 
 

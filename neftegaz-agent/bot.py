@@ -28,7 +28,9 @@ def choose_category() -> str:
 
 
 def main():
-    print("Нефтегазовый ассистент готов.\n")
+    print("Нефтегазовый ассистент готов. [версия: меню тем, категорий: "
+          f"{len(CATEGORY_BY_ID)}]\n")
+    print(f"(core.py загружен из: {__import__('core').__file__})\n")
 
     category_id = choose_category()
     assistant = Assistant(category_id)

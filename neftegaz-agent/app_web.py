@@ -27,6 +27,7 @@ from core import Assistant, CATEGORIES
 
 st.set_page_config(page_title="Нефтегазовый ассистент", page_icon="🛢️")
 st.title("🛢️ Нефтегазовый ИИ-ассистент")
+st.caption(f"Версия: меню тем, категорий: {len(CATEGORIES)} (core.py: {__import__('core').__file__})")
 
 
 def check_password() -> bool:
