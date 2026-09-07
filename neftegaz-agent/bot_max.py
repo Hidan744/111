@@ -72,7 +72,18 @@ async def on_message(event: MessageCreated):
             start_menu(chat_id)
             await event.message.answer("Не понял номер темы. " + format_category_menu())
             return
-        assistant = Assistant(category["id"])
+        try:
+            assistant = Assistant(category["id"])
+        except Exception:
+            logging.exception(
+                "Не удалось загрузить тему %s (%s)", category["id"], category["name"]
+            )
+            await event.message.answer(
+                "Не получилось загрузить эту тему — ошибка на сервере "
+                "(возможно, не хватает файла базы знаний). "
+                "Напиши /menu и попробуй выбрать тему ещё раз."
+            )
+            return
         sessions[chat_id] = {"assistant": assistant, "history": []}
         await event.message.answer(
             f"Тема: {assistant.category_name}\n"
