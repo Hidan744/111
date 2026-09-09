@@ -430,27 +430,6 @@
     document.querySelectorAll(".agents-category[id]").forEach((section) => io.observe(section));
   })();
 
-  /* ---------------- flagship card tilt + spotlight ---------------- */
-  (function flagshipCards() {
-    const cards = document.querySelectorAll(".flagship-card");
-    if (!cards.length || prefersReducedMotion) return;
-    cards.forEach((card) => {
-      card.addEventListener("mousemove", (e) => {
-        const r = card.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
-        card.style.setProperty("--mx", x + "px");
-        card.style.setProperty("--my", y + "px");
-        const px = x / r.width - 0.5, py = y / r.height - 0.5;
-        card.style.setProperty("--ry", px * 5 + "deg");
-        card.style.setProperty("--rx", py * -5 + "deg");
-      });
-      card.addEventListener("mouseleave", () => {
-        card.style.setProperty("--rx", "0deg");
-        card.style.setProperty("--ry", "0deg");
-      });
-    });
-  })();
-
   /* ---------------- magnetic buttons ---------------- */
   (function magneticButtons() {
     const els = document.querySelectorAll(".magnetic");
