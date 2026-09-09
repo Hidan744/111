@@ -20,7 +20,7 @@
   --accent-soft: rgba(201, 255, 61, 0.14);
   --accent-2: #6ee7ff;
 
-  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --serif: "Playfair Display", "Iowan Old Style", Georgia, serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --container: 1180px;
