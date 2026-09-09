@@ -26,21 +26,20 @@
 }
 
 /* ---- category pills in the header nav ---- */
-.nav-pills { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.nav-pills { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .nav-pill {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--mono); font-size: 12px; line-height: 1; color: var(--text-dim);
+  display: flex; align-items: center;
+  font-family: var(--mono); font-size: 13px; line-height: 1; color: var(--text-dim);
   border: 1px solid var(--border); background: var(--surface);
-  padding: 10px 15px; border-radius: 999px; white-space: nowrap;
+  padding: 10px 16px; border-radius: 999px; white-space: nowrap;
   transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
 }
 .nav-pill::after { content: none; }
-.nav-pill .ico { font-size: 13px; line-height: 1; }
 .nav-pill:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface-hover); }
 .main-nav .nav-contact { margin-left: 10px; }
 @media (max-width: 1180px) {
-  .nav-pill span:not(.ico) { display: none; }
-  .nav-pill { padding: 7px 10px; }
+  .nav-pills { gap: 8px; }
+  .nav-pill { padding: 8px 12px; font-size: 12px; }
 }
 
 /* ---- category kpi line under section title ---- */
