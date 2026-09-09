@@ -25,6 +25,24 @@
   .cap-grid--3 { grid-template-columns: 1fr; }
 }
 
+/* ---- category pills in the header nav ---- */
+.nav-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nav-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 12px; color: var(--text-dim);
+  border: 1px solid var(--border); background: var(--surface);
+  padding: 7px 13px; border-radius: 999px; white-space: nowrap;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.nav-pill::after { content: none; }
+.nav-pill .ico { font-size: 13px; line-height: 1; }
+.nav-pill:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface-hover); }
+.main-nav .nav-contact { margin-left: 4px; }
+@media (max-width: 1180px) {
+  .nav-pill span:not(.ico) { display: none; }
+  .nav-pill { padding: 7px 10px; }
+}
+
 /* ---- category kpi line under section title ---- */
 .cat-kpi { margin-top: 16px; color: var(--text-dim); font-size: 15.5px; line-height: 1.6; max-width: 56ch; }
 .cat-kpi b { color: var(--text); font-weight: 500; }
