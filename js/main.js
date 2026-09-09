@@ -464,24 +464,4 @@
       el.addEventListener("mouseleave", () => { el.style.transform = ""; });
     });
   })();
-
-  /* ---------------- ambient cursor glow ---------------- */
-  (function cursorGlow() {
-    const glow = document.getElementById("cursorGlow");
-    if (!glow || prefersReducedMotion) return;
-    let tx = 0, ty = 0, gx = 0, gy = 0, active = false;
-    window.addEventListener("mousemove", (e) => {
-      tx = e.clientX; ty = e.clientY;
-      if (!active) { gx = tx; gy = ty; glow.style.opacity = "1"; active = true; }
-    });
-    document.addEventListener("mouseleave", () => { glow.style.opacity = "0"; });
-    function tick() {
-      gx += (tx - gx) * 0.12;
-      gy += (ty - gy) * 0.12;
-      glow.style.left = gx + "px";
-      glow.style.top = gy + "px";
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  })();
 })();

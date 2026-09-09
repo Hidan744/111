@@ -174,14 +174,6 @@
 .download-panel-text h3 { font-size: 19px; margin-bottom: 6px; font-weight: 400; }
 .download-panel-text p { color: var(--text-dim); font-size: 13px; }
 
-/* ---- ambient cursor glow — soft, follows pointer across the page ---- */
-.cursor-glow {
-  position: fixed; top: 0; left: 0; width: 560px; height: 560px; border-radius: 50%; pointer-events: none; z-index: 5;
-  transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.5s var(--ease);
-  background: radial-gradient(circle, rgba(201,255,61,0.10), rgba(110,231,255,0.05) 42%, transparent 70%);
-  filter: blur(6px); mix-blend-mode: screen;
-}
-
 /* ---- flagship card tilt + spotlight (agents catalog only) ---- */
 .flagship-card {
   --mx: 50%; --my: 0%; --rx: 0deg; --ry: 0deg;
