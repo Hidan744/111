@@ -1,0 +1,30 @@
+# systemd-юнит для автономного запуска бота MAX на сервере.
+#
+# Перед установкой замени:
+#   - User=          на своего пользователя на сервере (например, root)
+#   - WorkingDirectory и ExecStart — на реальный путь к проекту на сервере
+#
+# Установка (один раз):
+#   sudo cp deploy/neftegaz-bot-max.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now neftegaz-bot-max
+#
+# Проверка:
+#   sudo systemctl status neftegaz-bot-max
+#   sudo journalctl -u neftegaz-bot-max -f
+
+[Unit]
+Description=Neftegaz agent - MAX bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/neftegaz-agent
+ExecStart=/root/neftegaz-agent/venv/bin/python bot_max.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

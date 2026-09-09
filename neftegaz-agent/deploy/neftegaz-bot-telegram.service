@@ -1,0 +1,30 @@
+# systemd-юнит для автономного запуска Telegram-бота на сервере.
+#
+# Перед установкой замени:
+#   - User=          на своего пользователя на сервере (например, root)
+#   - WorkingDirectory и ExecStart — на реальный путь к проекту на сервере
+#
+# Установка (один раз):
+#   sudo cp deploy/neftegaz-bot-telegram.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now neftegaz-bot-telegram
+#
+# Проверка:
+#   sudo systemctl status neftegaz-bot-telegram
+#   sudo journalctl -u neftegaz-bot-telegram -f
+
+[Unit]
+Description=Neftegaz agent - Telegram bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/neftegaz-agent
+ExecStart=/root/neftegaz-agent/venv/bin/python bot_telegram.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
