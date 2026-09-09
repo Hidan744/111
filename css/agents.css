@@ -25,21 +25,15 @@
   .cap-grid--3 { grid-template-columns: 1fr; }
 }
 
-/* ---- category pills in the header nav ---- */
-.nav-pills { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+/* ---- category links in the header nav ---- */
+.nav-pills { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
 .nav-pill {
-  display: flex; align-items: center;
-  font-family: var(--mono); font-size: 13px; line-height: 1; color: var(--text-dim);
-  border: 1px solid var(--border); background: var(--surface);
-  padding: 10px 16px; border-radius: 999px; white-space: nowrap;
-  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+  font-family: var(--mono); font-size: 13px; color: var(--text-dim); white-space: nowrap;
 }
-.nav-pill::after { content: none; }
-.nav-pill:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface-hover); }
-.main-nav .nav-contact { margin-left: 10px; }
+.main-nav .nav-contact { margin-left: 4px; }
 @media (max-width: 1180px) {
-  .nav-pills { gap: 8px; }
-  .nav-pill { padding: 8px 12px; font-size: 12px; }
+  .nav-pills { gap: 18px; }
+  .nav-pill { font-size: 12px; }
 }
 
 /* ---- category kpi line under section title ---- */
