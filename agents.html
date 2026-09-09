@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI-агенты для бизнеса — VinakovLab</title>
-<meta name="description" content="Восемь AI-агентов для бизнеса: от поиска по документам до compliance-контроля. Claude Agent SDK + MCP, встраивается поверх 1С/CRM без миграции данных.">
+<meta name="description" content="20 AI-сотрудников для бизнеса в 4 направлениях: Revenue, Operations, Intelligence, Customer. Claude Agent SDK + MCP, встраивается поверх 1С/CRM без миграции данных.">
 <link rel="canonical" href="https://vinakovlab.ru/agents.html">
 <link rel="alternate" hreflang="ru" href="https://vinakovlab.ru/agents.html">
 <link rel="alternate" hreflang="en" href="https://vinakovlab.ru/agents-en.html">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VinakovLab">
 <meta property="og:title" content="AI-агенты для бизнеса — VinakovLab">
-<meta property="og:description" content="Восемь AI-агентов для бизнеса: от поиска по документам до compliance-контроля. Claude Agent SDK + MCP, встраивается поверх 1С/CRM без миграции данных.">
+<meta property="og:description" content="20 AI-сотрудников для бизнеса в 4 направлениях: Revenue, Operations, Intelligence, Customer. Claude Agent SDK + MCP, встраивается поверх 1С/CRM без миграции данных.">
 <meta property="og:url" content="https://vinakovlab.ru/agents.html">
 <meta property="og:image" content="https://vinakovlab.ru/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css?v=9">
-<link rel="stylesheet" href="css/agents.css?v=2">
+<link rel="stylesheet" href="css/agents.css?v=3">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
@@ -38,6 +38,7 @@
 <div class="noise-overlay" aria-hidden="true"></div>
 <div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
 <canvas id="netCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
 <header class="site-header" id="siteHeader">
   <div class="wrap header-inner">
@@ -61,6 +62,13 @@
   </div>
 </header>
 
+<nav class="cat-rail" id="catRail" aria-hidden="true">
+  <button type="button" class="cat-rail-item" data-target="cat-revenue"><span class="cat-rail-dot"></span><span class="cat-rail-label">01 Revenue</span></button>
+  <button type="button" class="cat-rail-item" data-target="cat-ops"><span class="cat-rail-dot"></span><span class="cat-rail-label">02 Operations</span></button>
+  <button type="button" class="cat-rail-item" data-target="cat-intel"><span class="cat-rail-dot"></span><span class="cat-rail-label">03 Intelligence</span></button>
+  <button type="button" class="cat-rail-item" data-target="cat-customer"><span class="cat-rail-dot"></span><span class="cat-rail-label">04 Customer</span></button>
+</nav>
+
 <main>
 
   <!-- ================= HERO ================= -->
@@ -68,18 +76,18 @@
     <div class="hero-grid-overlay" aria-hidden="true"></div>
     <div class="wrap agents-hero-inner">
       <p class="eyebrow reveal">
-        <span class="eyebrow-tag">B2B · AI-АГЕНТЫ</span>
+        <span class="eyebrow-tag">B2B · 20 AI-СОТРУДНИКОВ</span>
       </p>
       <h1 class="hero-title reveal agents-hero-title">
-        Агенты для бизнеса,<br>которые снимают <em>рутину</em>.
+        Каждое направление бизнеса —<br>свой <em>цифровой сотрудник</em>.
       </h1>
       <p class="hero-sub reveal">
-        Восемь агентов, каждый — под одну конкретную боль: от поиска в документах
-        до соответствия нормам. Не универсальный ассистент, а точечное решение.
+        20 агентов, объединённых в четыре направления: рост продаж, операционка, аналитика
+        и работа с клиентом. У каждого флагмана — живой пример, как он работает.
       </p>
 
       <div class="hero-actions reveal">
-        <a href="#agent-01" class="btn btn-primary">
+        <a href="#cat-revenue" class="btn btn-primary">
           <span>Смотреть агентов</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -93,99 +101,263 @@
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow"><span class="eyebrow-tag">ПОДХОД</span></p>
-        <h2 class="section-title">Каждый агент решает<br> <em>одну боль</em></h2>
+        <h2 class="section-title">Как я <em>работаю</em></h2>
       </div>
 
       <div class="cap-grid cap-grid--3">
         <article class="cap-card reveal">
           <span class="cap-idx">01</span>
-          <h3>Одна боль —<br>один продукт</h3>
-          <p>Не универсальный ассистент, а точечное решение конкретной операционной проблемы.</p>
+          <h3>Один агент —<br>один результат</h3>
+          <p>Не собираю универсального ассистента на всё сразу. Каждый агент закрывает одну измеримую задачу — рост продаж, экономию времени или контроль риска.</p>
         </article>
         <article class="cap-card reveal">
           <span class="cap-idx">02</span>
-          <h3>Встраивается в то,<br>что уже есть</h3>
-          <p>Работает поверх существующих 1С, CRM и баз документов — без миграции данных.</p>
+          <h3>Работаю поверх<br>того, что есть</h3>
+          <p>Не заставляю переезжать на новую CRM или менять 1С. Агент встраивается в существующие системы бизнеса — без миграции данных.</p>
         </article>
         <article class="cap-card reveal">
           <span class="cap-idx">03</span>
-          <h3>Продаётся<br>отдельно</h3>
-          <p>Каждый агент — самостоятельный продукт со своим тарифом, а не модуль внутри пакета.</p>
+          <h3>Начинаем<br>с одного флагмана</h3>
+          <p>Внедряем один продукт под самую острую боль, показываем результат в цифрах — и дальше вместе решаем, что подключать следующим.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- ================= 01 KNOWLEDGE ================= -->
-  <section class="work agents-category" id="agent-01">
+  <!-- ================= 01 REVENUE ================= -->
+  <section class="work agents-category" id="cat-revenue">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">01 — ДАННЫЕ КОМПАНИИ</span></p>
-        <h2 class="section-title">Знания <em>и аналитика</em></h2>
+        <p class="eyebrow"><span class="eyebrow-tag">01 — REVENUE AI</span></p>
+        <h2 class="section-title">Всё, что <em>увеличивает продажи</em></h2>
+        <p class="cat-kpi">Главный результат: <b>больше лидов, выше конверсия, короче цикл сделки.</b></p>
       </div>
 
       <div class="work-grid">
-        <article class="work-card reveal">
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">document search</span>
+              <span class="window-title">ai sales agent</span>
             </div>
-            <div class="window-body mock-docsearch">
-              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Сколько дней отпуска положено и можно перенести?</span></div>
+            <div class="window-body mock-sales">
+              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Заявка с сайта: монтаж вентиляции, 1200 м²</span></div>
               <div class="chat-row chat-row--in">
                 <span class="chat-avatar"></span>
-                <span class="chat-bubble chat-bubble--in">28 дней в год, перенос — не более 14 дней<div class="chat-cite">vacation_policy.md</div></span>
+                <span class="chat-bubble chat-bubble--in">Смета ≈ 1.4 млн ₽. Готовы принять инженера в четверг?</span>
+              </div>
+              <span class="stage-pill">✓ Сделка → «Замер назначен»</span>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">CRM</span><span class="tag">WhatsApp</span><span class="tag">Telegram</span></div>
+            <h3>AI Sales Agent</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Заявки простаивают часами, пока менеджер не освободится — часть клиентов уходит к тому, кто ответил первым.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент квалифицирует лида, считает смету, назначает встречу и сам двигает сделку по CRM.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-sales">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai lead hunter</span>
+            </div>
+            <div class="window-body mock-hunter">
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>ООО «СтройГрупп» — ЛПР найден</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>«ТехноПоставка» — письмо отправлено</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--pending">···</span>«ГазМонтаж» — анализ болей</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">LinkedIn</span><span class="tag">Web</span><span class="tag">CRM</span></div>
+            <h3>AI Lead Hunter</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Ручной поиск B2B-клиентов по критериям и выход на ЛПР съедает недели работы менеджера по продажам.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Агент находит компании под портрет клиента, вычисляет ЛПР и отправляет персональные холодные письма.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-hunter">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+      </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Personal Sales Assistant</span>
+        <span class="chip">AI Marketing Director</span>
+        <span class="chip">AI CRM Agent</span>
+      </div>
+      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
+    </div>
+  </section>
+
+  <!-- ================= 02 OPERATIONS ================= -->
+  <section class="work agents-category" id="cat-ops">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">02 — OPERATIONS AI</span></p>
+        <h2 class="section-title">Всё, что <em>экономит расходы</em></h2>
+        <p class="cat-kpi">Главный результат: <b>меньше ручной работы, ниже операционные издержки.</b></p>
+      </div>
+
+      <div class="work-grid">
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai business manager</span>
+            </div>
+            <div class="window-body mock-bizmgr">
+              <div class="stat-tiles">
+                <div class="stat-tile"><span class="stat-tile-num stat-tile-num--up">+12%</span><span class="stat-tile-lbl">ВЫРУЧКА</span></div>
+                <div class="stat-tile"><span class="stat-tile-num stat-tile-num--warn">−4</span><span class="stat-tile-lbl">ЗАДАЧ В СРОК</span></div>
+                <div class="stat-tile"><span class="stat-tile-num">37</span><span class="stat-tile-lbl">ОТКРЫТО</span></div>
               </div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Search</span></div>
-            <h3>Поиск по внутренним документам</h3>
+            <div class="work-tags"><span class="tag">ERP</span><span class="tag">CRM</span><span class="tag">Tasks</span></div>
+            <h3>AI Business Manager</h3>
             <div class="agent-field">
               <span class="agent-field-label">Проблема</span>
-              <p>Регламенты, договоры и инструкции разбросаны по папкам и головах сотрудников. Новый человек неделями разбирается, «как у нас принято».</p>
+              <p>Собственник вручную сводит метрики разных отделов, чтобы понять, где реально буксует бизнес.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент ищет ответ по смыслу во всех документах компании и отвечает со ссылкой на источник.</p>
+              <p>Цифровой операционный директор сводит показатели всех отделов в одну картину и сам раздаёт задачи.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-bizmgr">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
-        <article class="work-card reveal">
+
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">self-service analyst</span>
+              <span class="window-title">ai finance controller</span>
             </div>
-            <div class="window-body mock-analyst">
-              <div class="analyst-q">&gt; Почему в июле упала маржа?</div>
-              <div class="analyst-sql">SELECT month, SUM(margin)&#10;FROM order_items JOIN...</div>
-              <div class="analyst-answer">Упали продажи ноутбуков: 5 → 1 шт.</div>
+            <div class="window-body mock-finance">
+              <div class="finance-line"><span>Счёт №4471</span><b>сверен</b></div>
+              <div class="finance-line"><span>Счёт №4472</span><b>сверен</b></div>
+              <div class="pulse-alert"><span class="pulse-alert-dot"></span>Кассовый разрыв ожидается через 6 дней</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">Text-to-SQL</span><span class="tag">Read-only</span></div>
-            <h3>Аналитик для самообслуживания</h3>
+            <div class="work-tags"><span class="tag">1С</span><span class="tag">Банк-клиент</span><span class="tag">Excel</span></div>
+            <h3>AI Finance Controller</h3>
             <div class="agent-field">
               <span class="agent-field-label">Проблема</span>
-              <p>В штате нет аналитика — руководитель сам копается в Excel, чтобы понять, почему упала маржа или выросли продажи.</p>
+              <p>Кассовые разрывы и просроченная дебиторка замечаются постфактум, когда деньги уже нужны.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент подключается к 1С / CRM / складу и по вопросу на обычном языке сам строит нужный отчёт.</p>
+              <p>Агент сверяет счета, отслеживает дебиторку и заранее предупреждает о разрывах в кассе.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-finance">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+      </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Operations Manager</span>
+        <span class="chip">AI Document Manager</span>
+        <span class="chip">AI HR Recruiter</span>
+      </div>
+      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
+    </div>
+  </section>
+
+  <!-- ================= 03 INTELLIGENCE ================= -->
+  <section class="work agents-category" id="cat-intel">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">03 — INTELLIGENCE AI</span></p>
+        <h2 class="section-title">Всё, что <em>даёт собственнику информацию</em></h2>
+        <p class="cat-kpi">Главный результат: <b>управленческие решения на основе данных, а не ощущений.</b></p>
+      </div>
+
+      <div class="work-grid">
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai business analyst</span>
+            </div>
+            <div class="window-body mock-bizanalyst">
+              <div class="analyst-q">Доброе утро! Сводка за 8 сентября:</div>
+              <div class="summary-bullets">
+                <span class="is-up">• Выручка: 1 840 000 ₽ (+12%)</span>
+                <span class="is-warn">• CAC вырос на 18% — кампания «Септики Москва»</span>
+                <span>• 37 лидов висят без follow-up &gt; 48ч</span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">CRM</span><span class="tag">BI</span><span class="tag">Excel</span></div>
+            <h3>AI Business Analyst</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Без штатного аналитика собственник узнаёт о проблеме в воронке уже после того, как она стоила денег.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Каждое утро — короткая сводка: что выросло, что просело и где именно теряются деньги.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-bizanalyst">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai company brain</span>
+            </div>
+            <div class="window-body mock-brain">
+              <div class="lexis-search">«Какой SLA у нас на возврат для B2B?»</div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">SLA.md</span>
+                <span class="lexis-result-src">Notion · обновлено 3 дня назад</span>
+              </div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">Sales Policy</span>
+                <span class="lexis-result-src">Confluence</span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Access control</span></div>
+            <h3>AI Company Brain</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Проблема</span>
+              <p>Знания компании разбросаны по Notion, Confluence и дискам — найти актуальный ответ дольше, чем сделать заново.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Решение</span>
+              <p>Единая база знаний компании с разграничением прав доступа — отвечает мгновенно, ссылаясь на источник.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-brain">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
       </div>
 
       <!-- ================= LIVE AGENT DEMO ================= -->
       <div class="demo-section" id="demo">
-        <div class="demo-connect">↑ живой пример именно этого агента — поиск по документам</div>
+        <div class="demo-connect">↑ живой пример — AI Company Brain отвечает по базе знаний</div>
         <div class="demo-shell reveal">
           <div class="demo-bar">
             <span class="demo-dot demo-dot--r"></span><span class="demo-dot demo-dot--y"></span><span class="demo-dot demo-dot--g"></span>
-            <span class="demo-title">agent — document search</span>
+            <span class="demo-title">agent — company brain</span>
           </div>
           <div class="demo-body">
             <div class="demo-q"><span id="demoQText"></span><span class="demo-cursor" id="demoCursor"></span></div>
@@ -194,201 +366,136 @@
           </div>
         </div>
       </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Competitor Monitor</span>
+        <span class="chip">AI Business Auditor</span>
+        <span class="chip">AI Product Researcher</span>
+      </div>
+      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
     </div>
   </section>
 
-  <!-- ================= 02 OPERATIONS ================= -->
-  <section class="work agents-category">
+  <!-- ================= 04 CUSTOMER ================= -->
+  <section class="work agents-category" id="cat-customer">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">02 — ПРОЦЕССЫ</span></p>
-        <h2 class="section-title">Операционка <em>и риски</em></h2>
-      </div>
-
-      <div class="work-grid work-grid--3">
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">act automation</span>
-            </div>
-            <div class="window-body mock-docauto">
-              <div class="docauto-sheet"><div class="l l--h"></div><div class="l" style="width:90%"></div><div class="l" style="width:60%"></div><div class="l" style="width:75%"></div></div>
-              <div class="docauto-status">
-                <span class="docauto-status-title">⛔ ЗАБЛОКИРОВАНО</span>
-                <span class="docauto-status-item">Сумма не сходится: 73 000 ≠ 70 000 ₽</span>
-                <span class="docauto-status-item">2 позиции вне предмета договора</span>
-              </div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">Docx</span><span class="tag">Deterministic</span></div>
-            <h3>Автоматизация документооборота</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Заполнение и сверка договоров, счетов и актов вручную съедает часы и легко приводит к ошибкам.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент сам заполняет документ по шаблону, проверяет на несоответствия и направляет на подпись.</p>
-            </div>
-          </div>
-        </article>
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">compliance</span>
-            </div>
-            <div class="window-body mock-compliance">
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Согласие на обработку ПДн</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Ответственный за обработку</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Технические меры защиты</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Уведомление Роскомнадзора</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">Compliance</span><span class="tag">RAG</span><span class="tag">JSON</span></div>
-            <h3>Compliance-агент</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>У малого бизнеса нет штатного юриста по комплаенсу — нарушение находят уже во время проверки.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент проверяет документы и процессы на соответствие нормам ещё до проверяющего органа.</p>
-            </div>
-          </div>
-        </article>
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">incident copilot</span>
-            </div>
-            <div class="window-body mock-incident">
-              <div class="incident-new">Новое: «Зависает после вчерашнего обновления»</div>
-              <div class="incident-match">Найден прецедент #1</div>
-              <div class="incident-resolution">Решение: откатить обновление, перезапустить службу</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Ops</span></div>
-            <h3>Управление инцидентами</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>При сбое или жалобе время уходит на то, чтобы вспомнить, как решали похожий случай раньше.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент фиксирует инцидент, находит похожие случаи в истории и предлагает готовое решение.</p>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 03 INFRA ================= -->
-  <section class="work agents-category">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">03 — ПОДКЛЮЧЕНИЕ</span></p>
-        <h2 class="section-title"><em>Инфраструктура</em></h2>
-      </div>
-
-      <div class="work-grid work-grid--1">
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">mcp connector</span>
-            </div>
-            <div class="window-body mock-flow">
-              <div class="flow-node">Claude</div>
-              <div class="flow-line flow-line--1"></div>
-              <div class="flow-node flow-node--accent">MCP-сервер</div>
-              <div class="flow-line flow-line--2"></div>
-              <div class="flow-node">1С / CRM</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">MCP</span><span class="tag">Protocol</span><span class="tag">Integration</span></div>
-            <h3>Интеграция агент + 1С / CRM</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>У бизнеса уже есть 1С, amoCRM или Битрикс24 — но подключить к ним ИИ-агента технически сложно, и именно это чаще всего останавливает внедрение.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Настройка доступа агента к уже существующим системам заказчика через MCP — без миграции данных и переделки процессов. Разовая настройка плюс поддержка на подписке.</p>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 04 EXPERTISE ================= -->
-  <section class="work agents-category">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">04 — УЗКИЕ НИШИ</span></p>
-        <h2 class="section-title">Отраслевая <em>экспертиза</em></h2>
+        <p class="eyebrow"><span class="eyebrow-tag">04 — CUSTOMER AI</span></p>
+        <h2 class="section-title">Всё, что <em>работает с клиентом</em></h2>
+        <p class="cat-kpi">Главный результат: <b>клиент получает ответ мгновенно, в любое время суток.</b></p>
       </div>
 
       <div class="work-grid">
-        <article class="work-card reveal">
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">industry skills</span>
+              <span class="window-title">ai voice manager</span>
             </div>
-            <div class="window-body mock-industry">
-              <div class="industry-label">Домен: нефтегаз</div>
-              <div class="industry-terms">
-                <span class="industry-term">каротаж</span><span class="industry-term">ГРП</span><span class="industry-term">штуцер</span><span class="industry-term industry-term--muted">буровой раствор</span>
+            <div class="window-body mock-voice">
+              <div class="voice-wave" aria-hidden="true">
+                <span style="height:8px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:18px"></span>
+                <span style="height:10px"></span><span style="height:16px"></span><span style="height:7px"></span><span style="height:12px"></span>
+                <span style="height:19px"></span><span style="height:9px"></span><span style="height:15px"></span><span style="height:6px"></span>
+                <span style="height:11px"></span><span style="height:17px"></span>
               </div>
+              <div class="voice-line"><b>AI:</b> Стоматология «ДентаПлюс», здравствуйте!</div>
+              <div class="voice-line">Клиент: «Откололся зуб, нужно срочно»</div>
+              <div class="voice-line"><b>AI:</b> Сегодня в 15:30 у Смирновой — записать?</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">Skills</span><span class="tag">Custom</span></div>
-            <h3>Отраслевые агенты по образцу нефтегаза</h3>
+            <div class="work-tags"><span class="tag">SIP</span><span class="tag">Телефония</span><span class="tag">CRM</span></div>
+            <h3>AI Voice Manager</h3>
             <div class="agent-field">
               <span class="agent-field-label">Проблема</span>
-              <p>Узкие специалисты — геологи, технологи, инженеры — не хотят «обычный чат-бот», который не понимает профессиональный контекст.</p>
+              <p>Пропущенные звонки — это потерянные клиенты, а держать оператора 24/7 дорого и нестабильно.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Готовая модель из нефтегазового кейса переносится на другую техническую отрасль: агент заранее знает терминологию и процессы.</p>
+              <p>Голосовой агент поднимает трубку, квалифицирует и записывает клиента прямо в систему.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-voice">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
-        <article class="work-card reveal">
+
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">hypothesis lab</span>
+              <span class="window-title">ai customer support</span>
             </div>
-            <div class="window-body mock-hypothesis">
-              <div class="hyp-verdict">✓ Подтвердилась</div>
-              <div class="hyp-split"><span class="hyp-for" style="width:71%"></span><span class="hyp-against" style="width:29%"></span></div>
-              <div class="hyp-quote">«глаза устают вечером от яркого экрана. Добавьте тёмную тему!»</div>
+            <div class="window-body mock-support">
+              <div class="support-row"><span class="channel-badge">TG</span> «Где мой заказ #4471?»</div>
+              <div class="support-row"><span class="channel-badge">WA</span> «Можно поменять размер?»</div>
+              <div class="support-row"><span class="channel-badge">Сайт</span> «Не пришёл чек на почту»</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">Product</span><span class="tag">LLM Judge</span></div>
-            <h3>Тестирование продуктовых гипотез</h3>
+            <div class="work-tags"><span class="tag">Telegram</span><span class="tag">WhatsApp</span><span class="tag">Сайт</span></div>
+            <h3>AI Customer Support</h3>
             <div class="agent-field">
               <span class="agent-field-label">Проблема</span>
-              <p>Продуктовые команды тратят много времени на ручной сбор и структурирование обратной связи вместо анализа.</p>
+              <p>Поддержка размазана по каналам — клиент ждёт ответа часами, нагрузка на живых операторов растёт.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент прогоняет варианты, собирает отзывы из разных источников и выдаёт вывод: гипотеза подтвердилась или нет.</p>
+              <p>Один агент отвечает во всех каналах сразу и решает типовые обращения через API.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-support">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
+      </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Reputation Manager</span>
+        <span class="chip">AI E-commerce Manager</span>
+        <span class="chip">AI Content Factory</span>
+      </div>
+      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
+    </div>
+  </section>
+
+  <!-- ================= FULL CATALOG ================= -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">ПОЛНАЯ ЛИНЕЙКА</span></p>
+        <h2 class="section-title">20 агентов. <em>4 направления</em></h2>
+      </div>
+      <div class="catalog-grid reveal">
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">💰</span><span class="name">REVENUE AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Sales Agent</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Lead Hunter</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Personal Sales Assistant</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Marketing Director</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI CRM Agent</div>
+        </div>
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">⚙️</span><span class="name">OPERATIONS AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Business Manager</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Finance Controller</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Operations Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Document Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI HR Recruiter</div>
+        </div>
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">🧠</span><span class="name">INTELLIGENCE AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Business Analyst</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Company Brain</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Competitor Monitor</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Business Auditor</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Product Researcher</div>
+        </div>
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">📞</span><span class="name">CUSTOMER AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Voice Manager</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Customer Support</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Reputation Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI E-commerce Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Content Factory</div>
+        </div>
       </div>
     </div>
   </section>
@@ -424,31 +531,35 @@
           </div>
         </div>
       </div>
-
-      <p class="agents-skills-note reveal">
-        <span class="work-role-label">Skills</span>
-        Для отраслевых агентов (нефтегаз и другие технические ниши) заранее собирается набор терминологии,
-        документов и типовых процессов — агент сразу работает как эксперт, а не учится с нуля на каждом запросе.
-      </p>
     </div>
   </section>
 
   <!-- ================= CTA ================= -->
   <section class="contact">
     <div class="wrap contact-inner">
-      <p class="eyebrow reveal"><span class="eyebrow-tag">СЛЕДУЮЩИЙ ШАГ</span></p>
-      <h2 class="contact-title reveal">Выбрать одного агента<br>и собрать <em>MVP</em></h2>
-      <p class="contact-sub reveal">
-        Лучший старт — не все восемь сразу, а один продукт под быстрый первый результат,
-        плюс отраслевая экспертиза как долгосрочное конкурентное преимущество.
-      </p>
+      <p class="eyebrow reveal"><span class="eyebrow-tag">НА СВЯЗИ</span></p>
+      <h2 class="contact-title reveal">Готовы обсудить <em>AI-проект?</em></h2>
+      <p class="contact-sub reveal">4 AI-агента, 20 направлений. Один разговор, чтобы нанять того, кто не просит отпуск.</p>
 
       <div class="agents-cta-row reveal">
-        <a href="https://t.me/ERogx" class="contact-tg" target="_blank" rel="noopener">
+        <a href="https://t.me/ERogx" class="contact-tg magnetic" target="_blank" rel="noopener">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.05 2.94 2.7 10.6c-1.32.53-1.31 1.27-.24 1.6l4.96 1.55 1.92 5.85c.23.63.12.88.78.88.5 0 .72-.23 1-.5l2.4-2.33 4.99 3.68c.92.51 1.58.25 1.81-.85l3.28-15.46c.33-1.36-.52-1.98-1.55-1.48Zm-13.02 11-1.2-3.9 9.32-5.87c.44-.27.84-.12.51.18l-8.63 9.6Z"/></svg>
-          <span>Обсудить внедрение</span>
+          <span>@ERogx в Telegram</span>
         </a>
-        <a href="vinakov-agents.pdf" class="btn btn-outline" download>Скачать PDF</a>
+      </div>
+      <p class="cta-note reveal">Отвечаю обычно в течение дня.</p>
+    </div>
+  </section>
+
+  <!-- ================= DOWNLOAD BAR ================= -->
+  <section class="download-bar">
+    <div class="wrap">
+      <div class="download-panel reveal">
+        <div class="download-panel-text">
+          <h3>Все 20 предложений в одном файле</h3>
+          <p>Полная линейка, без цен — тарифы обсуждаем лично.</p>
+        </div>
+        <a class="btn btn-outline magnetic" href="vinakov-agents.pdf" download>↓ Скачать предложения</a>
       </div>
     </div>
   </section>
@@ -470,6 +581,167 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=3"></script>
+<!-- ================= HOW-IT-WORKS MODAL ================= -->
+<div class="case-overlay" id="caseOverlay" aria-hidden="true">
+  <div class="case-modal" id="caseModal" role="dialog" aria-modal="true">
+    <button type="button" class="case-close" id="caseClose" aria-label="Закрыть">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="case-panel" data-case="agent-sales">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">01 — ai sales agent</span></div>
+        <div class="window-body mock-sales">
+          <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Заявка с сайта: монтаж вентиляции, 1200 м²</span></div>
+          <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Смета ≈ 1.4 млн ₽. Готовы принять инженера в четверг?</span></div>
+          <span class="stage-pill">✓ Сделка → «Замер назначен»</span>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">CRM</span><span class="tag">WhatsApp</span><span class="tag">Telegram</span></div>
+      <h3 class="case-title" id="case-title-agent-sales">AI Sales Agent — квалификация и закрытие лида</h3>
+      <p class="case-tagline">Отвечает первым, считает смету и сам двигает сделку по CRM.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Заявки простаивают часами, пока менеджер не освободится — часть клиентов уходит к тому, кто ответил первым.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Агент подключается к форме на сайте и CRM: проверяет карточку клиента, считает ориентировочную смету по прайсу и предлагает время встречи в WhatsApp или Telegram.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Заявка «монтаж вентиляции, 1200 м²» дошла до статуса «Замер назначен» за 3 минуты — без единого касания менеджера.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> CRM API · WhatsApp Business API · расчёт сметы по прайс-листу</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-hunter">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">01 — ai lead hunter</span></div>
+        <div class="window-body mock-hunter">
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>ООО «СтройГрупп» — ЛПР найден</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>«ТехноПоставка» — письмо отправлено</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--pending">···</span>«ГазМонтаж» — анализ болей</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">LinkedIn</span><span class="tag">Web</span><span class="tag">CRM</span></div>
+      <h3 class="case-title" id="case-title-agent-hunter">AI Lead Hunter — поиск клиентов и выход на ЛПР</h3>
+      <p class="case-tagline">Сам находит компании под портрет клиента и пишет первым.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Ручной поиск B2B-клиентов по критериям и выход на ЛПР съедает недели работы менеджера по продажам.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Агент фильтрует компании по отрасли, региону и размеру штата, определяет ЛПР через открытые источники и формирует персональное письмо под конкретную боль компании.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Из 47 найденных компаний агент отфильтровал 12 целевых и отправил 12 персональных писем без участия отдела продаж.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> Web-скрапинг · поиск контактов · генерация персонализированных писем</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-bizmgr">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">02 — ai business manager</span></div>
+        <div class="window-body mock-bizmgr">
+          <div class="stat-tiles">
+            <div class="stat-tile"><span class="stat-tile-num stat-tile-num--up">+12%</span><span class="stat-tile-lbl">ВЫРУЧКА</span></div>
+            <div class="stat-tile"><span class="stat-tile-num stat-tile-num--warn">−4</span><span class="stat-tile-lbl">ЗАДАЧ В СРОК</span></div>
+            <div class="stat-tile"><span class="stat-tile-num">37</span><span class="stat-tile-lbl">ОТКРЫТО</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">ERP</span><span class="tag">CRM</span><span class="tag">Tasks</span></div>
+      <h3 class="case-title" id="case-title-agent-bizmgr">AI Business Manager — цифровой операционный директор</h3>
+      <p class="case-tagline">Сводит метрики всех отделов и сам раздаёт задачи.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Собственник вручную сводит метрики разных отделов, чтобы понять, где реально буксует бизнес.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Агент каждое утро собирает показатели продаж, логистики и задач из CRM/ERP, находит отклонения и сам создаёт задачу ответственному с дедлайном.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Задержка заказа №881 была обнаружена и назначена ответственному до 18:00 в тот же день — без совещания.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> ERP/CRM интеграция · агрегация метрик · постановка задач</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-finance">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">02 — ai finance controller</span></div>
+        <div class="window-body mock-finance">
+          <div class="finance-line"><span>Счёт №4471</span><b>сверен</b></div>
+          <div class="finance-line"><span>Счёт №4472</span><b>сверен</b></div>
+          <div class="pulse-alert"><span class="pulse-alert-dot"></span>Кассовый разрыв ожидается через 6 дней</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">1С</span><span class="tag">Банк-клиент</span><span class="tag">Excel</span></div>
+      <h3 class="case-title" id="case-title-agent-finance">AI Finance Controller — контроль кассовых разрывов</h3>
+      <p class="case-tagline">Сверяет счета и предупреждает о разрыве заранее.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Кассовые разрывы и просроченная дебиторка замечаются постфактум, когда деньги уже нужны.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Агент сверяет банковскую выписку со счетами в 1С, отслеживает сроки оплаты и строит прогноз кассового разрыва на ближайшие недели.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Прогноз показал разрыв в 340 000 ₽ через 6 дней — собственник успел договориться об отсрочке заранее.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> 1С интеграция · банк-клиент API · прогноз денежного потока</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-bizanalyst">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">03 — ai business analyst</span></div>
+        <div class="window-body mock-bizanalyst">
+          <div class="analyst-q">Доброе утро! Сводка за 8 сентября:</div>
+          <div class="summary-bullets">
+            <span class="is-up">• Выручка: 1 840 000 ₽ (+12%)</span>
+            <span class="is-warn">• CAC вырос на 18% — кампания «Септики Москва»</span>
+            <span>• 37 лидов висят без follow-up &gt; 48ч</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">CRM</span><span class="tag">BI</span><span class="tag">Excel</span></div>
+      <h3 class="case-title" id="case-title-agent-bizanalyst">AI Business Analyst — утренняя сводка по бизнесу</h3>
+      <p class="case-tagline">Каждое утро — что выросло, что просело и где теряются деньги.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Без штатного аналитика собственник узнаёт о проблеме в воронке уже после того, как она стоила денег.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Агент подключается к CRM, рекламным кабинетам и Excel-отчётам, каждое утро сравнивает показатели с предыдущим периодом и подсвечивает аномалии.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Рост CAC на 18% по одной рекламной кампании был замечен и объяснён ещё до начала рабочего дня.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> CRM/BI интеграция · сравнение периодов · генерация текстовой сводки</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-brain">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">03 — ai company brain</span></div>
+        <div class="window-body mock-brain">
+          <div class="lexis-search">«Какой SLA у нас на возврат для B2B?»</div>
+          <div class="lexis-result"><span class="lexis-result-title">SLA.md</span><span class="lexis-result-src">Notion · обновлено 3 дня назад</span></div>
+          <div class="lexis-result"><span class="lexis-result-title">Sales Policy</span><span class="lexis-result-src">Confluence</span></div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">RAG</span><span class="tag">Access control</span></div>
+      <h3 class="case-title" id="case-title-agent-brain">AI Company Brain — база знаний компании</h3>
+      <p class="case-tagline">Единая точка ответа по всем внутренним документам.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Знания компании разбросаны по Notion, Confluence и дискам — найти актуальный ответ дольше, чем сделать заново.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Агент индексирует документы компании с учётом прав доступа сотрудника и отвечает на вопрос, ссылаясь на конкретный источник.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Ответ на вопрос про SLA по возврату для B2B пришёл за секунды, со ссылками на оба релевантных документа.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> RAG поверх Notion/Confluence/Drive · разграничение доступа</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-voice">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">04 — ai voice manager</span></div>
+        <div class="window-body mock-voice">
+          <div class="voice-wave" aria-hidden="true">
+            <span style="height:8px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:18px"></span>
+            <span style="height:10px"></span><span style="height:16px"></span><span style="height:7px"></span><span style="height:12px"></span>
+          </div>
+          <div class="voice-line"><b>AI:</b> Стоматология «ДентаПлюс», здравствуйте!</div>
+          <div class="voice-line">Клиент: «Откололся зуб, нужно срочно»</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">SIP</span><span class="tag">Телефония</span><span class="tag">CRM</span></div>
+      <h3 class="case-title" id="case-title-agent-voice">AI Voice Manager — голосовой оператор 24/7</h3>
+      <p class="case-tagline">Поднимает трубку, квалифицирует и записывает клиента.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Пропущенные звонки — это потерянные клиенты, а держать оператора 24/7 дорого и нестабильно.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Голосовой агент отвечает на звонок, распознаёт запрос клиента, проверяет доступное время в расписании и создаёт запись прямо в системе.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Звонок с жалобой на откололся зуб обработан за 54 секунды: клиент записан к врачу на этот же день.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> SIP-телефония · распознавание речи · интеграция с МИС/CRM</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-support">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">04 — ai customer support</span></div>
+        <div class="window-body mock-support">
+          <div class="support-row"><span class="channel-badge">TG</span> «Где мой заказ #4471?»</div>
+          <div class="support-row"><span class="channel-badge">WA</span> «Можно поменять размер?»</div>
+          <div class="support-row"><span class="channel-badge">Сайт</span> «Не пришёл чек на почту»</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Telegram</span><span class="tag">WhatsApp</span><span class="tag">Сайт</span></div>
+      <h3 class="case-title" id="case-title-agent-support">AI Customer Support — поддержка во всех каналах</h3>
+      <p class="case-tagline">Один агент отвечает в Telegram, WhatsApp и на сайте одновременно.</p>
+      <div class="case-block"><span class="case-label">Задача</span><p>Поддержка размазана по каналам — клиент ждёт ответа часами, нагрузка на живых операторов растёт.</p></div>
+      <div class="case-block"><span class="case-label">Решение</span><p>Агент собирает обращения из всех каналов в одну очередь, решает типовые вопросы через API компании и передаёт человеку только сложные случаи.</p></div>
+      <div class="case-block"><span class="case-label">Результат</span><p>Из 3 обращений подряд 2 были закрыты агентом самостоятельно, без участия оператора.</p></div>
+      <p class="case-role"><span class="work-role-label">Стек</span> Telegram/WhatsApp API · интеграция с CRM · маршрутизация обращений</p>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js?v=4"></script>
 </body>
 </html>

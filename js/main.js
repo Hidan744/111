@@ -403,4 +403,85 @@
       play();
     }
   })();
+
+  /* ---------------- agents catalog: side rail sync ---------------- */
+  (function catRail() {
+    const rail = document.getElementById("catRail");
+    if (!rail) return;
+    const items = rail.querySelectorAll(".cat-rail-item");
+
+    items.forEach((item) => {
+      item.addEventListener("click", () => {
+        const target = document.getElementById(item.dataset.target);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    if (!("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          items.forEach((item) => item.classList.toggle("is-active", item.dataset.target === entry.target.id));
+        });
+      },
+      { threshold: 0.4 }
+    );
+    document.querySelectorAll(".agents-category[id]").forEach((section) => io.observe(section));
+  })();
+
+  /* ---------------- flagship card tilt + spotlight ---------------- */
+  (function flagshipCards() {
+    const cards = document.querySelectorAll(".flagship-card");
+    if (!cards.length || prefersReducedMotion) return;
+    cards.forEach((card) => {
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        card.style.setProperty("--mx", x + "px");
+        card.style.setProperty("--my", y + "px");
+        const px = x / r.width - 0.5, py = y / r.height - 0.5;
+        card.style.setProperty("--ry", px * 5 + "deg");
+        card.style.setProperty("--rx", py * -5 + "deg");
+      });
+      card.addEventListener("mouseleave", () => {
+        card.style.setProperty("--rx", "0deg");
+        card.style.setProperty("--ry", "0deg");
+      });
+    });
+  })();
+
+  /* ---------------- magnetic buttons ---------------- */
+  (function magneticButtons() {
+    const els = document.querySelectorAll(".magnetic");
+    if (!els.length || prefersReducedMotion) return;
+    els.forEach((el) => {
+      el.addEventListener("mousemove", (e) => {
+        const r = el.getBoundingClientRect();
+        const x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2;
+        el.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+      });
+      el.addEventListener("mouseleave", () => { el.style.transform = ""; });
+    });
+  })();
+
+  /* ---------------- ambient cursor glow ---------------- */
+  (function cursorGlow() {
+    const glow = document.getElementById("cursorGlow");
+    if (!glow || prefersReducedMotion) return;
+    let tx = 0, ty = 0, gx = 0, gy = 0, active = false;
+    window.addEventListener("mousemove", (e) => {
+      tx = e.clientX; ty = e.clientY;
+      if (!active) { gx = tx; gy = ty; glow.style.opacity = "1"; active = true; }
+    });
+    document.addEventListener("mouseleave", () => { glow.style.opacity = "0"; });
+    function tick() {
+      gx += (tx - gx) * 0.12;
+      gy += (ty - gy) * 0.12;
+      glow.style.left = gx + "px";
+      glow.style.top = gy + "px";
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
 })();

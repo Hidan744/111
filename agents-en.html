@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Agents for Business — VinakovLab</title>
-<meta name="description" content="Eight AI agents for business: from document search to compliance checks. Built on Claude Agent SDK + MCP, plugs into your ERP/CRM without data migration.">
+<meta name="description" content="20 AI employees for business across 4 directions: Revenue, Operations, Intelligence, Customer. Built on Claude Agent SDK + MCP, plugs into your ERP/CRM without data migration.">
 <link rel="canonical" href="https://vinakovlab.ru/agents-en.html">
 <link rel="alternate" hreflang="ru" href="https://vinakovlab.ru/agents.html">
 <link rel="alternate" hreflang="en" href="https://vinakovlab.ru/agents-en.html">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VinakovLab">
 <meta property="og:title" content="AI Agents for Business — VinakovLab">
-<meta property="og:description" content="Eight AI agents for business: from document search to compliance checks. Built on Claude Agent SDK + MCP, plugs into your ERP/CRM without data migration.">
+<meta property="og:description" content="20 AI employees for business across 4 directions: Revenue, Operations, Intelligence, Customer. Built on Claude Agent SDK + MCP, plugs into your ERP/CRM without data migration.">
 <meta property="og:url" content="https://vinakovlab.ru/agents-en.html">
 <meta property="og:image" content="https://vinakovlab.ru/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css?v=9">
-<link rel="stylesheet" href="css/agents.css?v=2">
+<link rel="stylesheet" href="css/agents.css?v=3">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
@@ -38,6 +38,7 @@
 <div class="noise-overlay" aria-hidden="true"></div>
 <div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
 <canvas id="netCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
 <header class="site-header" id="siteHeader">
   <div class="wrap header-inner">
@@ -61,6 +62,13 @@
   </div>
 </header>
 
+<nav class="cat-rail" id="catRail" aria-hidden="true">
+  <button type="button" class="cat-rail-item" data-target="cat-revenue"><span class="cat-rail-dot"></span><span class="cat-rail-label">01 Revenue</span></button>
+  <button type="button" class="cat-rail-item" data-target="cat-ops"><span class="cat-rail-dot"></span><span class="cat-rail-label">02 Operations</span></button>
+  <button type="button" class="cat-rail-item" data-target="cat-intel"><span class="cat-rail-dot"></span><span class="cat-rail-label">03 Intelligence</span></button>
+  <button type="button" class="cat-rail-item" data-target="cat-customer"><span class="cat-rail-dot"></span><span class="cat-rail-label">04 Customer</span></button>
+</nav>
+
 <main>
 
   <!-- ================= HERO ================= -->
@@ -68,18 +76,18 @@
     <div class="hero-grid-overlay" aria-hidden="true"></div>
     <div class="wrap agents-hero-inner">
       <p class="eyebrow reveal">
-        <span class="eyebrow-tag">B2B · AI AGENTS</span>
+        <span class="eyebrow-tag">B2B · 20 AI EMPLOYEES</span>
       </p>
       <h1 class="hero-title reveal agents-hero-title">
-        AI agents for business<br>that take the <em>routine</em> off your plate.
+        Every part of your business —<br>its own <em>digital employee</em>.
       </h1>
       <p class="hero-sub reveal">
-        Eight agents, each built for one specific pain point — from document search
-        to regulatory compliance. Not a general assistant, but a targeted fix.
+        20 agents grouped into four directions: revenue growth, operations, intelligence,
+        and customer care. Every flagship comes with a live example of how it works.
       </p>
 
       <div class="hero-actions reveal">
-        <a href="#agent-01" class="btn btn-primary">
+        <a href="#cat-revenue" class="btn btn-primary">
           <span>See the agents</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -93,99 +101,263 @@
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow"><span class="eyebrow-tag">APPROACH</span></p>
-        <h2 class="section-title">Each agent solves<br> <em>one pain point</em></h2>
+        <h2 class="section-title">How I <em>work</em></h2>
       </div>
 
       <div class="cap-grid cap-grid--3">
         <article class="cap-card reveal">
           <span class="cap-idx">01</span>
-          <h3>One pain point,<br>one product</h3>
-          <p>Not a general-purpose assistant, but a targeted fix for one specific operational problem.</p>
+          <h3>One agent,<br>one result</h3>
+          <p>I don't build a do-everything assistant. Each agent closes one measurable task — more sales, saved time, or lower risk.</p>
         </article>
         <article class="cap-card reveal">
           <span class="cap-idx">02</span>
-          <h3>Plugs into what<br>you already have</h3>
-          <p>Works on top of your existing ERP, CRM, and document stores — no data migration.</p>
+          <h3>Plugs into<br>what you have</h3>
+          <p>No forced move to a new CRM or ERP. The agent embeds into your existing business systems — no data migration.</p>
         </article>
         <article class="cap-card reveal">
           <span class="cap-idx">03</span>
-          <h3>Sold<br>separately</h3>
-          <p>Each agent is a standalone product with its own pricing, not a module bundled into a package.</p>
+          <h3>We start<br>with one flagship</h3>
+          <p>We roll out one product for your sharpest pain point, show the result in numbers — then decide together what's next.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- ================= 01 KNOWLEDGE ================= -->
-  <section class="work agents-category" id="agent-01">
+  <!-- ================= 01 REVENUE ================= -->
+  <section class="work agents-category" id="cat-revenue">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">01 — COMPANY DATA</span></p>
-        <h2 class="section-title">Knowledge <em>&amp; Analytics</em></h2>
+        <p class="eyebrow"><span class="eyebrow-tag">01 — REVENUE AI</span></p>
+        <h2 class="section-title">Everything that <em>grows sales</em></h2>
+        <p class="cat-kpi">Main outcome: <b>more leads, higher conversion, shorter deal cycles.</b></p>
       </div>
 
       <div class="work-grid">
-        <article class="work-card reveal">
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">document search</span>
+              <span class="window-title">ai sales agent</span>
             </div>
-            <div class="window-body mock-docsearch">
-              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">How many vacation days do I get, and can I roll them over?</span></div>
+            <div class="window-body mock-sales">
+              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Website lead: ventilation install, 1200 m²</span></div>
               <div class="chat-row chat-row--in">
                 <span class="chat-avatar"></span>
-                <span class="chat-bubble chat-bubble--in">28 days a year, up to 14 days can be carried over<div class="chat-cite">vacation_policy.md</div></span>
+                <span class="chat-bubble chat-bubble--in">Quote ≈ $15,000. Can you take the engineer on Thursday?</span>
+              </div>
+              <span class="stage-pill">✓ Deal → "Site visit booked"</span>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">CRM</span><span class="tag">WhatsApp</span><span class="tag">Telegram</span></div>
+            <h3>AI Sales Agent</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Problem</span>
+              <p>Leads sit for hours until a rep is free — some customers go to whoever answers first.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Solution</span>
+              <p>The agent qualifies the lead, estimates the quote, books a meeting, and moves the deal through CRM itself.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-sales">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai lead hunter</span>
+            </div>
+            <div class="window-body mock-hunter">
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>StroyGroup LLC — DM found</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>TechnoPostavka — email sent</div>
+              <div class="compliance-row"><span class="compliance-dot compliance-dot--pending">···</span>GazMontazh — analyzing pain points</div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">LinkedIn</span><span class="tag">Web</span><span class="tag">CRM</span></div>
+            <h3>AI Lead Hunter</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Problem</span>
+              <p>Manually sourcing B2B leads by criteria and reaching the decision-maker eats weeks of a sales rep's time.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Solution</span>
+              <p>The agent finds companies matching the client profile, identifies the decision-maker, and sends personalized cold emails.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-hunter">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+      </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Personal Sales Assistant</span>
+        <span class="chip">AI Marketing Director</span>
+        <span class="chip">AI CRM Agent</span>
+      </div>
+      <p class="chip-note">+ 3 more products in this direction — in the catalog, expand on request</p>
+    </div>
+  </section>
+
+  <!-- ================= 02 OPERATIONS ================= -->
+  <section class="work agents-category" id="cat-ops">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">02 — OPERATIONS AI</span></p>
+        <h2 class="section-title">Everything that <em>cuts costs</em></h2>
+        <p class="cat-kpi">Main outcome: <b>less manual work, lower operating costs.</b></p>
+      </div>
+
+      <div class="work-grid">
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai business manager</span>
+            </div>
+            <div class="window-body mock-bizmgr">
+              <div class="stat-tiles">
+                <div class="stat-tile"><span class="stat-tile-num stat-tile-num--up">+12%</span><span class="stat-tile-lbl">REVENUE</span></div>
+                <div class="stat-tile"><span class="stat-tile-num stat-tile-num--warn">−4</span><span class="stat-tile-lbl">ON-TIME TASKS</span></div>
+                <div class="stat-tile"><span class="stat-tile-num">37</span><span class="stat-tile-lbl">OPEN</span></div>
               </div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Search</span></div>
-            <h3>Internal Document Search</h3>
+            <div class="work-tags"><span class="tag">ERP</span><span class="tag">CRM</span><span class="tag">Tasks</span></div>
+            <h3>AI Business Manager</h3>
             <div class="agent-field">
               <span class="agent-field-label">Problem</span>
-              <p>Policies, contracts, and manuals are scattered across folders and people's heads. New hires spend weeks figuring out "how things are done here."</p>
+              <p>The owner manually rolls up metrics from every department just to see where the business is actually stalling.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The agent searches all company documents by meaning and answers with a link to the source.</p>
+              <p>A digital operations director rolls up every department's numbers into one picture and assigns tasks itself.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-bizmgr">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
-        <article class="work-card reveal">
+
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">self-service analyst</span>
+              <span class="window-title">ai finance controller</span>
             </div>
-            <div class="window-body mock-analyst">
-              <div class="analyst-q">&gt; Why did margin drop in July?</div>
-              <div class="analyst-sql">SELECT month, SUM(margin)&#10;FROM order_items JOIN...</div>
-              <div class="analyst-answer">Laptop sales dropped: 5 → 1 unit</div>
+            <div class="window-body mock-finance">
+              <div class="finance-line"><span>Invoice #4471</span><b>reconciled</b></div>
+              <div class="finance-line"><span>Invoice #4472</span><b>reconciled</b></div>
+              <div class="pulse-alert"><span class="pulse-alert-dot"></span>Cash gap expected in 6 days</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">Text-to-SQL</span><span class="tag">Read-only</span></div>
-            <h3>Self-Service Analyst</h3>
+            <div class="work-tags"><span class="tag">ERP</span><span class="tag">Bank feed</span><span class="tag">Excel</span></div>
+            <h3>AI Finance Controller</h3>
             <div class="agent-field">
               <span class="agent-field-label">Problem</span>
-              <p>There's no analyst on staff — the manager digs through Excel themselves to figure out why margin dropped or sales rose.</p>
+              <p>Cash gaps and overdue receivables only get noticed after the money is already needed.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The agent connects to your ERP / CRM / warehouse system and builds the report you need from a plain-language question.</p>
+              <p>The agent reconciles invoices, tracks receivables, and warns about upcoming cash gaps in advance.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-finance">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+      </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Operations Manager</span>
+        <span class="chip">AI Document Manager</span>
+        <span class="chip">AI HR Recruiter</span>
+      </div>
+      <p class="chip-note">+ 3 more products in this direction — in the catalog, expand on request</p>
+    </div>
+  </section>
+
+  <!-- ================= 03 INTELLIGENCE ================= -->
+  <section class="work agents-category" id="cat-intel">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">03 — INTELLIGENCE AI</span></p>
+        <h2 class="section-title">Everything that <em>informs the owner</em></h2>
+        <p class="cat-kpi">Main outcome: <b>decisions based on data, not gut feel.</b></p>
+      </div>
+
+      <div class="work-grid">
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai business analyst</span>
+            </div>
+            <div class="window-body mock-bizanalyst">
+              <div class="analyst-q">Good morning! Summary for Sep 8:</div>
+              <div class="summary-bullets">
+                <span class="is-up">• Revenue: $23,000 (+12%)</span>
+                <span class="is-warn">• CAC up 18% — "Septic Tanks Moscow" campaign</span>
+                <span>• 37 leads with no follow-up for 48h+</span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">CRM</span><span class="tag">BI</span><span class="tag">Excel</span></div>
+            <h3>AI Business Analyst</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Problem</span>
+              <p>Without an in-house analyst, the owner learns about a funnel problem only after it has already cost money.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Solution</span>
+              <p>Every morning, a short summary: what grew, what dropped, and exactly where money is leaking.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-bizanalyst">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </article>
+
+        <article class="work-card flagship-card reveal">
+          <div class="work-window" aria-hidden="true">
+            <div class="window-bar">
+              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+              <span class="window-title">ai company brain</span>
+            </div>
+            <div class="window-body mock-brain">
+              <div class="lexis-search">"What's our B2B return SLA?"</div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">SLA.md</span>
+                <span class="lexis-result-src">Notion · updated 3 days ago</span>
+              </div>
+              <div class="lexis-result">
+                <span class="lexis-result-title">Sales Policy</span>
+                <span class="lexis-result-src">Confluence</span>
+              </div>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Access control</span></div>
+            <h3>AI Company Brain</h3>
+            <div class="agent-field">
+              <span class="agent-field-label">Problem</span>
+              <p>Company knowledge is scattered across Notion, Confluence, and drives — finding a current answer takes longer than redoing the work.</p>
+            </div>
+            <div class="agent-field agent-field--solve">
+              <span class="agent-field-label agent-field-label--solve">Solution</span>
+              <p>One knowledge base for the whole company with per-employee access control — answers instantly, citing the source.</p>
+            </div>
+            <button type="button" class="work-link" data-case="agent-brain">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
       </div>
 
       <!-- ================= LIVE AGENT DEMO ================= -->
       <div class="demo-section" id="demo">
-        <div class="demo-connect">↑ a live example of this exact agent — document search</div>
+        <div class="demo-connect">↑ a live example — AI Company Brain answering from the knowledge base</div>
         <div class="demo-shell reveal">
           <div class="demo-bar">
             <span class="demo-dot demo-dot--r"></span><span class="demo-dot demo-dot--y"></span><span class="demo-dot demo-dot--g"></span>
-            <span class="demo-title">agent — document search</span>
+            <span class="demo-title">agent — company brain</span>
           </div>
           <div class="demo-body">
             <div class="demo-q"><span id="demoQText"></span><span class="demo-cursor" id="demoCursor"></span></div>
@@ -194,201 +366,136 @@
           </div>
         </div>
       </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Competitor Monitor</span>
+        <span class="chip">AI Business Auditor</span>
+        <span class="chip">AI Product Researcher</span>
+      </div>
+      <p class="chip-note">+ 3 more products in this direction — in the catalog, expand on request</p>
     </div>
   </section>
 
-  <!-- ================= 02 OPERATIONS ================= -->
-  <section class="work agents-category">
+  <!-- ================= 04 CUSTOMER ================= -->
+  <section class="work agents-category" id="cat-customer">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">02 — PROCESSES</span></p>
-        <h2 class="section-title">Operations <em>&amp; Risk</em></h2>
-      </div>
-
-      <div class="work-grid work-grid--3">
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">act automation</span>
-            </div>
-            <div class="window-body mock-docauto">
-              <div class="docauto-sheet"><div class="l l--h"></div><div class="l" style="width:90%"></div><div class="l" style="width:60%"></div><div class="l" style="width:75%"></div></div>
-              <div class="docauto-status">
-                <span class="docauto-status-title">⛔ BLOCKED</span>
-                <span class="docauto-status-item">Amount mismatch: 73,000 ≠ 70,000 ₽</span>
-                <span class="docauto-status-item">2 line items outside the contract scope</span>
-              </div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">Docx</span><span class="tag">Deterministic</span></div>
-            <h3>Document Workflow Automation</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Problem</span>
-              <p>Manually filling out and cross-checking contracts, invoices, and acts eats hours and invites mistakes.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The agent fills out the document from a template, checks it for inconsistencies, and routes it for signature.</p>
-            </div>
-          </div>
-        </article>
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">compliance</span>
-            </div>
-            <div class="window-body mock-compliance">
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Consent to process personal data</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Data controller appointed</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Technical security measures</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--fail">✕</span>Regulator notification</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">Compliance</span><span class="tag">RAG</span><span class="tag">JSON</span></div>
-            <h3>Compliance Agent</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Problem</span>
-              <p>Small businesses rarely have an in-house compliance lawyer — violations only surface during an audit.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The agent checks documents and processes against regulations before the regulator does.</p>
-            </div>
-          </div>
-        </article>
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">incident copilot</span>
-            </div>
-            <div class="window-body mock-incident">
-              <div class="incident-new">New: "Freezes after yesterday's update"</div>
-              <div class="incident-match">Found precedent #1</div>
-              <div class="incident-resolution">Resolution: roll back the update, restart the service</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Ops</span></div>
-            <h3>Incident Management</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Problem</span>
-              <p>When something breaks or a complaint comes in, time gets lost just remembering how a similar case was handled before.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The agent logs the incident, finds similar past cases, and suggests a ready-made resolution.</p>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 03 INFRA ================= -->
-  <section class="work agents-category">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">03 — CONNECTION</span></p>
-        <h2 class="section-title"><em>Infrastructure</em></h2>
-      </div>
-
-      <div class="work-grid work-grid--1">
-        <article class="work-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">mcp connector</span>
-            </div>
-            <div class="window-body mock-flow">
-              <div class="flow-node">Claude</div>
-              <div class="flow-line flow-line--1"></div>
-              <div class="flow-node flow-node--accent">MCP server</div>
-              <div class="flow-line flow-line--2"></div>
-              <div class="flow-node">ERP / CRM</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">MCP</span><span class="tag">Protocol</span><span class="tag">Integration</span></div>
-            <h3>Agent + ERP/CRM Integration</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Problem</span>
-              <p>The business already runs an ERP or CRM like amoCRM or Bitrix24 — but connecting an AI agent to it is technically hard, and that's usually what stalls adoption.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The agent gets access to the client's existing systems via MCP — no data migration, no process rework. One-time setup plus subscription support.</p>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 04 EXPERTISE ================= -->
-  <section class="work agents-category">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">04 — NICHE INDUSTRIES</span></p>
-        <h2 class="section-title">Industry <em>Expertise</em></h2>
+        <p class="eyebrow"><span class="eyebrow-tag">04 — CUSTOMER AI</span></p>
+        <h2 class="section-title">Everything that <em>works with the customer</em></h2>
+        <p class="cat-kpi">Main outcome: <b>the customer gets an answer instantly, any time of day.</b></p>
       </div>
 
       <div class="work-grid">
-        <article class="work-card reveal">
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">industry skills</span>
+              <span class="window-title">ai voice manager</span>
             </div>
-            <div class="window-body mock-industry">
-              <div class="industry-label">Domain: oil &amp; gas</div>
-              <div class="industry-terms">
-                <span class="industry-term">well logging</span><span class="industry-term">frac job</span><span class="industry-term">choke</span><span class="industry-term industry-term--muted">drilling mud</span>
+            <div class="window-body mock-voice">
+              <div class="voice-wave" aria-hidden="true">
+                <span style="height:8px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:18px"></span>
+                <span style="height:10px"></span><span style="height:16px"></span><span style="height:7px"></span><span style="height:12px"></span>
+                <span style="height:19px"></span><span style="height:9px"></span><span style="height:15px"></span><span style="height:6px"></span>
+                <span style="height:11px"></span><span style="height:17px"></span>
               </div>
+              <div class="voice-line"><b>AI:</b> DentaPlus dental clinic, hello!</div>
+              <div class="voice-line">Caller: "I chipped a tooth, I need to be seen urgently"</div>
+              <div class="voice-line"><b>AI:</b> Today at 3:30 PM with Dr. Smirnova — should I book it?</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">Skills</span><span class="tag">Custom</span></div>
-            <h3>Industry Agents, Built on the Oil &amp; Gas Model</h3>
+            <div class="work-tags"><span class="tag">SIP</span><span class="tag">Telephony</span><span class="tag">CRM</span></div>
+            <h3>AI Voice Manager</h3>
             <div class="agent-field">
               <span class="agent-field-label">Problem</span>
-              <p>Specialists — geologists, process engineers, technical staff — don't want a "generic chatbot" that doesn't understand their professional context.</p>
+              <p>Missed calls mean lost customers, but staffing a 24/7 operator is expensive and unreliable.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The model proven in an oil &amp; gas case gets ported to another technical industry: the agent already knows the terminology and the processes.</p>
+              <p>The voice agent picks up, qualifies the caller, and books them directly into the system.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-voice">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
-        <article class="work-card reveal">
+
+        <article class="work-card flagship-card reveal">
           <div class="work-window" aria-hidden="true">
             <div class="window-bar">
               <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">hypothesis lab</span>
+              <span class="window-title">ai customer support</span>
             </div>
-            <div class="window-body mock-hypothesis">
-              <div class="hyp-verdict">✓ Confirmed</div>
-              <div class="hyp-split"><span class="hyp-for" style="width:71%"></span><span class="hyp-against" style="width:29%"></span></div>
-              <div class="hyp-quote">"my eyes get tired from the bright screen in the evening. Add a dark theme!"</div>
+            <div class="window-body mock-support">
+              <div class="support-row"><span class="channel-badge">TG</span> "Where's my order #4471?"</div>
+              <div class="support-row"><span class="channel-badge">WA</span> "Can I change the size?"</div>
+              <div class="support-row"><span class="channel-badge">Site</span> "I didn't get my receipt"</div>
             </div>
           </div>
           <div class="work-body">
-            <div class="work-tags"><span class="tag">Product</span><span class="tag">LLM Judge</span></div>
-            <h3>Product Hypothesis Testing</h3>
+            <div class="work-tags"><span class="tag">Telegram</span><span class="tag">WhatsApp</span><span class="tag">Website</span></div>
+            <h3>AI Customer Support</h3>
             <div class="agent-field">
               <span class="agent-field-label">Problem</span>
-              <p>Product teams burn time manually collecting and structuring feedback instead of analyzing it.</p>
+              <p>Support is scattered across channels — customers wait hours, and the load on live agents keeps growing.</p>
             </div>
             <div class="agent-field agent-field--solve">
               <span class="agent-field-label agent-field-label--solve">Solution</span>
-              <p>The agent runs through the variants, gathers feedback from multiple sources, and delivers a verdict: hypothesis confirmed or not.</p>
+              <p>One agent answers across every channel at once and resolves routine requests via API.</p>
             </div>
+            <button type="button" class="work-link" data-case="agent-support">See how it works <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </article>
+      </div>
+
+      <div class="chip-row reveal">
+        <span class="chip">AI Reputation Manager</span>
+        <span class="chip">AI E-commerce Manager</span>
+        <span class="chip">AI Content Factory</span>
+      </div>
+      <p class="chip-note">+ 3 more products in this direction — in the catalog, expand on request</p>
+    </div>
+  </section>
+
+  <!-- ================= FULL CATALOG ================= -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-tag">FULL LINEUP</span></p>
+        <h2 class="section-title">20 agents. <em>4 directions</em></h2>
+      </div>
+      <div class="catalog-grid reveal">
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">💰</span><span class="name">REVENUE AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Sales Agent</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Lead Hunter</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Personal Sales Assistant</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Marketing Director</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI CRM Agent</div>
+        </div>
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">⚙️</span><span class="name">OPERATIONS AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Business Manager</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Finance Controller</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Operations Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Document Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI HR Recruiter</div>
+        </div>
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">🧠</span><span class="name">INTELLIGENCE AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Business Analyst</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Company Brain</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Competitor Monitor</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Business Auditor</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Product Researcher</div>
+        </div>
+        <div class="catalog-col">
+          <div class="catalog-col-head"><span class="ico">📞</span><span class="name">CUSTOMER AI</span></div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Voice Manager</div>
+          <div class="catalog-item is-flagship"><span class="catalog-dot"></span>AI Customer Support</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Reputation Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI E-commerce Manager</div>
+          <div class="catalog-item"><span class="catalog-dot"></span>AI Content Factory</div>
+        </div>
       </div>
     </div>
   </section>
@@ -424,31 +531,35 @@
           </div>
         </div>
       </div>
-
-      <p class="agents-skills-note reveal">
-        <span class="work-role-label">Skills</span>
-        For industry agents (oil &amp; gas and other technical niches), we pre-assemble a set of terminology,
-        documents, and standard processes — so the agent works like an expert from day one instead of learning from scratch on every request.
-      </p>
     </div>
   </section>
 
   <!-- ================= CTA ================= -->
   <section class="contact">
     <div class="wrap contact-inner">
-      <p class="eyebrow reveal"><span class="eyebrow-tag">NEXT STEP</span></p>
-      <h2 class="contact-title reveal">Pick one agent<br>and ship an <em>MVP</em></h2>
-      <p class="contact-sub reveal">
-        The best start isn't all eight at once — it's one product built for a fast first result,
-        plus industry expertise as a long-term edge.
-      </p>
+      <p class="eyebrow reveal"><span class="eyebrow-tag">GET IN TOUCH</span></p>
+      <h2 class="contact-title reveal">Ready to discuss <em>an AI project?</em></h2>
+      <p class="contact-sub reveal">4 AI agents, 20 directions. One conversation to hire someone who never asks for vacation.</p>
 
       <div class="agents-cta-row reveal">
-        <a href="https://t.me/ERogx" class="contact-tg" target="_blank" rel="noopener">
+        <a href="https://t.me/ERogx" class="contact-tg magnetic" target="_blank" rel="noopener">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.05 2.94 2.7 10.6c-1.32.53-1.31 1.27-.24 1.6l4.96 1.55 1.92 5.85c.23.63.12.88.78.88.5 0 .72-.23 1-.5l2.4-2.33 4.99 3.68c.92.51 1.58.25 1.81-.85l3.28-15.46c.33-1.36-.52-1.98-1.55-1.48Zm-13.02 11-1.2-3.9 9.32-5.87c.44-.27.84-.12.51.18l-8.63 9.6Z"/></svg>
-          <span>Discuss implementation</span>
+          <span>@ERogx on Telegram</span>
         </a>
-        <a href="vinakov-agents.pdf" class="btn btn-outline" download>Download PDF</a>
+      </div>
+      <p class="cta-note reveal">I usually reply within a day.</p>
+    </div>
+  </section>
+
+  <!-- ================= DOWNLOAD BAR ================= -->
+  <section class="download-bar">
+    <div class="wrap">
+      <div class="download-panel reveal">
+        <div class="download-panel-text">
+          <h3>All 20 offers in one file</h3>
+          <p>Full lineup, no prices — pricing is discussed personally.</p>
+        </div>
+        <a class="btn btn-outline magnetic" href="vinakov-agents.pdf" download>↓ Download the offers</a>
       </div>
     </div>
   </section>
@@ -470,6 +581,167 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=3"></script>
+<!-- ================= HOW-IT-WORKS MODAL ================= -->
+<div class="case-overlay" id="caseOverlay" aria-hidden="true">
+  <div class="case-modal" id="caseModal" role="dialog" aria-modal="true">
+    <button type="button" class="case-close" id="caseClose" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="case-panel" data-case="agent-sales">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">01 — ai sales agent</span></div>
+        <div class="window-body mock-sales">
+          <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Website lead: ventilation install, 1200 m²</span></div>
+          <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Quote ≈ $15,000. Can you take the engineer on Thursday?</span></div>
+          <span class="stage-pill">✓ Deal → "Site visit booked"</span>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">CRM</span><span class="tag">WhatsApp</span><span class="tag">Telegram</span></div>
+      <h3 class="case-title" id="case-title-agent-sales">AI Sales Agent — lead qualification and close</h3>
+      <p class="case-tagline">Answers first, quotes the price, and moves the deal through CRM itself.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Leads sit for hours until a rep is free — some customers go to whoever answers first.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>The agent connects to the website form and CRM: checks the client record, estimates a quote from the price list, and proposes a meeting time over WhatsApp or Telegram.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>A "ventilation install, 1200 m²" lead reached "site visit booked" status in 3 minutes — without a single touch from a rep.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> CRM API · WhatsApp Business API · price-list quoting</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-hunter">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">01 — ai lead hunter</span></div>
+        <div class="window-body mock-hunter">
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>StroyGroup LLC — DM found</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>TechnoPostavka — email sent</div>
+          <div class="compliance-row"><span class="compliance-dot compliance-dot--pending">···</span>GazMontazh — analyzing pain points</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">LinkedIn</span><span class="tag">Web</span><span class="tag">CRM</span></div>
+      <h3 class="case-title" id="case-title-agent-hunter">AI Lead Hunter — finding customers and reaching the DM</h3>
+      <p class="case-tagline">Finds companies matching your client profile and writes first.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Manually sourcing B2B leads by criteria and reaching the decision-maker eats weeks of a sales rep's time.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>The agent filters companies by industry, region, and headcount, identifies the decision-maker through public sources, and drafts a personalized email around that company's specific pain point.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>Out of 47 companies found, the agent filtered down to 12 targets and sent 12 personalized emails without any sales team involvement.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> Web scraping · contact discovery · personalized email generation</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-bizmgr">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">02 — ai business manager</span></div>
+        <div class="window-body mock-bizmgr">
+          <div class="stat-tiles">
+            <div class="stat-tile"><span class="stat-tile-num stat-tile-num--up">+12%</span><span class="stat-tile-lbl">REVENUE</span></div>
+            <div class="stat-tile"><span class="stat-tile-num stat-tile-num--warn">−4</span><span class="stat-tile-lbl">ON-TIME TASKS</span></div>
+            <div class="stat-tile"><span class="stat-tile-num">37</span><span class="stat-tile-lbl">OPEN</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">ERP</span><span class="tag">CRM</span><span class="tag">Tasks</span></div>
+      <h3 class="case-title" id="case-title-agent-bizmgr">AI Business Manager — a digital operations director</h3>
+      <p class="case-tagline">Rolls up every department's metrics and assigns tasks itself.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>The owner manually rolls up metrics from every department just to see where the business is actually stalling.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>Every morning the agent pulls sales, logistics, and task metrics from CRM/ERP, spots deviations, and creates a task for the responsible person with a deadline.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>A delay on order #881 was caught and assigned to the responsible person by 6 PM the same day — no meeting required.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> ERP/CRM integration · metric aggregation · task creation</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-finance">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">02 — ai finance controller</span></div>
+        <div class="window-body mock-finance">
+          <div class="finance-line"><span>Invoice #4471</span><b>reconciled</b></div>
+          <div class="finance-line"><span>Invoice #4472</span><b>reconciled</b></div>
+          <div class="pulse-alert"><span class="pulse-alert-dot"></span>Cash gap expected in 6 days</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">ERP</span><span class="tag">Bank feed</span><span class="tag">Excel</span></div>
+      <h3 class="case-title" id="case-title-agent-finance">AI Finance Controller — cash gap monitoring</h3>
+      <p class="case-tagline">Reconciles invoices and warns about a gap in advance.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Cash gaps and overdue receivables only get noticed after the money is already needed.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>The agent reconciles the bank feed against ERP invoices, tracks payment terms, and builds a cash-gap forecast for the coming weeks.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>The forecast flagged a $4,000 gap 6 days out — the owner had time to arrange a payment extension in advance.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> ERP integration · bank feed API · cash-flow forecasting</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-bizanalyst">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">03 — ai business analyst</span></div>
+        <div class="window-body mock-bizanalyst">
+          <div class="analyst-q">Good morning! Summary for Sep 8:</div>
+          <div class="summary-bullets">
+            <span class="is-up">• Revenue: $23,000 (+12%)</span>
+            <span class="is-warn">• CAC up 18% — "Septic Tanks Moscow" campaign</span>
+            <span>• 37 leads with no follow-up for 48h+</span>
+          </div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">CRM</span><span class="tag">BI</span><span class="tag">Excel</span></div>
+      <h3 class="case-title" id="case-title-agent-bizanalyst">AI Business Analyst — a morning business summary</h3>
+      <p class="case-tagline">Every morning: what grew, what dropped, where money is leaking.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Without an in-house analyst, the owner learns about a funnel problem only after it has already cost money.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>The agent connects to CRM, ad accounts, and Excel reports, compares metrics to the previous period every morning, and flags anomalies.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>An 18% CAC spike on one ad campaign was caught and explained before the workday even started.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> CRM/BI integration · period-over-period comparison · text summary generation</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-brain">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">03 — ai company brain</span></div>
+        <div class="window-body mock-brain">
+          <div class="lexis-search">"What's our B2B return SLA?"</div>
+          <div class="lexis-result"><span class="lexis-result-title">SLA.md</span><span class="lexis-result-src">Notion · updated 3 days ago</span></div>
+          <div class="lexis-result"><span class="lexis-result-title">Sales Policy</span><span class="lexis-result-src">Confluence</span></div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">RAG</span><span class="tag">Access control</span></div>
+      <h3 class="case-title" id="case-title-agent-brain">AI Company Brain — a company-wide knowledge base</h3>
+      <p class="case-tagline">One place to ask, across every internal document.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Company knowledge is scattered across Notion, Confluence, and drives — finding a current answer takes longer than redoing the work.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>The agent indexes company documents respecting each employee's access level and answers questions by citing the exact source.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>A question about the B2B return SLA was answered in seconds, with links to both relevant documents.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> RAG over Notion/Confluence/Drive · access-level enforcement</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-voice">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">04 — ai voice manager</span></div>
+        <div class="window-body mock-voice">
+          <div class="voice-wave" aria-hidden="true">
+            <span style="height:8px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:18px"></span>
+            <span style="height:10px"></span><span style="height:16px"></span><span style="height:7px"></span><span style="height:12px"></span>
+          </div>
+          <div class="voice-line"><b>AI:</b> DentaPlus dental clinic, hello!</div>
+          <div class="voice-line">Caller: "I chipped a tooth, I need to be seen urgently"</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">SIP</span><span class="tag">Telephony</span><span class="tag">CRM</span></div>
+      <h3 class="case-title" id="case-title-agent-voice">AI Voice Manager — a 24/7 voice receptionist</h3>
+      <p class="case-tagline">Picks up, qualifies the caller, and books them in.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Missed calls mean lost customers, but staffing a 24/7 operator is expensive and unreliable.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>The voice agent answers the call, understands the request, checks available slots, and books the caller directly into the system.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>A call about a chipped tooth was handled in 54 seconds — the caller was booked with a doctor the same day.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> SIP telephony · speech recognition · practice management / CRM integration</p>
+    </div>
+
+    <div class="case-panel" data-case="agent-support">
+      <div class="work-window case-window" aria-hidden="true">
+        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">04 — ai customer support</span></div>
+        <div class="window-body mock-support">
+          <div class="support-row"><span class="channel-badge">TG</span> "Where's my order #4471?"</div>
+          <div class="support-row"><span class="channel-badge">WA</span> "Can I change the size?"</div>
+          <div class="support-row"><span class="channel-badge">Site</span> "I didn't get my receipt"</div>
+        </div>
+      </div>
+      <div class="case-tags"><span class="tag">Telegram</span><span class="tag">WhatsApp</span><span class="tag">Website</span></div>
+      <h3 class="case-title" id="case-title-agent-support">AI Customer Support — every channel, one agent</h3>
+      <p class="case-tagline">Answers on Telegram, WhatsApp, and the website at once.</p>
+      <div class="case-block"><span class="case-label">Problem</span><p>Support is scattered across channels — customers wait hours, and the load on live agents keeps growing.</p></div>
+      <div class="case-block"><span class="case-label">Solution</span><p>The agent pulls requests from every channel into one queue, resolves routine questions through the company's API, and hands off only the hard cases to a human.</p></div>
+      <div class="case-block"><span class="case-label">Result</span><p>Of 3 consecutive requests, 2 were closed by the agent on its own, with no operator involved.</p></div>
+      <p class="case-role"><span class="work-role-label">Stack</span> Telegram/WhatsApp API · CRM integration · request routing</p>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js?v=4"></script>
 </body>
 </html>

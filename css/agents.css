@@ -16,7 +16,7 @@
   padding-bottom: 72px;
 }
 .agents-hero-title {
-  max-width: 18ch;
+  max-width: 20ch;
 }
 
 /* ---- capability grid column variants (approach section) ---- */
@@ -25,19 +25,9 @@
   .cap-grid--3 { grid-template-columns: 1fr; }
 }
 
-/* ---- agent card grid column variants ---- */
-.work-grid--3 { grid-template-columns: repeat(3, 1fr); }
-.work-grid--1 { grid-template-columns: 1fr; }
-@media (max-width: 900px) {
-  .work-grid--3 { grid-template-columns: 1fr; }
-}
-
-/* ---- industry-skills mockup (нефтегаз agent) ---- */
-.mock-industry { --mock-tint: rgba(255,179,102,0.1); display: flex; flex-direction: column; gap: 10px; justify-content: center; }
-.industry-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
-.industry-terms { display: flex; flex-wrap: wrap; gap: 6px; }
-.industry-term { font-family: var(--mono); font-size: 10px; color: var(--accent); background: rgba(255,179,102,0.12); border: 1px solid rgba(255,179,102,0.3); padding: 4px 9px; border-radius: 999px; }
-.industry-term--muted { color: var(--text-faint); background: transparent; border-color: var(--border-strong); }
+/* ---- category kpi line under section title ---- */
+.cat-kpi { margin-top: 16px; color: var(--text-dim); font-size: 15.5px; line-height: 1.6; max-width: 56ch; }
+.cat-kpi b { color: var(--text); font-weight: 500; }
 
 /* ---- problem / solve fields inside a card ---- */
 .agent-field { margin-top: 18px; }
@@ -59,19 +49,95 @@
 }
 .agent-field--solve p { color: #c9c6bd; }
 
-/* ---- skills callout under "how it works" ---- */
-.agents-skills-note {
-  margin-top: 40px;
-  padding: 24px 28px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  font-size: 14.5px;
-  color: var(--text-dim);
-  line-height: 1.65;
+/* ---- chip row: remaining products in a category, not expanded ---- */
+.chip-row { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-faint);
+  border: 1px dashed var(--border-strong);
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
 }
+.chip:hover { color: var(--text-dim); border-color: var(--text-faint); }
+.chip-note { margin-top: 14px; font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
 
-/* ---- CTA row (telegram + pdf) ---- */
+/* ---- bespoke mockups for the 8 flagship agents ---- */
+.stage-pill {
+  align-self: flex-start; font-family: var(--mono); font-size: 10px; color: var(--accent);
+  background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; margin-top: 2px;
+}
+.compliance-dot--pending { background: var(--surface-hover); color: var(--text-faint); }
+
+.mock-sales { --mock-tint: rgba(201,255,61,0.1); display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+
+.mock-hunter { --mock-tint: rgba(201,255,61,0.1); display: flex; flex-direction: column; gap: 9px; justify-content: center; font-size: 11px; }
+
+.mock-bizmgr { --mock-tint: rgba(255,209,102,0.1); display: flex; align-items: center; justify-content: center; }
+.stat-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+.stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 6px; text-align: center; }
+.stat-tile-num { display: block; font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--text); }
+.stat-tile-num--up { color: var(--accent); }
+.stat-tile-num--warn { color: #ff8a5c; }
+.stat-tile-lbl { display: block; font-family: var(--mono); font-size: 8px; letter-spacing: 0.04em; color: var(--text-faint); margin-top: 3px; }
+
+.mock-finance { --mock-tint: rgba(255,122,107,0.1); display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.finance-line { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); }
+.finance-line b { color: var(--text); font-weight: 500; }
+
+.mock-bizanalyst { --mock-tint: rgba(183,164,255,0.12); display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.summary-bullets { display: flex; flex-direction: column; gap: 5px; }
+.summary-bullets span { font-size: 10.5px; color: var(--text-dim); line-height: 1.4; }
+.summary-bullets .is-warn { color: #ff8a5c; }
+.summary-bullets .is-up { color: var(--accent); }
+
+.mock-brain { --mock-tint: rgba(110,231,255,0.12); display: flex; flex-direction: column; gap: 9px; justify-content: center; }
+
+.mock-voice { --mock-tint: rgba(110,231,255,0.12); display: flex; flex-direction: column; gap: 7px; justify-content: center; }
+.voice-wave { display: flex; align-items: center; gap: 2px; height: 20px; margin-bottom: 2px; }
+.voice-wave span { width: 3px; border-radius: 2px; background: var(--accent-2); opacity: 0.7; }
+.voice-line { font-size: 10.5px; color: var(--text-dim); line-height: 1.4; }
+.voice-line b { color: var(--text); }
+
+.mock-support { --mock-tint: rgba(157,255,176,0.12); display: flex; flex-direction: column; gap: 9px; justify-content: center; }
+.support-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); }
+.channel-badge { font-family: var(--mono); font-size: 9px; padding: 2px 7px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); flex-shrink: 0; }
+
+/* ---- live demo section anchor tweak (now sits under AI Company Brain) ---- */
+.demo-section { margin-top: 40px; }
+
+/* ---- full catalog matrix: 4 columns x 5 products ---- */
+.catalog-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+}
+@media (max-width: 900px) { .catalog-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .catalog-grid { grid-template-columns: 1fr; } }
+.catalog-col { background: var(--surface); padding: 26px 22px; }
+.catalog-col-head { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+.catalog-col-head .ico { font-size: 18px; }
+.catalog-col-head .name { font-family: var(--mono); font-size: 11.5px; color: var(--text-dim); letter-spacing: 0.03em; }
+.catalog-item { display: flex; align-items: center; gap: 9px; padding: 8px 0; font-size: 13px; color: var(--text-dim); border-top: 1px solid var(--border); }
+.catalog-item:first-of-type { border-top: none; }
+.catalog-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
+.catalog-item.is-flagship { color: var(--text); }
+.catalog-item.is-flagship .catalog-dot { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+/* ---- sticky side rail: category progress (desktop only) ---- */
+.cat-rail {
+  position: fixed; right: 26px; top: 50%; transform: translateY(-50%); z-index: 40;
+  display: flex; flex-direction: column; gap: 20px; padding: 18px 4px;
+}
+.cat-rail-item { display: flex; align-items: center; gap: 10px; cursor: pointer; opacity: 0.4; transition: opacity 0.3s var(--ease); background: none; border: none; }
+.cat-rail-item.is-active { opacity: 1; }
+.cat-rail-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-faint); transition: background 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+.cat-rail-item.is-active .cat-rail-dot { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.cat-rail-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.05em; color: var(--text-dim); white-space: nowrap; }
+.cat-rail-item.is-active .cat-rail-label { color: var(--text); }
+@media (max-width: 1320px) { .cat-rail { display: none; } }
+
+/* ---- CTA row (telegram) + small note below ---- */
 .agents-cta-row {
   display: flex;
   align-items: center;
@@ -79,7 +145,43 @@
   gap: 16px;
   flex-wrap: wrap;
 }
+.cta-note { margin-top: 20px; font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); }
+
+/* ---- bottom download bar (before footer) ---- */
+.download-bar { padding-bottom: 90px; }
+.download-panel {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--surface), var(--bg-soft));
+  padding: 34px 38px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.download-panel-text h3 { font-size: 19px; margin-bottom: 6px; font-weight: 400; }
+.download-panel-text p { color: var(--text-dim); font-size: 13px; }
+
+/* ---- ambient cursor glow — soft, follows pointer across the page ---- */
+.cursor-glow {
+  position: fixed; top: 0; left: 0; width: 560px; height: 560px; border-radius: 50%; pointer-events: none; z-index: 5;
+  transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.5s var(--ease);
+  background: radial-gradient(circle, rgba(201,255,61,0.10), rgba(110,231,255,0.05) 42%, transparent 70%);
+  filter: blur(6px); mix-blend-mode: screen;
+}
+
+/* ---- flagship card tilt + spotlight (agents catalog only) ---- */
+.flagship-card {
+  --mx: 50%; --my: 0%; --rx: 0deg; --ry: 0deg;
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+}
+.flagship-card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 1;
+  transition: opacity 0.35s var(--ease);
+  background: radial-gradient(360px circle at var(--mx) var(--my), rgba(201,255,61,0.10), transparent 60%);
+}
+.flagship-card:hover::before { opacity: 1; }
+
+/* ---- magnetic buttons ---- */
+.magnetic { transition: transform 0.2s var(--ease); }
 
 @media (max-width: 640px) {
   .agents-hero-inner { padding-top: 70px; padding-bottom: 50px; }
+  .download-panel { padding: 26px 24px; }
 }
