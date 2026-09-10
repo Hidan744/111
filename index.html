@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 <link rel="stylesheet" href="css/agents.css?v=10">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -584,6 +584,52 @@
 
 </main>
 
+<!-- ================= LEAD FAB + MODAL ================= -->
+<button type="button" class="lead-fab magnetic" id="leadFabBtn">
+  <span class="lead-fab-pulse" aria-hidden="true"></span>
+  <span class="lead-fab-text">
+    <strong>Оставить заявку</strong>
+    <em>Разбор задачи за 24ч</em>
+  </span>
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="lead-overlay" id="leadOverlay" aria-hidden="true">
+  <div class="lead-modal" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="leadModalTitle">
+    <button type="button" class="case-close" id="leadClose" aria-label="Закрыть">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="lead-body" id="leadFormWrap">
+      <p class="eyebrow"><span class="eyebrow-tag">ЗАЯВКА</span></p>
+      <h3 id="leadModalTitle" class="lead-title">Опишите задачу → получите разбор за 24ч</h3>
+      <p class="lead-sub">Коротко расскажите, что нужно решить, и как с вами связаться. Отвечаю лично.</p>
+
+      <form id="leadForm" class="lead-form">
+        <input type="text" name="botcheck" class="lead-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="lead-field">
+          <span>Задача</span>
+          <textarea name="message" rows="4" placeholder="Например: хотим автоматизировать обработку заявок с сайта…" required></textarea>
+        </label>
+        <label class="lead-field">
+          <span>Telegram, Max или телефон</span>
+          <input type="text" name="contact" placeholder="@username или +7…" required>
+        </label>
+        <button type="submit" class="btn btn-primary lead-submit">
+          <span>Отправить</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="lead-success" id="leadSuccess">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 12.5l3 3 6-6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>Заявка отправлена</h3>
+      <p>Получил задачу — отвечу в течение 24 часов.</p>
+    </div>
+  </div>
+</div>
+
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <span>&copy; <span id="year"></span> VinakovLab. AI-агенты для бизнеса.</span>
@@ -767,6 +813,6 @@
   </div>
 </div>
 
-<script src="js/main.js?v=8"></script>
+<script src="js/main.js?v=9"></script>
 </body>
 </html>

@@ -488,4 +488,78 @@
       el.addEventListener("click", () => ym(112451717, "reachGoal", "pdf_download"));
     });
   })();
+
+  /* ---------------- lead fab + form ---------------- */
+  (function leadForm() {
+    const WEB3FORMS_ACCESS_KEY = "64bd4d6e-e3d9-48ca-98fa-f3a60c132c6c";
+    const fab = document.getElementById("leadFabBtn");
+    const overlay = document.getElementById("leadOverlay");
+    const modal = document.getElementById("leadModal");
+    const closeBtn = document.getElementById("leadClose");
+    const form = document.getElementById("leadForm");
+    if (!fab || !overlay || !modal || !form) return;
+
+    const isEn = document.documentElement.lang === "en";
+    let lastTrigger = null;
+
+    function toggleFab() {
+      fab.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.5);
+    }
+    document.addEventListener("scroll", toggleFab, { passive: true });
+    toggleFab();
+
+    function openModal(trigger) {
+      lastTrigger = trigger || null;
+      overlay.classList.add("is-open");
+      overlay.setAttribute("aria-hidden", "false");
+      document.documentElement.style.overflow = "hidden";
+      closeBtn.focus();
+      if (typeof ym === "function") ym(112451717, "reachGoal", "lead_form_open");
+    }
+    function closeModal() {
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
+      document.documentElement.style.overflow = "";
+      if (lastTrigger) lastTrigger.focus();
+    }
+
+    fab.addEventListener("click", () => openModal(fab));
+    closeBtn.addEventListener("click", closeModal);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("is-open")) closeModal();
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (form.querySelector('[name="botcheck"]').value) return;
+
+      const submitBtn = form.querySelector(".lead-submit");
+      const formData = new FormData(form);
+      formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+      formData.append("subject", "Новая заявка с сайта VinakovLab");
+      formData.append("from_name", "VinakovLab — форма заявки");
+
+      submitBtn.disabled = true;
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: formData,
+        });
+        const data = await res.json();
+        if (data.success) {
+          modal.classList.add("is-success");
+          if (typeof ym === "function") ym(112451717, "reachGoal", "lead_form_submit");
+        } else {
+          throw new Error(data.message || "submit failed");
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        alert(isEn
+          ? "Couldn't send the request, please try again or write to eduard.vinackov@yandex.ru"
+          : "Не удалось отправить заявку, попробуйте ещё раз или напишите на eduard.vinackov@yandex.ru");
+      }
+    });
+  })();
 })();
