@@ -989,6 +989,13 @@ section { position: relative; z-index: 1; padding: 130px 0; }
 }
 .to-top { color: var(--text-dim); transition: color 0.2s var(--ease); }
 .to-top:hover { color: var(--accent); }
+.footer-social-group { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.footer-social-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
 .footer-social { display: flex; align-items: center; gap: 18px; }
 .footer-social a {
   display: flex;
@@ -1003,6 +1010,7 @@ section { position: relative; z-index: 1; padding: 130px 0; }
 .footer-social a:hover { color: var(--bg); }
 .footer-social a.vk:hover { background: var(--accent-2); }
 .footer-social a.ig:hover { background: linear-gradient(45deg, var(--accent), var(--accent-2)); }
+.footer-social a.mail:hover { background: var(--accent); }
 .footer-social svg { width: 17px; height: 17px; }
 
 /* ================= REVEAL ANIMATION ================= */
