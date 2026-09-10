@@ -152,6 +152,13 @@ model Letter {
   @@index([status])
 }
 
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
 model Suppression {
   email     String   @id
   reason    String   @default("unsubscribed")
