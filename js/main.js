@@ -443,4 +443,37 @@
       el.addEventListener("mouseleave", () => { el.style.transform = ""; });
     });
   })();
+
+  /* ---------------- footer mail tooltip ---------------- */
+  (function mailTooltip() {
+    const btn = document.querySelector(".footer-social button.mail");
+    if (!btn) return;
+    const tooltip = btn.querySelector(".mail-tooltip");
+    const email = btn.dataset.email;
+    const originalText = tooltip.textContent;
+    const copiedText = document.documentElement.lang === "en" ? "Copied!" : "Скопировано!";
+    let resetTimer = null;
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const wasOpen = btn.classList.contains("is-open");
+      btn.classList.toggle("is-open");
+      if (!wasOpen) {
+        tooltip.textContent = originalText;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(email).then(() => {
+            clearTimeout(resetTimer);
+            resetTimer = setTimeout(() => {
+              tooltip.textContent = copiedText;
+              resetTimer = setTimeout(() => { tooltip.textContent = originalText; }, 1400);
+            }, 900);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!btn.contains(e.target)) btn.classList.remove("is-open");
+    });
+  })();
 })();

@@ -997,7 +997,8 @@ section { position: relative; z-index: 1; padding: 130px 0; }
   color: var(--accent);
 }
 .footer-social { display: flex; align-items: center; gap: 18px; }
-.footer-social a {
+.footer-social a,
+.footer-social button.mail {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1006,12 +1007,53 @@ section { position: relative; z-index: 1; padding: 130px 0; }
   border-radius: 8px;
   color: var(--text-faint);
   transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
 }
-.footer-social a:hover { color: var(--bg); }
+.footer-social a:hover,
+.footer-social button.mail:hover,
+.footer-social button.mail.is-open { color: var(--bg); }
 .footer-social a.vk:hover { background: var(--accent-2); }
 .footer-social a.ig:hover { background: linear-gradient(45deg, var(--accent), var(--accent-2)); }
-.footer-social a.mail:hover { background: var(--accent); }
+.footer-social button.mail:hover,
+.footer-social button.mail.is-open { background: var(--accent); }
 .footer-social svg { width: 17px; height: 17px; }
+
+.mail-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  padding: 8px 13px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+  box-shadow: 0 12px 28px -10px rgba(0,0,0,0.55);
+}
+.mail-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--surface);
+}
+.footer-social button.mail.is-open .mail-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
 
 /* ================= REVEAL ANIMATION ================= */
 .reveal {
