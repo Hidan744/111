@@ -459,6 +459,7 @@
       const wasOpen = btn.classList.contains("is-open");
       btn.classList.toggle("is-open");
       if (!wasOpen) {
+        if (typeof ym === "function") ym(112451717, "reachGoal", "email_click");
         tooltip.textContent = originalText;
         if (navigator.clipboard) {
           navigator.clipboard.writeText(email).then(() => {
@@ -474,6 +475,17 @@
 
     document.addEventListener("click", (e) => {
       if (!btn.contains(e.target)) btn.classList.remove("is-open");
+    });
+  })();
+
+  /* ---------------- metrika goals: telegram / pdf ---------------- */
+  (function metrikaGoals() {
+    if (typeof ym !== "function") return;
+    document.querySelectorAll('a[href*="t.me/"]').forEach((el) => {
+      el.addEventListener("click", () => ym(112451717, "reachGoal", "telegram_click"));
+    });
+    document.querySelectorAll('a[href$="vinakov-agents.pdf"]').forEach((el) => {
+      el.addEventListener("click", () => ym(112451717, "reachGoal", "pdf_download"));
     });
   })();
 })();
