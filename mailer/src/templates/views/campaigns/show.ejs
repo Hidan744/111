@@ -100,7 +100,7 @@
 <div class="card">
   <div class="card-header">Предпросмотр письма (на примере первого получателя)</div>
   <div class="card-body">
-    <iframe class="letter-preview w-100" style="height:600px;border:0;" srcdoc="<%= previewHtml.replace(/\"/g, '&quot;') %>"></iframe>
+    <iframe class="letter-preview w-100" style="height:600px;border:0;" srcdoc="<%- previewHtml.replace(/\"/g, '&quot;') %>"></iframe>
   </div>
 </div>
 <% } %>
