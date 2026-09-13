@@ -171,6 +171,21 @@
 /* ---- magnetic buttons ---- */
 .magnetic { transition: transform 0.2s var(--ease); }
 
+/* ---- process rebuilt: problem -> result -> agent -> implementation ---- */
+.flagship-steps { display: flex; flex-direction: column; gap: 0; margin-top: 40px; }
+.fstep { display: grid; grid-template-columns: 140px 1fr; gap: 36px; padding: 34px 0; border-top: 1px solid var(--border); }
+.fstep:last-child { border-bottom: 1px solid var(--border); }
+.fstep-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--accent-2); padding-top: 4px; }
+.fstep-label.is-result { color: var(--accent); }
+.fstep h3 { font-size: 22px; font-weight: 400; margin-bottom: 10px; }
+.fstep p { font-size: 14.5px; color: var(--text-dim); line-height: 1.65; max-width: 62ch; }
+.fstep-agent-body { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center; }
+.fstep-agent-title { font-size: 20px; font-weight: 450; margin-bottom: 10px; }
+@media (max-width: 900px) {
+  .fstep { grid-template-columns: 1fr; gap: 10px; }
+  .fstep-agent-body { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 640px) {
   .agents-hero-inner { padding-top: 70px; padding-bottom: 50px; }
   .download-panel { padding: 26px 24px; }

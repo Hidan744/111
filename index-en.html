@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css?v=15">
-<link rel="stylesheet" href="css/agents.css?v=10">
+<link rel="stylesheet" href="css/agents.css?v=11">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
@@ -480,29 +480,55 @@
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow"><span class="eyebrow-tag">HOW IT WORKS</span></p>
-        <h2 class="section-title">Claude Agent SDK <em>+ MCP</em></h2>
+        <h2 class="section-title">How it works <em>in practice</em></h2>
       </div>
 
-      <div class="process-list">
-        <div class="process-item reveal">
-          <span class="process-num">01</span>
-          <div class="process-text">
-            <h3>Data Source</h3>
-            <p>Documents, your ERP/CRM database, and incident history connect via MCP or a direct integration.</p>
+      <div class="flagship-steps">
+        <div class="fstep reveal">
+          <span class="fstep-label">Problem</span>
+          <div>
+            <h3>300 leads a month — and some go to waste</h3>
+            <p>Managers physically can't answer everyone in time. Once a customer waits more than a couple of minutes, they've often already messaged a competitor.</p>
           </div>
         </div>
-        <div class="process-item reveal">
-          <span class="process-num">02</span>
-          <div class="process-text">
-            <h3>Processing</h3>
-            <p>Claude calls the data via API and produces an answer or takes an action — filling out a document, building a report, finding a similar incident.</p>
+
+        <div class="fstep reveal">
+          <span class="fstep-label is-result">Result</span>
+          <div>
+            <h3>Leads get handled instantly, 24/7</h3>
+            <p>The goal is to take routine lead qualification off managers entirely, leaving them only real negotiations and closing the deal.</p>
           </div>
         </div>
-        <div class="process-item reveal">
-          <span class="process-num">03</span>
-          <div class="process-text">
-            <h3>Interface</h3>
-            <p>A chat widget on your site, a Telegram bot, or embedded directly in a tool you already use.</p>
+
+        <div class="fstep reveal">
+          <span class="fstep-label">AI Employee</span>
+          <div class="fstep-agent-body">
+            <div class="work-window" aria-hidden="true">
+              <div class="window-bar">
+                <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+                <span class="window-title">ai sales agent</span>
+              </div>
+              <div class="window-body mock-sales">
+                <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Website lead: HVAC install, 1,200 m²</span></div>
+                <div class="chat-row chat-row--in">
+                  <span class="chat-avatar"></span>
+                  <span class="chat-bubble chat-bubble--in">Estimate ≈ $15k. Can you take an engineer on Thursday?</span>
+                </div>
+                <span class="stage-pill">✓ Deal → "Site visit scheduled"</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="fstep-agent-title">AI Sales Agent</h3>
+              <p>Responds in seconds, identifies need and budget, qualifies the lead, updates the CRM — and hands the manager a ready-to-close client.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fstep reveal">
+          <span class="fstep-label">Implementation</span>
+          <div>
+            <h3>Live in 1–2 weeks, no data migration</h3>
+            <p>Works on top of your CRM. Fixed price before start, payment by milestones — more in the <a href="#guarantees" style="color:var(--accent); text-decoration:underline;">"Guarantees"</a> section.</p>
           </div>
         </div>
       </div>

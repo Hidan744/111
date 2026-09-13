@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css?v=15">
-<link rel="stylesheet" href="css/agents.css?v=10">
+<link rel="stylesheet" href="css/agents.css?v=11">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
@@ -479,30 +479,56 @@
   <section class="process" id="process">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">КАК ЭТО УСТРОЕНО</span></p>
-        <h2 class="section-title">Claude Agent SDK <em>+ MCP</em></h2>
+        <p class="eyebrow"><span class="eyebrow-tag">КАК ЭТО РАБОТАЕТ</span></p>
+        <h2 class="section-title">Как это работает <em>на практике</em></h2>
       </div>
 
-      <div class="process-list">
-        <div class="process-item reveal">
-          <span class="process-num">01</span>
-          <div class="process-text">
-            <h3>Источник данных</h3>
-            <p>Документы, база 1С/CRM, история инцидентов подключаются через MCP или прямую интеграцию.</p>
+      <div class="flagship-steps">
+        <div class="fstep reveal">
+          <span class="fstep-label">Проблема</span>
+          <div>
+            <h3>300 заявок в месяц — и часть уходит впустую</h3>
+            <p>Менеджеры физически не успевают ответить всем вовремя. Пока клиент ждёт ответа дольше пары минут, он часто уже пишет конкуренту.</p>
           </div>
         </div>
-        <div class="process-item reveal">
-          <span class="process-num">02</span>
-          <div class="process-text">
-            <h3>Обработка</h3>
-            <p>Claude через API обращается к данным, формирует ответ или выполняет действие — заполняет документ, строит отчёт, ищет похожий инцидент.</p>
+
+        <div class="fstep reveal">
+          <span class="fstep-label is-result">Результат</span>
+          <div>
+            <h3>Заявки обрабатываются мгновенно, 24/7</h3>
+            <p>Цель — забирать с менеджеров типовую квалификацию лида полностью, оставляя им только реальные переговоры и закрытие сделки.</p>
           </div>
         </div>
-        <div class="process-item reveal">
-          <span class="process-num">03</span>
-          <div class="process-text">
-            <h3>Интерфейс</h3>
-            <p>Чат на сайте, Telegram-бот или встройка в уже используемый клиентом инструмент.</p>
+
+        <div class="fstep reveal">
+          <span class="fstep-label">AI-сотрудник</span>
+          <div class="fstep-agent-body">
+            <div class="work-window" aria-hidden="true">
+              <div class="window-bar">
+                <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
+                <span class="window-title">ai sales agent</span>
+              </div>
+              <div class="window-body mock-sales">
+                <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Заявка с сайта: монтаж вентиляции, 1200 м²</span></div>
+                <div class="chat-row chat-row--in">
+                  <span class="chat-avatar"></span>
+                  <span class="chat-bubble chat-bubble--in">Смета ≈ 1.4 млн ₽. Готовы принять инженера в четверг?</span>
+                </div>
+                <span class="stage-pill">✓ Сделка → «Замер назначен»</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="fstep-agent-title">AI Sales Agent</h3>
+              <p>Отвечает за секунды, определяет потребность и бюджет, квалифицирует лида, обновляет CRM — и передаёт менеджеру уже готового клиента.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fstep reveal">
+          <span class="fstep-label">Внедрение</span>
+          <div>
+            <h3>Подключается за 1-2 недели, без миграции данных</h3>
+            <p>Работает поверх вашей CRM. Фиксированная цена до старта, оплата по этапам — подробнее в разделе <a href="#guarantees" style="color:var(--accent); text-decoration:underline;">«Гарантии»</a>.</p>
           </div>
         </div>
       </div>
