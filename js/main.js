@@ -502,11 +502,7 @@
     const isEn = document.documentElement.lang === "en";
     let lastTrigger = null;
 
-    function toggleFab() {
-      fab.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.5);
-    }
-    document.addEventListener("scroll", toggleFab, { passive: true });
-    toggleFab();
+    fab.classList.add("is-visible");
 
     function openModal(trigger) {
       lastTrigger = trigger || null;
