@@ -494,6 +494,9 @@
     }
 
     fab.addEventListener("click", () => openModal(fab));
+    document.querySelectorAll("[data-lead-open]").forEach((el) => {
+      el.addEventListener("click", (e) => { e.preventDefault(); openModal(el); });
+    });
     closeBtn.addEventListener("click", closeModal);
     overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
     document.addEventListener("keydown", (e) => {
