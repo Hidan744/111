@@ -60,10 +60,7 @@
 
     <nav class="main-nav" id="mainNav">
       <div class="nav-pills">
-        <a href="#cat-revenue" class="nav-pill">Revenue AI</a>
-        <a href="#cat-ops" class="nav-pill">Operations AI</a>
-        <a href="#cat-intel" class="nav-pill">Intelligence AI</a>
-        <a href="#cat-customer" class="nav-pill">Customer AI</a>
+        <a href="#cats" class="nav-pill">AI-направления</a>
       </div>
       <a href="#guarantees" class="nav-pill">Гарантии</a>
       <a href="#contact" class="nav-contact">Контакты</a>
@@ -77,13 +74,6 @@
     </button>
   </div>
 </header>
-
-<nav class="cat-rail" id="catRail" aria-hidden="true">
-  <button type="button" class="cat-rail-item" data-target="cat-revenue"><span class="cat-rail-dot"></span><span class="cat-rail-label">01 Revenue</span></button>
-  <button type="button" class="cat-rail-item" data-target="cat-ops"><span class="cat-rail-dot"></span><span class="cat-rail-label">02 Operations</span></button>
-  <button type="button" class="cat-rail-item" data-target="cat-intel"><span class="cat-rail-dot"></span><span class="cat-rail-label">03 Intelligence</span></button>
-  <button type="button" class="cat-rail-item" data-target="cat-customer"><span class="cat-rail-dot"></span><span class="cat-rail-label">04 Customer</span></button>
-</nav>
 
 <main id="home">
 
@@ -103,14 +93,14 @@
       </p>
 
       <div class="hero-actions reveal">
-        <a href="#cat-revenue" class="btn btn-primary">
+        <a href="#cats" class="btn btn-primary">
           <span>Смотреть агентов</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
     </div>
 
-    <a href="#cat-revenue" class="scroll-hint" aria-label="Пролистать вниз">
+    <a href="#cats" class="scroll-hint" aria-label="Пролистать вниз">
       <span></span>
     </a>
   </section>
@@ -143,232 +133,81 @@
     </div>
   </section>
 
-  <!-- ================= 01 REVENUE ================= -->
-  <section class="work agents-category" id="cat-revenue">
+  <!-- ================= AI-НАПРАВЛЕНИЯ ================= -->
+  <section class="cats" id="cats">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">01 — REVENUE AI</span></p>
-        <h2 class="section-title">Всё, что <em>увеличивает продажи</em></h2>
-        <p class="cat-kpi">Главный результат: <b>больше лидов, выше конверсия, короче цикл сделки.</b></p>
+        <p class="eyebrow"><span class="eyebrow-tag">4 AI-НАПРАВЛЕНИЯ</span></p>
+        <h2 class="section-title">4 AI-направления. <em>Один разговор — и проблема решена.</em></h2>
       </div>
 
-      <div class="work-grid">
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai sales agent</span>
-            </div>
-            <div class="window-body mock-sales">
-              <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Заявка с сайта: монтаж вентиляции, 1200 м²</span></div>
-              <div class="chat-row chat-row--in">
-                <span class="chat-avatar"></span>
-                <span class="chat-bubble chat-bubble--in">Смета ≈ 1.4 млн ₽. Готовы принять инженера в четверг?</span>
-              </div>
-              <span class="stage-pill">✓ Сделка → «Замер назначен»</span>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">CRM</span><span class="tag">WhatsApp</span><span class="tag">Telegram</span></div>
-            <h3>AI Sales Agent</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Заявки простаивают часами, пока менеджер не освободится — часть клиентов уходит к тому, кто ответил первым.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент квалифицирует лида, считает смету, назначает встречу и сам двигает сделку по CRM.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-sales">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
+      <div class="cats-grid reveal">
+        <article class="cat-card" data-cat-trigger="revenue">
+          <span class="cat-card-emoji">💰</span>
+          <span class="cat-card-num">01 — REVENUE AI</span>
+          <h3>Всё, что увеличивает продажи</h3>
+          <span class="cat-card-tag">Больше лидов, выше конверсия, короче цикл сделки</span>
+          <ul class="cat-card-list">
+            <li>AI Sales Agent</li>
+            <li>AI Lead Hunter</li>
+            <li>AI Personal Sales Assistant</li>
+            <li>AI Marketing Director</li>
+            <li>AI CRM Agent</li>
+          </ul>
+          <button type="button" class="cat-card-cta" data-cat-trigger="revenue">Смотреть Revenue AI →</button>
+          <a href="#process" class="cat-card-example">Пример на практике →</a>
         </article>
 
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai lead hunter</span>
-            </div>
-            <div class="window-body mock-hunter">
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>ООО «СтройГрупп» — ЛПР найден</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>«ТехноПоставка» — письмо отправлено</div>
-              <div class="compliance-row"><span class="compliance-dot compliance-dot--pending">···</span>«ГазМонтаж» — анализ болей</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">LinkedIn</span><span class="tag">Web</span><span class="tag">CRM</span></div>
-            <h3>AI Lead Hunter</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Ручной поиск B2B-клиентов по критериям и выход на ЛПР съедает недели работы менеджера по продажам.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент находит компании под портрет клиента, вычисляет ЛПР и отправляет персональные холодные письма.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-hunter">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
-        </article>
-      </div>
-
-      <div class="chip-row reveal">
-        <span class="chip">AI Personal Sales Assistant</span>
-        <span class="chip">AI Marketing Director</span>
-        <span class="chip">AI CRM Agent</span>
-      </div>
-      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
-    </div>
-  </section>
-
-  <!-- ================= 02 OPERATIONS ================= -->
-  <section class="work agents-category" id="cat-ops">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">02 — OPERATIONS AI</span></p>
-        <h2 class="section-title">Всё, что <em>экономит расходы</em></h2>
-        <p class="cat-kpi">Главный результат: <b>меньше ручной работы, ниже операционные издержки.</b></p>
-      </div>
-
-      <div class="work-grid">
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai business manager</span>
-            </div>
-            <div class="window-body mock-bizmgr">
-              <div class="stat-tiles">
-                <div class="stat-tile"><span class="stat-tile-num stat-tile-num--up">+12%</span><span class="stat-tile-lbl">ВЫРУЧКА</span></div>
-                <div class="stat-tile"><span class="stat-tile-num stat-tile-num--warn">−4</span><span class="stat-tile-lbl">ЗАДАЧ В СРОК</span></div>
-                <div class="stat-tile"><span class="stat-tile-num">37</span><span class="stat-tile-lbl">ОТКРЫТО</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">ERP</span><span class="tag">CRM</span><span class="tag">Tasks</span></div>
-            <h3>AI Business Manager</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Собственник вручную сводит метрики разных отделов, чтобы понять, где реально буксует бизнес.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Цифровой операционный директор сводит показатели всех отделов в одну картину и сам раздаёт задачи.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-bizmgr">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
+        <article class="cat-card" data-cat-trigger="ops">
+          <span class="cat-card-emoji">⚙️</span>
+          <span class="cat-card-num">02 — OPERATIONS AI</span>
+          <h3>Всё, что экономит расходы</h3>
+          <span class="cat-card-tag">Меньше ручной работы, ниже операционные издержки</span>
+          <ul class="cat-card-list">
+            <li>AI Business Manager</li>
+            <li>AI Finance Controller</li>
+            <li>AI Operations Manager</li>
+            <li>AI Document Manager</li>
+            <li>AI HR Recruiter</li>
+          </ul>
+          <button type="button" class="cat-card-cta" data-cat-trigger="ops">Смотреть Operations AI →</button>
+          <a href="#process" class="cat-card-example">Пример на практике →</a>
         </article>
 
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai finance controller</span>
-            </div>
-            <div class="window-body mock-finance">
-              <div class="finance-line"><span>Счёт №4471</span><b>сверен</b></div>
-              <div class="finance-line"><span>Счёт №4472</span><b>сверен</b></div>
-              <div class="pulse-alert"><span class="pulse-alert-dot"></span>Кассовый разрыв ожидается через 6 дней</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">1С</span><span class="tag">Банк-клиент</span><span class="tag">Excel</span></div>
-            <h3>AI Finance Controller</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Кассовые разрывы и просроченная дебиторка замечаются постфактум, когда деньги уже нужны.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Агент сверяет счета, отслеживает дебиторку и заранее предупреждает о разрывах в кассе.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-finance">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
+        <article class="cat-card" data-cat-trigger="intel">
+          <span class="cat-card-emoji">🧠</span>
+          <span class="cat-card-num">03 — INTELLIGENCE AI</span>
+          <h3>Всё, что даёт собственнику информацию</h3>
+          <span class="cat-card-tag">Решения на основе данных, а не ощущений</span>
+          <ul class="cat-card-list">
+            <li>AI Business Analyst</li>
+            <li>AI Company Brain</li>
+            <li>AI Competitor Monitor</li>
+            <li>AI Business Auditor</li>
+            <li>AI Product Researcher</li>
+          </ul>
+          <button type="button" class="cat-card-cta" data-cat-trigger="intel">Смотреть Intelligence AI →</button>
+          <a href="#process" class="cat-card-example">Пример на практике →</a>
+        </article>
+
+        <article class="cat-card" data-cat-trigger="customer">
+          <span class="cat-card-emoji">❤️</span>
+          <span class="cat-card-num">04 — CUSTOMER AI</span>
+          <h3>Всё, что работает с клиентом</h3>
+          <span class="cat-card-tag">Ответ мгновенно, в любое время суток</span>
+          <ul class="cat-card-list">
+            <li>AI Voice Manager</li>
+            <li>AI Customer Support</li>
+            <li>AI Reputation Manager</li>
+            <li>AI E-commerce Manager</li>
+            <li>AI Content Factory</li>
+          </ul>
+          <button type="button" class="cat-card-cta" data-cat-trigger="customer">Смотреть Customer AI →</button>
+          <a href="#process" class="cat-card-example">Пример на практике →</a>
         </article>
       </div>
 
-      <div class="chip-row reveal">
-        <span class="chip">AI Operations Manager</span>
-        <span class="chip">AI Document Manager</span>
-        <span class="chip">AI HR Recruiter</span>
-      </div>
-      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
-    </div>
-  </section>
-
-  <!-- ================= 03 INTELLIGENCE ================= -->
-  <section class="work agents-category" id="cat-intel">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-tag">03 — INTELLIGENCE AI</span></p>
-        <h2 class="section-title">Всё, что <em>даёт собственнику информацию</em></h2>
-        <p class="cat-kpi">Главный результат: <b>управленческие решения на основе данных, а не ощущений.</b></p>
-      </div>
-
-      <div class="work-grid">
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai business analyst</span>
-            </div>
-            <div class="window-body mock-bizanalyst">
-              <div class="analyst-q">Доброе утро! Сводка за 8 сентября:</div>
-              <div class="summary-bullets">
-                <span class="is-up">• Выручка: 1 840 000 ₽ (+12%)</span>
-                <span class="is-warn">• CAC вырос на 18% — кампания «Септики Москва»</span>
-                <span>• 37 лидов висят без follow-up &gt; 48ч</span>
-              </div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">CRM</span><span class="tag">BI</span><span class="tag">Excel</span></div>
-            <h3>AI Business Analyst</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Без штатного аналитика собственник узнаёт о проблеме в воронке уже после того, как она стоила денег.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Каждое утро — короткая сводка: что выросло, что просело и где именно теряются деньги.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-bizanalyst">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
-        </article>
-
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai company brain</span>
-            </div>
-            <div class="window-body mock-brain">
-              <div class="lexis-search">«Какой SLA у нас на возврат для B2B?»</div>
-              <div class="lexis-result">
-                <span class="lexis-result-title">SLA.md</span>
-                <span class="lexis-result-src">Notion · обновлено 3 дня назад</span>
-              </div>
-              <div class="lexis-result">
-                <span class="lexis-result-title">Sales Policy</span>
-                <span class="lexis-result-src">Confluence</span>
-              </div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">RAG</span><span class="tag">Access control</span></div>
-            <h3>AI Company Brain</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Знания компании разбросаны по Notion, Confluence и дискам — найти актуальный ответ дольше, чем сделать заново.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Единая база знаний компании с разграничением прав доступа — отвечает мгновенно, ссылаясь на источник.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-brain">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
-        </article>
-      </div>
+      <p class="cats-note reveal">Это не весь список — показаны основные направления. Под конкретную задачу бизнеса можем спроектировать отдельного AI-сотрудника.</p>
 
       <!-- ================= LIVE AGENT DEMO ================= -->
       <div class="demo-section" id="demo">
@@ -385,95 +224,101 @@
           </div>
         </div>
       </div>
-
-      <div class="chip-row reveal">
-        <span class="chip">AI Competitor Monitor</span>
-        <span class="chip">AI Business Auditor</span>
-        <span class="chip">AI Product Researcher</span>
-      </div>
-      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
     </div>
   </section>
 
-  <!-- ================= 04 CUSTOMER ================= -->
-  <section class="work agents-category" id="cat-customer">
-    <div class="wrap">
-      <div class="section-head reveal">
+  <!-- ================= AI-DIRECTIONS MODAL ================= -->
+  <div class="case-overlay" id="catOverlay" aria-hidden="true">
+    <div class="case-modal" id="catModal" role="dialog" aria-modal="true" style="max-width:680px;">
+      <button type="button" class="case-close" id="catClose" aria-label="Закрыть">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+
+      <div class="case-panel cat-panel" data-cat="revenue" style="padding:40px 36px;">
+        <p class="eyebrow"><span class="eyebrow-tag">01 — REVENUE AI</span></p>
+        <h3 style="font-size:26px; margin-bottom:20px;">Всё, что увеличивает продажи</h3>
+        <div class="fstep" style="border-top:none; padding-top:0;">
+          <span class="fstep-label">Проблема</span>
+          <p>Заявки простаивают часами, пока менеджер не освободится — часть клиентов уходит к тому, кто ответил первым.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label is-result">Результат</span>
+          <p>Заявки обрабатываются мгновенно, 24/7 — менеджеры занимаются только реальными переговорами и закрытием сделок.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">AI-сотрудники</span>
+          <p><strong style="color:var(--text);">AI Sales Agent</strong> — квалифицирует лида, считает смету, назначает встречу. <strong style="color:var(--text);">AI Lead Hunter</strong> — находит компании под портрет клиента и выходит на ЛПР. Также в направлении: AI Personal Sales Assistant, AI Marketing Director, AI CRM Agent.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">Внедрение</span>
+          <p>Подключается поверх вашей CRM за 1-2 недели, без миграции данных.</p>
+        </div>
+      </div>
+
+      <div class="case-panel cat-panel" data-cat="ops" style="padding:40px 36px;">
+        <p class="eyebrow"><span class="eyebrow-tag">02 — OPERATIONS AI</span></p>
+        <h3 style="font-size:26px; margin-bottom:20px;">Всё, что экономит расходы</h3>
+        <div class="fstep" style="border-top:none; padding-top:0;">
+          <span class="fstep-label">Проблема</span>
+          <p>Собственник вручную сводит метрики разных отделов, чтобы понять, где реально буксует бизнес. Кассовые разрывы замечаются постфактум.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label is-result">Результат</span>
+          <p>Показатели всех отделов — в одной картине. Кассовые разрывы видны заранее, а не по факту.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">AI-сотрудники</span>
+          <p><strong style="color:var(--text);">AI Business Manager</strong> — сводит метрики и сам раздаёт задачи. <strong style="color:var(--text);">AI Finance Controller</strong> — сверяет счета и предупреждает о разрывах в кассе. Также в направлении: AI Operations Manager, AI Document Manager, AI HR Recruiter.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">Внедрение</span>
+          <p>Встраивается в текущие 1С/ERP и рабочие процессы без смены инструментов команды.</p>
+        </div>
+      </div>
+
+      <div class="case-panel cat-panel" data-cat="intel" style="padding:40px 36px;">
+        <p class="eyebrow"><span class="eyebrow-tag">03 — INTELLIGENCE AI</span></p>
+        <h3 style="font-size:26px; margin-bottom:20px;">Всё, что даёт собственнику информацию</h3>
+        <div class="fstep" style="border-top:none; padding-top:0;">
+          <span class="fstep-label">Проблема</span>
+          <p>Без штатного аналитика собственник узнаёт о проблеме в воронке уже после того, как она стоила денег. Знания компании разбросаны по Notion, Confluence и дискам.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label is-result">Результат</span>
+          <p>Каждое утро — короткая сводка: что выросло, что просело. Ответ на любой вопрос о бизнесе — за минуты, со ссылкой на источник.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">AI-сотрудники</span>
+          <p><strong style="color:var(--text);">AI Business Analyst</strong> — утренняя сводка по бизнесу. <strong style="color:var(--text);">AI Company Brain</strong> — единая база знаний компании. Также в направлении: AI Competitor Monitor, AI Business Auditor, AI Product Researcher.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">Внедрение</span>
+          <p>Подключается к существующим базам знаний и документам без переноса данных.</p>
+        </div>
+      </div>
+
+      <div class="case-panel cat-panel" data-cat="customer" style="padding:40px 36px;">
         <p class="eyebrow"><span class="eyebrow-tag">04 — CUSTOMER AI</span></p>
-        <h2 class="section-title">Всё, что <em>работает с клиентом</em></h2>
-        <p class="cat-kpi">Главный результат: <b>клиент получает ответ мгновенно, в любое время суток.</b></p>
+        <h3 style="font-size:26px; margin-bottom:20px;">Всё, что работает с клиентом</h3>
+        <div class="fstep" style="border-top:none; padding-top:0;">
+          <span class="fstep-label">Проблема</span>
+          <p>Пропущенные звонки — это потерянные клиенты, а держать оператора 24/7 дорого. Поддержка размазана по каналам, клиент ждёт ответа часами.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label is-result">Результат</span>
+          <p>Каждое обращение получает ответ сразу — днём и ночью, в любом канале, без выходных.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">AI-сотрудники</span>
+          <p><strong style="color:var(--text);">AI Voice Manager</strong> — поднимает трубку, квалифицирует и записывает клиента. <strong style="color:var(--text);">AI Customer Support</strong> — отвечает во всех каналах сразу. Также в направлении: AI Reputation Manager, AI E-commerce Manager, AI Content Factory.</p>
+        </div>
+        <div class="fstep">
+          <span class="fstep-label">Внедрение</span>
+          <p>Подключается к телефонии/мессенджерам компании, без смены номера или CRM.</p>
+        </div>
       </div>
-
-      <div class="work-grid">
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai voice manager</span>
-            </div>
-            <div class="window-body mock-voice">
-              <div class="voice-wave" aria-hidden="true">
-                <span style="height:8px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:18px"></span>
-                <span style="height:10px"></span><span style="height:16px"></span><span style="height:7px"></span><span style="height:12px"></span>
-                <span style="height:19px"></span><span style="height:9px"></span><span style="height:15px"></span><span style="height:6px"></span>
-                <span style="height:11px"></span><span style="height:17px"></span>
-              </div>
-              <div class="voice-line"><b>AI:</b> Стоматология «ДентаПлюс», здравствуйте!</div>
-              <div class="voice-line">Клиент: «Откололся зуб, нужно срочно»</div>
-              <div class="voice-line"><b>AI:</b> Сегодня в 15:30 у Смирновой — записать?</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">SIP</span><span class="tag">Телефония</span><span class="tag">CRM</span></div>
-            <h3>AI Voice Manager</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Пропущенные звонки — это потерянные клиенты, а держать оператора 24/7 дорого и нестабильно.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Голосовой агент поднимает трубку, квалифицирует и записывает клиента прямо в систему.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-voice">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
-        </article>
-
-        <article class="work-card flagship-card reveal">
-          <div class="work-window" aria-hidden="true">
-            <div class="window-bar">
-              <span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span>
-              <span class="window-title">ai customer support</span>
-            </div>
-            <div class="window-body mock-support">
-              <div class="support-row"><span class="channel-badge">TG</span> «Где мой заказ #4471?»</div>
-              <div class="support-row"><span class="channel-badge">WA</span> «Можно поменять размер?»</div>
-              <div class="support-row"><span class="channel-badge">Сайт</span> «Не пришёл чек на почту»</div>
-            </div>
-          </div>
-          <div class="work-body">
-            <div class="work-tags"><span class="tag">Telegram</span><span class="tag">WhatsApp</span><span class="tag">Сайт</span></div>
-            <h3>AI Customer Support</h3>
-            <div class="agent-field">
-              <span class="agent-field-label">Проблема</span>
-              <p>Поддержка размазана по каналам — клиент ждёт ответа часами, нагрузка на живых операторов растёт.</p>
-            </div>
-            <div class="agent-field agent-field--solve">
-              <span class="agent-field-label agent-field-label--solve">Решение</span>
-              <p>Один агент отвечает во всех каналах сразу и решает типовые обращения через API.</p>
-            </div>
-            <button type="button" class="work-link" data-case="agent-support">Смотреть как это работает <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
-        </article>
-      </div>
-
-      <div class="chip-row reveal">
-        <span class="chip">AI Reputation Manager</span>
-        <span class="chip">AI E-commerce Manager</span>
-        <span class="chip">AI Content Factory</span>
-      </div>
-      <p class="chip-note">+ 3 продукта направления — в каталоге, по запросу разворачиваем детали</p>
     </div>
-  </section>
+  </div>
 
   <!-- ================= HOW IT WORKS ================= -->
   <section class="process" id="process">
@@ -680,167 +525,6 @@
   </div>
 </footer>
 
-<!-- ================= HOW-IT-WORKS MODAL ================= -->
-<div class="case-overlay" id="caseOverlay" aria-hidden="true">
-  <div class="case-modal" id="caseModal" role="dialog" aria-modal="true">
-    <button type="button" class="case-close" id="caseClose" aria-label="Закрыть">
-      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    </button>
-
-    <div class="case-panel" data-case="agent-sales">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">01 — ai sales agent</span></div>
-        <div class="window-body mock-sales">
-          <div class="chat-row chat-row--out"><span class="chat-bubble chat-bubble--out">Заявка с сайта: монтаж вентиляции, 1200 м²</span></div>
-          <div class="chat-row chat-row--in"><span class="chat-avatar"></span><span class="chat-bubble chat-bubble--in">Смета ≈ 1.4 млн ₽. Готовы принять инженера в четверг?</span></div>
-          <span class="stage-pill">✓ Сделка → «Замер назначен»</span>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">CRM</span><span class="tag">WhatsApp</span><span class="tag">Telegram</span></div>
-      <h3 class="case-title" id="case-title-agent-sales">AI Sales Agent — квалификация и закрытие лида</h3>
-      <p class="case-tagline">Отвечает первым, считает смету и сам двигает сделку по CRM.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Заявки простаивают часами, пока менеджер не освободится — часть клиентов уходит к тому, кто ответил первым.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Агент подключается к форме на сайте и CRM: проверяет карточку клиента, считает ориентировочную смету по прайсу и предлагает время встречи в WhatsApp или Telegram.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Заявка «монтаж вентиляции, 1200 м²» дошла до статуса «Замер назначен» за 3 минуты — без единого касания менеджера.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> CRM API · WhatsApp Business API · расчёт сметы по прайс-листу</p>
-    </div>
-
-    <div class="case-panel" data-case="agent-hunter">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">01 — ai lead hunter</span></div>
-        <div class="window-body mock-hunter">
-          <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>ООО «СтройГрупп» — ЛПР найден</div>
-          <div class="compliance-row"><span class="compliance-dot compliance-dot--ok">✓</span>«ТехноПоставка» — письмо отправлено</div>
-          <div class="compliance-row"><span class="compliance-dot compliance-dot--pending">···</span>«ГазМонтаж» — анализ болей</div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">LinkedIn</span><span class="tag">Web</span><span class="tag">CRM</span></div>
-      <h3 class="case-title" id="case-title-agent-hunter">AI Lead Hunter — поиск клиентов и выход на ЛПР</h3>
-      <p class="case-tagline">Сам находит компании под портрет клиента и пишет первым.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Ручной поиск B2B-клиентов по критериям и выход на ЛПР съедает недели работы менеджера по продажам.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Агент фильтрует компании по отрасли, региону и размеру штата, определяет ЛПР через открытые источники и формирует персональное письмо под конкретную боль компании.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Из 47 найденных компаний агент отфильтровал 12 целевых и отправил 12 персональных писем без участия отдела продаж.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> Web-скрапинг · поиск контактов · генерация персонализированных писем</p>
-    </div>
-
-    <div class="case-panel" data-case="agent-bizmgr">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">02 — ai business manager</span></div>
-        <div class="window-body mock-bizmgr">
-          <div class="stat-tiles">
-            <div class="stat-tile"><span class="stat-tile-num stat-tile-num--up">+12%</span><span class="stat-tile-lbl">ВЫРУЧКА</span></div>
-            <div class="stat-tile"><span class="stat-tile-num stat-tile-num--warn">−4</span><span class="stat-tile-lbl">ЗАДАЧ В СРОК</span></div>
-            <div class="stat-tile"><span class="stat-tile-num">37</span><span class="stat-tile-lbl">ОТКРЫТО</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">ERP</span><span class="tag">CRM</span><span class="tag">Tasks</span></div>
-      <h3 class="case-title" id="case-title-agent-bizmgr">AI Business Manager — цифровой операционный директор</h3>
-      <p class="case-tagline">Сводит метрики всех отделов и сам раздаёт задачи.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Собственник вручную сводит метрики разных отделов, чтобы понять, где реально буксует бизнес.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Агент каждое утро собирает показатели продаж, логистики и задач из CRM/ERP, находит отклонения и сам создаёт задачу ответственному с дедлайном.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Задержка заказа №881 была обнаружена и назначена ответственному до 18:00 в тот же день — без совещания.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> ERP/CRM интеграция · агрегация метрик · постановка задач</p>
-    </div>
-
-    <div class="case-panel" data-case="agent-finance">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">02 — ai finance controller</span></div>
-        <div class="window-body mock-finance">
-          <div class="finance-line"><span>Счёт №4471</span><b>сверен</b></div>
-          <div class="finance-line"><span>Счёт №4472</span><b>сверен</b></div>
-          <div class="pulse-alert"><span class="pulse-alert-dot"></span>Кассовый разрыв ожидается через 6 дней</div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">1С</span><span class="tag">Банк-клиент</span><span class="tag">Excel</span></div>
-      <h3 class="case-title" id="case-title-agent-finance">AI Finance Controller — контроль кассовых разрывов</h3>
-      <p class="case-tagline">Сверяет счета и предупреждает о разрыве заранее.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Кассовые разрывы и просроченная дебиторка замечаются постфактум, когда деньги уже нужны.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Агент сверяет банковскую выписку со счетами в 1С, отслеживает сроки оплаты и строит прогноз кассового разрыва на ближайшие недели.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Прогноз показал разрыв в 340 000 ₽ через 6 дней — собственник успел договориться об отсрочке заранее.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> 1С интеграция · банк-клиент API · прогноз денежного потока</p>
-    </div>
-
-    <div class="case-panel" data-case="agent-bizanalyst">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">03 — ai business analyst</span></div>
-        <div class="window-body mock-bizanalyst">
-          <div class="analyst-q">Доброе утро! Сводка за 8 сентября:</div>
-          <div class="summary-bullets">
-            <span class="is-up">• Выручка: 1 840 000 ₽ (+12%)</span>
-            <span class="is-warn">• CAC вырос на 18% — кампания «Септики Москва»</span>
-            <span>• 37 лидов висят без follow-up &gt; 48ч</span>
-          </div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">CRM</span><span class="tag">BI</span><span class="tag">Excel</span></div>
-      <h3 class="case-title" id="case-title-agent-bizanalyst">AI Business Analyst — утренняя сводка по бизнесу</h3>
-      <p class="case-tagline">Каждое утро — что выросло, что просело и где теряются деньги.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Без штатного аналитика собственник узнаёт о проблеме в воронке уже после того, как она стоила денег.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Агент подключается к CRM, рекламным кабинетам и Excel-отчётам, каждое утро сравнивает показатели с предыдущим периодом и подсвечивает аномалии.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Рост CAC на 18% по одной рекламной кампании был замечен и объяснён ещё до начала рабочего дня.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> CRM/BI интеграция · сравнение периодов · генерация текстовой сводки</p>
-    </div>
-
-    <div class="case-panel" data-case="agent-brain">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">03 — ai company brain</span></div>
-        <div class="window-body mock-brain">
-          <div class="lexis-search">«Какой SLA у нас на возврат для B2B?»</div>
-          <div class="lexis-result"><span class="lexis-result-title">SLA.md</span><span class="lexis-result-src">Notion · обновлено 3 дня назад</span></div>
-          <div class="lexis-result"><span class="lexis-result-title">Sales Policy</span><span class="lexis-result-src">Confluence</span></div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">RAG</span><span class="tag">Access control</span></div>
-      <h3 class="case-title" id="case-title-agent-brain">AI Company Brain — база знаний компании</h3>
-      <p class="case-tagline">Единая точка ответа по всем внутренним документам.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Знания компании разбросаны по Notion, Confluence и дискам — найти актуальный ответ дольше, чем сделать заново.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Агент индексирует документы компании с учётом прав доступа сотрудника и отвечает на вопрос, ссылаясь на конкретный источник.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Ответ на вопрос про SLA по возврату для B2B пришёл за секунды, со ссылками на оба релевантных документа.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> RAG поверх Notion/Confluence/Drive · разграничение доступа</p>
-    </div>
-
-    <div class="case-panel" data-case="agent-voice">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">04 — ai voice manager</span></div>
-        <div class="window-body mock-voice">
-          <div class="voice-wave" aria-hidden="true">
-            <span style="height:8px"></span><span style="height:14px"></span><span style="height:6px"></span><span style="height:18px"></span>
-            <span style="height:10px"></span><span style="height:16px"></span><span style="height:7px"></span><span style="height:12px"></span>
-          </div>
-          <div class="voice-line"><b>AI:</b> Стоматология «ДентаПлюс», здравствуйте!</div>
-          <div class="voice-line">Клиент: «Откололся зуб, нужно срочно»</div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">SIP</span><span class="tag">Телефония</span><span class="tag">CRM</span></div>
-      <h3 class="case-title" id="case-title-agent-voice">AI Voice Manager — голосовой оператор 24/7</h3>
-      <p class="case-tagline">Поднимает трубку, квалифицирует и записывает клиента.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Пропущенные звонки — это потерянные клиенты, а держать оператора 24/7 дорого и нестабильно.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Голосовой агент отвечает на звонок, распознаёт запрос клиента, проверяет доступное время в расписании и создаёт запись прямо в системе.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Звонок с жалобой на откололся зуб обработан за 54 секунды: клиент записан к врачу на этот же день.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> SIP-телефония · распознавание речи · интеграция с МИС/CRM</p>
-    </div>
-
-    <div class="case-panel" data-case="agent-support">
-      <div class="work-window case-window" aria-hidden="true">
-        <div class="window-bar"><span class="win-dot win-dot--r"></span><span class="win-dot win-dot--y"></span><span class="win-dot win-dot--g"></span><span class="window-title">04 — ai customer support</span></div>
-        <div class="window-body mock-support">
-          <div class="support-row"><span class="channel-badge">TG</span> «Где мой заказ #4471?»</div>
-          <div class="support-row"><span class="channel-badge">WA</span> «Можно поменять размер?»</div>
-          <div class="support-row"><span class="channel-badge">Сайт</span> «Не пришёл чек на почту»</div>
-        </div>
-      </div>
-      <div class="case-tags"><span class="tag">Telegram</span><span class="tag">WhatsApp</span><span class="tag">Сайт</span></div>
-      <h3 class="case-title" id="case-title-agent-support">AI Customer Support — поддержка во всех каналах</h3>
-      <p class="case-tagline">Один агент отвечает в Telegram, WhatsApp и на сайте одновременно.</p>
-      <div class="case-block"><span class="case-label">Задача</span><p>Поддержка размазана по каналам — клиент ждёт ответа часами, нагрузка на живых операторов растёт.</p></div>
-      <div class="case-block"><span class="case-label">Решение</span><p>Агент собирает обращения из всех каналов в одну очередь, решает типовые вопросы через API компании и передаёт человеку только сложные случаи.</p></div>
-      <div class="case-block"><span class="case-label">Результат</span><p>Из 3 обращений подряд 2 были закрыты агентом самостоятельно, без участия оператора.</p></div>
-      <p class="case-role"><span class="work-role-label">Стек</span> Telegram/WhatsApp API · интеграция с CRM · маршрутизация обращений</p>
-    </div>
-  </div>
-</div>
-
-<script src="js/main.js?v=10"></script>
+<script src="js/main.js?v=11"></script>
 </body>
 </html>

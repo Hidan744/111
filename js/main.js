@@ -94,44 +94,44 @@
     }, 2600);
   }
 
-  /* ---------------- case detail modal ---------------- */
-  const caseOverlay = document.getElementById("caseOverlay");
-  const caseModal = document.getElementById("caseModal");
-  const caseClose = document.getElementById("caseClose");
-  const casePanels = document.querySelectorAll(".case-panel");
-  let lastCaseTrigger = null;
+  /* ---------------- AI-direction detail modal ---------------- */
+  const catOverlay = document.getElementById("catOverlay");
+  const catModal = document.getElementById("catModal");
+  const catClose = document.getElementById("catClose");
+  const catPanels = document.querySelectorAll(".cat-panel");
+  let lastCatTrigger = null;
 
-  function openCase(key, trigger) {
-    casePanels.forEach((panel) => {
-      panel.classList.toggle("is-active", panel.dataset.case === key);
+  function openCat(key, trigger) {
+    catPanels.forEach((panel) => {
+      panel.classList.toggle("is-active", panel.dataset.cat === key);
     });
-    const title = document.getElementById(`case-title-${key}`);
-    if (title) caseModal.setAttribute("aria-labelledby", title.id);
-
-    lastCaseTrigger = trigger || null;
-    caseOverlay.classList.add("is-open");
-    caseOverlay.setAttribute("aria-hidden", "false");
+    lastCatTrigger = trigger || null;
+    catOverlay.classList.add("is-open");
+    catOverlay.setAttribute("aria-hidden", "false");
     document.documentElement.style.overflow = "hidden";
-    caseClose.focus();
+    catClose.focus();
   }
 
-  function closeCase() {
-    caseOverlay.classList.remove("is-open");
-    caseOverlay.setAttribute("aria-hidden", "true");
+  function closeCat() {
+    catOverlay.classList.remove("is-open");
+    catOverlay.setAttribute("aria-hidden", "true");
     document.documentElement.style.overflow = "";
-    if (lastCaseTrigger) lastCaseTrigger.focus();
+    if (lastCatTrigger) lastCatTrigger.focus();
   }
 
-  if (caseOverlay) {
-    document.querySelectorAll(".work-link[data-case]").forEach((btn) => {
-      btn.addEventListener("click", () => openCase(btn.dataset.case, btn));
+  if (catOverlay) {
+    document.querySelectorAll("[data-cat-trigger]").forEach((el) => {
+      el.addEventListener("click", (e) => {
+        if (el.classList.contains("cat-card") && e.target.closest(".cat-card-cta, .cat-card-example")) return;
+        openCat(el.dataset.catTrigger, el);
+      });
     });
-    caseClose.addEventListener("click", closeCase);
-    caseOverlay.addEventListener("click", (e) => {
-      if (e.target === caseOverlay) closeCase();
+    catClose.addEventListener("click", closeCat);
+    catOverlay.addEventListener("click", (e) => {
+      if (e.target === catOverlay) closeCat();
     });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && caseOverlay.classList.contains("is-open")) closeCase();
+      if (e.key === "Escape" && catOverlay.classList.contains("is-open")) closeCat();
     });
   }
 
@@ -402,32 +402,6 @@
     } else {
       play();
     }
-  })();
-
-  /* ---------------- agents catalog: side rail sync ---------------- */
-  (function catRail() {
-    const rail = document.getElementById("catRail");
-    if (!rail) return;
-    const items = rail.querySelectorAll(".cat-rail-item");
-
-    items.forEach((item) => {
-      item.addEventListener("click", () => {
-        const target = document.getElementById(item.dataset.target);
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    });
-
-    if (!("IntersectionObserver" in window)) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          items.forEach((item) => item.classList.toggle("is-active", item.dataset.target === entry.target.id));
-        });
-      },
-      { threshold: 0.4 }
-    );
-    document.querySelectorAll(".agents-category[id]").forEach((section) => io.observe(section));
   })();
 
   /* ---------------- magnetic buttons ---------------- */
