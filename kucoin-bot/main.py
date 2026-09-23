@@ -1,0 +1,91 @@
+"""KuCoin spot-бот.
+
+  python main.py download --days 365          # скачать историю в data/
+  python main.py backtest --days 365          # проверить стратегию на истории
+  python main.py backtest --csv data/x.csv    # бэктест по сохранённому файлу
+  python main.py paper                        # бумажная торговля на живых котировках
+  python main.py live --confirm               # реальная торговля (нужен LIVE_TRADING=yes)
+"""
+import argparse
+import logging
+import sys
+import time
+from pathlib import Path
+
+from bot.backtest import load_csv, run_backtest, save_csv
+from bot.brokers import LiveBroker, PaperBroker
+from bot.config import load_config
+from bot.kucoin_client import INTERVAL_SECONDS, KucoinClient
+from bot.runner import Trader
+
+
+def setup_logging(log_file=None):
+    handlers = [logging.StreamHandler(sys.stdout)]
+    if log_file:
+        handlers.append(logging.FileHandler(log_file, encoding="utf-8"))
+    logging.basicConfig(level=logging.INFO, handlers=handlers,
+                        format="%(asctime)s %(levelname)s %(message)s")
+
+
+def fetch_history(cfg, client, days):
+    end = int(time.time())
+    return client.get_candles(cfg.symbol, cfg.timeframe, start=end - days * 86400, end=end)
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Торговый бот для KuCoin Spot")
+    ap.add_argument("--env", default=".env", help="файл с настройками")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    d = sub.add_parser("download", help="скачать исторические свечи в CSV")
+    d.add_argument("--days", type=int, default=365)
+    b = sub.add_parser("backtest", help="проверка стратегии на истории")
+    b.add_argument("--days", type=int, default=365)
+    b.add_argument("--csv", help="CSV со свечами вместо загрузки с биржи")
+    b.add_argument("--trades", action="store_true", help="вывести список сделок")
+    sub.add_parser("paper", help="бумажная торговля")
+    lv = sub.add_parser("live", help="реальная торговля")
+    lv.add_argument("--confirm", action="store_true", help="подтверждаю торговлю реальными деньгами")
+    args = ap.parse_args()
+
+    cfg = load_config(args.env)
+    if cfg.timeframe not in INTERVAL_SECONDS:
+        sys.exit(f"Неизвестный TIMEFRAME={cfg.timeframe}. Допустимо: {', '.join(INTERVAL_SECONDS)}")
+    client = KucoinClient(cfg.api_key, cfg.api_secret, cfg.api_passphrase)
+
+    if args.cmd == "download":
+        candles = fetch_history(cfg, client, args.days)
+        Path("data").mkdir(exist_ok=True)
+        path = f"data/{cfg.symbol}_{cfg.timeframe}_{args.days}d.csv"
+        save_csv(candles, path)
+        print(f"Сохранено {len(candles)} свечей в {path}")
+
+    elif args.cmd == "backtest":
+        candles = load_csv(args.csv) if args.csv else fetch_history(cfg, client, args.days)
+        if len(candles) < cfg.strategy.min_candles():
+            sys.exit(f"Мало данных: {len(candles)} свечей, нужно минимум {cfg.strategy.min_candles()}")
+        res = run_backtest(candles, cfg.strategy, cfg.risk, cfg.paper_balance, cfg.fee_rate, cfg.slippage)
+        fmt = lambda ts: time.strftime("%Y-%m-%d %H:%M", time.gmtime(ts))
+        print(f"{cfg.symbol} {cfg.timeframe}: {fmt(candles[0].ts)} — {fmt(candles[-1].ts)}, {len(candles)} свечей")
+        print(res.summary())
+        if args.trades:
+            for t in res.trades:
+                print(f"{fmt(t.entry_ts)} -> {fmt(t.exit_ts)}  {t.entry:.6f} -> {t.exit:.6f}  "
+                      f"{t.pnl:+.2f}  {t.reason}")
+
+    elif args.cmd == "paper":
+        setup_logging("paper.log")
+        broker = PaperBroker(client, cfg.symbol, cfg.paper_balance, cfg.fee_rate, cfg.slippage)
+        Trader(cfg, client, broker, "state_paper.json").run()
+
+    elif args.cmd == "live":
+        if not (args.confirm and cfg.live_trading):
+            sys.exit("Реальная торговля выключена. Нужны LIVE_TRADING=yes в .env и флаг --confirm.")
+        if not cfg.has_keys:
+            sys.exit("Заполните KUCOIN_API_KEY / KUCOIN_API_SECRET / KUCOIN_API_PASSPHRASE в .env")
+        setup_logging("live.log")
+        broker = LiveBroker(client, cfg.symbol, cfg.max_capital)
+        Trader(cfg, client, broker, "state_live.json").run()
+
+
+if __name__ == "__main__":
+    main()
