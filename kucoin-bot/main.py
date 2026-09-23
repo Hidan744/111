@@ -4,6 +4,7 @@
   python main.py backtest --days 365          # проверить стратегию на истории
   python main.py backtest --csv data/x.csv    # бэктест по сохранённому файлу
   python main.py compare --days 730           # сравнить все стратегии на одной истории
+  python main.py --symbol ETH-USDT --timeframe 4hour compare --days 730
   python main.py paper                        # бумажная торговля на живых котировках
   python main.py live --confirm               # реальная торговля (нужен LIVE_TRADING=yes)
 """
@@ -37,6 +38,9 @@ def fetch_history(cfg, client, days):
 def main():
     ap = argparse.ArgumentParser(description="Торговый бот для KuCoin Spot")
     ap.add_argument("--env", default=".env", help="файл с настройками")
+    ap.add_argument("--symbol", help="торговая пара, например ETH-USDT (перекрывает SYMBOL из .env)")
+    ap.add_argument("--timeframe", help="таймфрейм, например 4hour (перекрывает TIMEFRAME из .env)")
+    ap.add_argument("--strategy", help="trend / meanrev / breakout (перекрывает STRATEGY из .env)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     d = sub.add_parser("download", help="скачать исторические свечи в CSV")
     d.add_argument("--days", type=int, default=365)
@@ -54,6 +58,12 @@ def main():
     args = ap.parse_args()
 
     cfg = load_config(args.env)
+    if args.symbol:
+        cfg.symbol = args.symbol.upper()
+    if args.timeframe:
+        cfg.timeframe = args.timeframe
+    if args.strategy:
+        cfg.strategy.name = args.strategy.lower()
     if cfg.timeframe not in INTERVAL_SECONDS:
         sys.exit(f"Неизвестный TIMEFRAME={cfg.timeframe}. Допустимо: {', '.join(INTERVAL_SECONDS)}")
     if cfg.strategy.name not in STRATEGIES:

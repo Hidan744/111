@@ -34,7 +34,30 @@
 - **Защита от случайного запуска**: для `live` нужны сразу `LIVE_TRADING=yes`
   в `.env` и флаг `--confirm`.
 
-## Установка
+## Установка в Windows
+
+1. Установите Python 3.10 или новее с https://www.python.org/downloads/ и на
+   первом экране установщика отметьте **«Add python.exe to PATH»**.
+2. Скачайте код (кнопка Code → Download ZIP на GitHub), распакуйте архив
+   и откройте папку `kucoin-bot`.
+3. В адресной строке Проводника наберите `powershell` и нажмите Enter: откроется
+   PowerShell сразу в этой папке.
+4. Запускайте команды через `run.bat`: при первом запуске он сам поставит
+   зависимости и создаст `.env`:
+
+```powershell
+.\run.bat compare --days 730
+.\run.bat --timeframe 4hour compare --days 730
+.\run.bat --symbol ETH-USDT compare --days 730
+.\run.bat --strategy breakout backtest --days 365 --trades
+.\run.bat paper
+```
+
+Синтаксис `ПЕРЕМЕННАЯ=значение команда` в PowerShell не работает. Вместо него
+используйте флаги `--symbol`, `--timeframe`, `--strategy` или правьте `.env`
+Блокнотом.
+
+## Установка в Linux / macOS
 
 ```bash
 cd kucoin-bot
