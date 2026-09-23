@@ -135,6 +135,13 @@ class BreakoutSignals(Signals):
         return f"канал {self.lower[i] or 0:.6f}..{self.upper[i] or 0:.6f} | " + super().describe(i)
 
 
+def strength(sig, i):
+    """Сила сигнала для выбора между несколькими парами: насколько цена выше
+    трендовой EMA, в единицах ATR. Больше — сильнее тренд."""
+    a = sig.atr[i]
+    return (sig.close[i] - sig.trend[i]) / a if a else 0.0
+
+
 STRATEGIES = {"trend": TrendSignals, "meanrev": MeanRevSignals, "breakout": BreakoutSignals}
 
 

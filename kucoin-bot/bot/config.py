@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .risk import RiskParams
 from .strategy import StrategyParams
+from .universe import UniverseParams
 
 
 def load_dotenv(path=".env"):
@@ -44,6 +45,8 @@ class Config:
     live_trading: bool = False
     strategy: StrategyParams = field(default_factory=StrategyParams)
     risk: RiskParams = field(default_factory=RiskParams)
+    universe: UniverseParams = field(default_factory=UniverseParams)
+    max_positions: int = 5
 
     @property
     def has_keys(self):
@@ -88,4 +91,12 @@ def load_config(env_file=".env"):
             max_daily_loss=_f("MAX_DAILY_LOSS", 0.03),
             max_drawdown=_f("MAX_DRAWDOWN", 0.15),
         ),
+        universe=UniverseParams(
+            quote=e.get("QUOTE", "USDT").strip().upper(),
+            min_volume=_f("MIN_VOLUME_USDT", 2_000_000),
+            max_pairs=_i("MAX_PAIRS", 40),
+            max_spread=_f("MAX_SPREAD", 0.003),
+            exclude={s.strip().upper() for s in e.get("EXCLUDE", "").split(",") if s.strip()},
+        ),
+        max_positions=_i("MAX_POSITIONS", 5),
     )

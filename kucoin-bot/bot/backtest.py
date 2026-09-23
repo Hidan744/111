@@ -22,6 +22,7 @@ class Trade:
     qty: float
     pnl: float
     reason: str
+    symbol: str = ""
 
 
 @dataclass

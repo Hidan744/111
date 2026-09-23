@@ -78,6 +78,18 @@ class KucoinClient:
         """Параметры пары или None, если такой пары на бирже нет."""
         return self._request("GET", f"/api/v2/symbols/{symbol}")
 
+    def get_all_tickers(self):
+        """Цены и обороты всех пар одним запросом: {пара: {last, buy, sell, vol_value}}."""
+        data = self._request("GET", "/api/v1/market/allTickers") or {}
+        f = lambda v: float(v) if v not in (None, "") else 0.0
+        return {t["symbol"]: {"last": f(t.get("last")), "buy": f(t.get("buy")), "sell": f(t.get("sell")),
+                              "vol_value": f(t.get("volValue"))}
+                for t in data.get("ticker", [])}
+
+    def get_all_symbols(self):
+        """Параметры всех пар: {пара: {baseCurrency, quoteCurrency, enableTrading, baseIncrement, ...}}."""
+        return {s["symbol"]: s for s in self._request("GET", "/api/v2/symbols") or []}
+
     def get_candles(self, symbol, interval, start=None, end=None, closed_only=True):
         """Свечи от старых к новым. Биржа отдаёт до 1500 штук за запрос, поэтому
         длинные периоды загружаются постранично."""

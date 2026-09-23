@@ -4,3 +4,4 @@ state*.json
 data/
 __pycache__/
 .pytest_cache/
+trades*.csv
