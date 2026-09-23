@@ -12,6 +12,7 @@ breakout  — пробой канала Дончиана: закрытие вы�
 Один и тот же код используется в бэктесте, бумажной и реальной торговле,
 поэтому результаты бэктеста соответствуют поведению бота.
 """
+import math
 from dataclasses import dataclass
 
 from . import indicators as ind
@@ -74,7 +75,8 @@ class Signals:
     def levels(self, i, entry_price):
         """Стоп-лосс и тейк-профит для входа по цене entry_price на основе ATR свечи i."""
         a = self.atr[i]
-        return entry_price - self.p.stop_atr * a, entry_price + self.p.take_atr * a
+        take = entry_price + self.p.take_atr * a if self.p.take_atr > 0 else math.inf  # 0 = без тейка
+        return entry_price - self.p.stop_atr * a, take
 
 
 class TrendSignals(Signals):

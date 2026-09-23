@@ -274,3 +274,39 @@ def test_compare_lists_all_strategies_and_parts():
     assert out.count("купить+ждать") == 3
     for name in STRATEGIES:
         assert out.count(name) == 3
+
+
+# ---------- анализ ----------
+
+def test_take_profit_can_be_disabled():
+    import math
+    sig = make_signals(synthetic_candles(300), StrategyParams(take_atr=0))
+    stop, take = sig.levels(299, 100.0)
+    assert take == math.inf and stop < 100
+
+
+def test_trader_state_survives_disabled_take(tmp_path):
+    import math
+    cfg = load_config(tmp_path / "missing.env")
+    client = FakeClient(synthetic_candles(10), price=100)
+    t = Trader(cfg, client, PaperBroker(client, "BTC-USDT", 1000), tmp_path / "s.json")
+    t.position = Position(100, 1, 95, math.inf, 100, 0, 100)
+    t.save()
+    t2 = Trader(cfg, client, PaperBroker(client, "BTC-USDT", 1000), tmp_path / "s.json")
+    assert t2.position.take == math.inf
+
+
+def test_compare_ignores_drawdown_halt():
+    """Аварийная остановка не должна обрезать историю при сравнении стратегий."""
+    candles = synthetic_candles(3000, seed=11)
+    tight = RiskParams(max_drawdown=0.001)
+    assert compare(candles, StrategyParams(), tight) == compare(candles, StrategyParams(), RiskParams(max_drawdown=0.9))
+
+
+def test_scan_table():
+    from bot.backtest import scan
+    out = scan([("A 1hour", synthetic_candles(1500)), ("B 1day", synthetic_candles(50))],
+               StrategyParams(), RiskParams())
+    for name in STRATEGIES:
+        assert out.count(name) == 1
+    assert "держать" in out and "мало данных" in out

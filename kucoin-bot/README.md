@@ -85,6 +85,21 @@ python main.py live --confirm
 Историю можно сохранить один раз (`python main.py download --days 730`) и
 перебирать параметры офлайн: `python main.py backtest --csv data/BTC-USDT_1hour_730d.csv`.
 
+### Сводная таблица по парам и таймфреймам
+
+```powershell
+.\run.bat scan                                  # BTC и ETH на 1hour, 4hour, 1day
+.\run.bat --set TAKE_ATR=0 --set TRAIL_ATR=3 scan  # без тейка, с трейлинг-стопом
+.\run.bat scan --symbols SOL-USDT,XRP-USDT --timeframes 4hour,1day
+```
+
+`--set КЛЮЧ=ЗНАЧЕНИЕ` меняет любой параметр из `.env` на один запуск.
+`TAKE_ATR=0` выключает тейк-профит: трендовые стратегии зарабатывают на редких
+больших движениях, и фиксированный тейк их обрезает. Скачанная история
+кэшируется в `data/` на 12 часов. В `compare` и `scan` аварийная остановка по
+просадке выключена, иначе она обрезала бы историю. В `backtest`, `paper` и
+`live` она работает.
+
 ### Как выбрать стратегию
 
 `compare` печатает таблицу за весь период и за каждую часть истории (по

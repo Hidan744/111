@@ -5,16 +5,19 @@
   python main.py backtest --csv data/x.csv    # бэктест по сохранённому файлу
   python main.py compare --days 730           # сравнить все стратегии на одной истории
   python main.py --symbol ETH-USDT --timeframe 4hour compare --days 730
+  python main.py scan --days 730              # все стратегии x пары x таймфреймы одной таблицей
+  python main.py --set TAKE_ATR=0 --set TRAIL_ATR=3 scan   # любые параметры из .env на один запуск
   python main.py paper                        # бумажная торговля на живых котировках
   python main.py live --confirm               # реальная торговля (нужен LIVE_TRADING=yes)
 """
 import argparse
 import logging
+import os
 import sys
 import time
 from pathlib import Path
 
-from bot.backtest import compare, load_csv, run_backtest, save_csv
+from bot.backtest import compare, load_csv, run_backtest, save_csv, scan
 from bot.brokers import LiveBroker, PaperBroker
 from bot.config import load_config
 from bot.kucoin_client import INTERVAL_SECONDS, KucoinClient
@@ -30,9 +33,17 @@ def setup_logging(log_file=None):
                         format="%(asctime)s %(levelname)s %(message)s")
 
 
-def fetch_history(cfg, client, days):
+def fetch_history(cfg, client, days, symbol=None, timeframe=None):
+    """История с кэшем в data/: повторные запуски в течение 12 часов не качают заново."""
+    symbol, timeframe = symbol or cfg.symbol, timeframe or cfg.timeframe
+    path = Path("data") / f"{symbol}_{timeframe}_{days}d.csv"
+    if path.exists() and time.time() - path.stat().st_mtime < 12 * 3600:
+        return load_csv(path)
     end = int(time.time())
-    return client.get_candles(cfg.symbol, cfg.timeframe, start=end - days * 86400, end=end)
+    candles = client.get_candles(symbol, timeframe, start=end - days * 86400, end=end)
+    path.parent.mkdir(exist_ok=True)
+    save_csv(candles, path)
+    return candles
 
 
 def main():
@@ -41,6 +52,8 @@ def main():
     ap.add_argument("--symbol", help="торговая пара, например ETH-USDT (перекрывает SYMBOL из .env)")
     ap.add_argument("--timeframe", help="таймфрейм, например 4hour (перекрывает TIMEFRAME из .env)")
     ap.add_argument("--strategy", help="trend / meanrev / breakout (перекрывает STRATEGY из .env)")
+    ap.add_argument("--set", action="append", default=[], metavar="КЛЮЧ=ЗНАЧЕНИЕ",
+                    help="переопределить параметр из .env на один запуск, можно несколько раз")
     sub = ap.add_subparsers(dest="cmd", required=True)
     d = sub.add_parser("download", help="скачать исторические свечи в CSV")
     d.add_argument("--days", type=int, default=365)
@@ -52,11 +65,20 @@ def main():
     cp.add_argument("--days", type=int, default=730)
     cp.add_argument("--csv", help="CSV со свечами вместо загрузки с биржи")
     cp.add_argument("--parts", type=int, default=2, help="на сколько отрезков делить историю")
+    sc = sub.add_parser("scan", help="все стратегии на нескольких парах и таймфреймах")
+    sc.add_argument("--days", type=int, default=730)
+    sc.add_argument("--symbols", default="BTC-USDT,ETH-USDT", help="через запятую")
+    sc.add_argument("--timeframes", default="1hour,4hour,1day", help="через запятую")
     sub.add_parser("paper", help="бумажная торговля")
     lv = sub.add_parser("live", help="реальная торговля")
     lv.add_argument("--confirm", action="store_true", help="подтверждаю торговлю реальными деньгами")
     args = ap.parse_args()
 
+    for item in args.set:
+        key, _, value = item.partition("=")
+        if not value:
+            sys.exit(f"--set ожидает КЛЮЧ=ЗНАЧЕНИЕ, получено {item!r}")
+        os.environ[key.strip().upper()] = value.strip()
     cfg = load_config(args.env)
     if args.symbol:
         cfg.symbol = args.symbol.upper()
@@ -72,10 +94,7 @@ def main():
 
     if args.cmd == "download":
         candles = fetch_history(cfg, client, args.days)
-        Path("data").mkdir(exist_ok=True)
-        path = f"data/{cfg.symbol}_{cfg.timeframe}_{args.days}d.csv"
-        save_csv(candles, path)
-        print(f"Сохранено {len(candles)} свечей в {path}")
+        print(f"Сохранено {len(candles)} свечей в data/{cfg.symbol}_{cfg.timeframe}_{args.days}d.csv")
 
     elif args.cmd == "backtest":
         candles = load_csv(args.csv) if args.csv else fetch_history(cfg, client, args.days)
@@ -97,6 +116,20 @@ def main():
             sys.exit(f"Мало данных: {len(candles)} свечей")
         print(f"{cfg.symbol} {cfg.timeframe}, комиссия {cfg.fee_rate:.2%}, проскальзывание {cfg.slippage:.2%}")
         print(compare(candles, cfg.strategy, cfg.risk, cfg.paper_balance, cfg.fee_rate, cfg.slippage, args.parts))
+
+    elif args.cmd == "scan":
+        datasets = []
+        for symbol in [s.strip().upper() for s in args.symbols.split(",") if s.strip()]:
+            for tf in [t.strip() for t in args.timeframes.split(",") if t.strip()]:
+                if tf not in INTERVAL_SECONDS:
+                    sys.exit(f"Неизвестный таймфрейм {tf}")
+                print(f"Загрузка {symbol} {tf}...", flush=True)
+                datasets.append((f"{symbol} {tf}", fetch_history(cfg, client, args.days, symbol, tf)))
+        sp = cfg.strategy
+        print(f"\nкомиссия {cfg.fee_rate:.2%}, стоп {sp.stop_atr} ATR, "
+              f"тейк {sp.take_atr if sp.take_atr > 0 else 'выкл'} ATR, "
+              f"трейлинг {sp.trail_atr if sp.trail_atr > 0 else 'выкл'} ATR, фильтр EMA {sp.trend_ema}\n")
+        print(scan(datasets, cfg.strategy, cfg.risk, cfg.paper_balance, cfg.fee_rate, cfg.slippage))
 
     elif args.cmd == "paper":
         setup_logging("paper.log")

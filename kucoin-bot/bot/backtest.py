@@ -6,7 +6,7 @@
 import csv
 import math
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from .models import Candle, Position
 from .risk import RiskGuard, RiskParams, position_funds
@@ -135,9 +135,9 @@ def compare(candles, sp: StrategyParams, rp: RiskParams, balance=1000.0, fee_rat
     """Прогоняет все стратегии на одной истории: весь период и каждую из parts частей
     отдельно. Стратегия, которая выигрывает только на одном отрезке, скорее всего
     просто подогнана под него. Возвращает текст таблицы."""
-    from dataclasses import replace
     from .strategy import STRATEGIES
 
+    rp = replace(rp, max_drawdown=1.0)  # аварийная остановка обрезала бы историю — для анализа выключена
     warmup = sp.min_candles()
     usable = len(candles) - warmup
     periods = [("Весь период", warmup, len(candles))]
@@ -162,6 +162,35 @@ def compare(candles, sp: StrategyParams, rp: RiskParams, balance=1000.0, fee_rat
             lines.append(f"{name:<12}{len(r.trades):>8}{r.win_rate:>8.0%}{pf:>7}"
                          f"{r.total_return:>+10.1%}{r.max_drawdown:>10.1%}")
         lines.append(f"{'купить+ждать':<12}{'':>8}{'':>8}{'':>7}{bh:>+10.1%}")
+    return "\n".join(lines)
+
+
+def scan(datasets, sp: StrategyParams, rp: RiskParams, balance=1000.0, fee_rate=0.001, slippage=0.0005):
+    """Сводная таблица по нескольким наборам данных: datasets — список (подпись, свечи).
+    Для каждой стратегии: доход за первую и вторую половину истории, за весь период,
+    profit factor и просадка за весь период. Аварийная остановка выключена."""
+    from .strategy import STRATEGIES
+
+    rp = replace(rp, max_drawdown=1.0)
+    warmup = sp.min_candles()
+    head = (f"{'данные':<16}{'стратегия':<10}{'сделок':>7}{'PF':>6}"
+            f"{'1-я пол.':>10}{'2-я пол.':>10}{'всего':>9}{'просадка':>10}")
+    lines = [head]
+    for label, candles in datasets:
+        if len(candles) < warmup + 100:
+            lines.append(f"{label:<16}мало данных ({len(candles)} свечей)")
+            continue
+        mid = warmup + (len(candles) - warmup) // 2
+        for name in STRATEGIES:
+            s = replace(sp, name=name)
+            full = run_backtest(candles, s, rp, balance, fee_rate, slippage, start=warmup)
+            a = run_backtest(candles[:mid], s, rp, balance, fee_rate, slippage, start=warmup)
+            b = run_backtest(candles[mid - warmup:], s, rp, balance, fee_rate, slippage, start=warmup)
+            pf = "inf" if full.profit_factor == math.inf else f"{full.profit_factor:.2f}"
+            lines.append(f"{label:<16}{name:<10}{len(full.trades):>7}{pf:>6}{a.total_return:>+10.1%}"
+                         f"{b.total_return:>+10.1%}{full.total_return:>+9.1%}{full.max_drawdown:>10.1%}")
+        lines.append(f"{label:<16}{'держать':<10}{'':>7}{'':>6}{a.buy_hold_return:>+10.1%}"
+                     f"{b.buy_hold_return:>+10.1%}{full.buy_hold_return:>+9.1%}")
     return "\n".join(lines)
 
 
