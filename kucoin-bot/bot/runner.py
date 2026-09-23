@@ -123,8 +123,11 @@ class Trader:
         return True
 
     def run(self):
-        log.info("Старт: %s %s, стратегия %s, позиция: %s", self.cfg.symbol, self.cfg.timeframe,
-                 self.cfg.strategy.name,
+        sp = self.cfg.strategy
+        log.info("Старт: %s %s, стратегия %s, стоп %s ATR, тейк %s, трейлинг %s, позиция: %s",
+                 self.cfg.symbol, self.cfg.timeframe, sp.name, sp.stop_atr,
+                 f"{sp.take_atr} ATR" if sp.take_atr > 0 else "выкл",
+                 f"{sp.trail_atr} ATR" if sp.trail_atr > 0 else "выкл",
                  "есть" if self.position else "нет")
         errors = 0
         while True:

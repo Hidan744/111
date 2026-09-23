@@ -117,6 +117,22 @@ python main.py live --confirm
 (`SYMBOL`) и таймфреймов: на 1-минутных свечах комиссии почти всегда съедают
 всю прибыль, разумно начинать с `1hour`/`4hour`.
 
+### Несколько пар одновременно
+
+Один процесс торгует одной парой. Для нескольких пар запустите несколько
+процессов (в Windows — несколько окон PowerShell):
+
+```powershell
+.\run.bat --symbol BTC-USDT paper
+.\run.bat --symbol ETH-USDT paper
+```
+
+У каждой пары свои файлы состояния и лога: `state_paper_BTC-USDT.json`,
+`paper_BTC-USDT.log`. В `paper` у каждого процесса свой виртуальный баланс
+`PAPER_BALANCE`. В `live` все процессы берут деньги с одного USDT-счёта и
+каждый может занять до `MAX_CAPITAL`, поэтому держите на счёте не больше,
+чем `MAX_CAPITAL` × число пар.
+
 ### Как читать результат бэктеста
 
 Сравнивайте строку «Доходность бота» со строкой «Купить и держать» и смотрите
@@ -158,7 +174,7 @@ WantedBy=multi-user.target
 ```
 
 `sudo systemctl enable --now kucoin-bot`, логи: `journalctl -u kucoin-bot -f`
-(они также пишутся в `paper.log` / `live.log`).
+(они также пишутся в `paper_<ПАРА>.log` / `live_<ПАРА>.log`).
 
 ## Структура
 

@@ -132,18 +132,18 @@ def main():
         print(scan(datasets, cfg.strategy, cfg.risk, cfg.paper_balance, cfg.fee_rate, cfg.slippage))
 
     elif args.cmd == "paper":
-        setup_logging("paper.log")
+        setup_logging(f"paper_{cfg.symbol}.log")
         broker = PaperBroker(client, cfg.symbol, cfg.paper_balance, cfg.fee_rate, cfg.slippage)
-        Trader(cfg, client, broker, "state_paper.json").run()
+        Trader(cfg, client, broker, f"state_paper_{cfg.symbol}.json").run()
 
     elif args.cmd == "live":
         if not (args.confirm and cfg.live_trading):
             sys.exit("Реальная торговля выключена. Нужны LIVE_TRADING=yes в .env и флаг --confirm.")
         if not cfg.has_keys:
             sys.exit("Заполните KUCOIN_API_KEY / KUCOIN_API_SECRET / KUCOIN_API_PASSPHRASE в .env")
-        setup_logging("live.log")
+        setup_logging(f"live_{cfg.symbol}.log")
         broker = LiveBroker(client, cfg.symbol, cfg.max_capital)
-        Trader(cfg, client, broker, "state_live.json").run()
+        Trader(cfg, client, broker, f"state_live_{cfg.symbol}.json").run()
 
 
 if __name__ == "__main__":
