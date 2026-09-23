@@ -58,6 +58,8 @@ class LiveBroker:
         self.base_ccy, self.quote_ccy = symbol.split("-")
         self.max_capital = max_capital
         info = client.get_symbol_info(symbol)
+        if not info:
+            raise ValueError(f"пары {symbol} нет на KuCoin")
         self.base_inc = info["baseIncrement"]
         self.quote_inc = info["quoteIncrement"]
         self.base_min = float(info["baseMinSize"])

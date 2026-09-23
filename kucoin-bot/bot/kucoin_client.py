@@ -69,9 +69,13 @@ class KucoinClient:
     # ---------- публичные методы ----------
 
     def get_price(self, symbol):
-        return float(self._request("GET", "/api/v1/market/orderbook/level1", {"symbol": symbol})["price"])
+        data = self._request("GET", "/api/v1/market/orderbook/level1", {"symbol": symbol})
+        if not data or data.get("price") is None:
+            raise KucoinError(f"нет цены для пары {symbol} — проверьте название пары")
+        return float(data["price"])
 
     def get_symbol_info(self, symbol):
+        """Параметры пары или None, если такой пары на бирже нет."""
         return self._request("GET", f"/api/v2/symbols/{symbol}")
 
     def get_candles(self, symbol, interval, start=None, end=None, closed_only=True):

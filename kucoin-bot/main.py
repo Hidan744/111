@@ -13,6 +13,7 @@
 import argparse
 import logging
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -44,6 +45,14 @@ def fetch_history(cfg, client, days, symbol=None, timeframe=None):
     path.parent.mkdir(exist_ok=True)
     save_csv(candles, path)
     return candles
+
+
+def check_symbol(client, symbol):
+    info = client.get_symbol_info(symbol)
+    if not info:
+        sys.exit(f"Пары {symbol} нет на KuCoin. Пример правильного названия: BTC-USDT")
+    if not info.get("enableTrading", True):
+        sys.exit(f"Торговля парой {symbol} на KuCoin сейчас отключена")
 
 
 def main():
@@ -88,6 +97,8 @@ def main():
         cfg.strategy.name = args.strategy.lower()
     if cfg.timeframe not in INTERVAL_SECONDS:
         sys.exit(f"Неизвестный TIMEFRAME={cfg.timeframe}. Допустимо: {', '.join(INTERVAL_SECONDS)}")
+    if not re.fullmatch(r"[A-Z0-9]+-[A-Z0-9]+", cfg.symbol):
+        sys.exit(f"Неверная пара {cfg.symbol!r}. Пишите через дефис, например: --symbol BTC-USDT")
     if cfg.strategy.name not in STRATEGIES:
         sys.exit(f"Неизвестная STRATEGY={cfg.strategy.name}. Допустимо: {', '.join(STRATEGIES)}")
     client = KucoinClient(cfg.api_key, cfg.api_secret, cfg.api_passphrase)
@@ -132,6 +143,7 @@ def main():
         print(scan(datasets, cfg.strategy, cfg.risk, cfg.paper_balance, cfg.fee_rate, cfg.slippage))
 
     elif args.cmd == "paper":
+        check_symbol(client, cfg.symbol)
         setup_logging(f"paper_{cfg.symbol}.log")
         broker = PaperBroker(client, cfg.symbol, cfg.paper_balance, cfg.fee_rate, cfg.slippage)
         Trader(cfg, client, broker, f"state_paper_{cfg.symbol}.json").run()
@@ -141,6 +153,7 @@ def main():
             sys.exit("Реальная торговля выключена. Нужны LIVE_TRADING=yes в .env и флаг --confirm.")
         if not cfg.has_keys:
             sys.exit("Заполните KUCOIN_API_KEY / KUCOIN_API_SECRET / KUCOIN_API_PASSPHRASE в .env")
+        check_symbol(client, cfg.symbol)
         setup_logging(f"live_{cfg.symbol}.log")
         broker = LiveBroker(client, cfg.symbol, cfg.max_capital)
         Trader(cfg, client, broker, f"state_live_{cfg.symbol}.json").run()

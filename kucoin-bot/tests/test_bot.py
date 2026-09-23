@@ -322,3 +322,24 @@ def test_timeframe_change_resets_candle_marker(tmp_path):
     assert Trader(cfg, client, PaperBroker(client, "BTC-USDT", 1000), tmp_path / "s.json").last_candle_ts == 123
     cfg.timeframe = "4hour"
     assert Trader(cfg, client, PaperBroker(client, "BTC-USDT", 1000), tmp_path / "s.json").last_candle_ts == 0
+
+
+def test_empty_price_gives_clear_error():
+    s = RecordingSession({"code": "200000", "data": None})
+    with pytest.raises(Exception, match="проверьте название пары"):
+        KucoinClient(session=s).get_price("-")
+
+
+def test_cli_rejects_malformed_symbol(monkeypatch, tmp_path):
+    import main
+    monkeypatch.setattr("sys.argv", ["main.py", "--env", str(tmp_path / "x.env"), "--symbol", "-", "paper"])
+    with pytest.raises(SystemExit, match="Неверная пара"):
+        main.main()
+
+
+def test_cli_rejects_unknown_symbol(monkeypatch, tmp_path):
+    import main
+    monkeypatch.setattr(KucoinClient, "get_symbol_info", lambda self, s: None)
+    monkeypatch.setattr("sys.argv", ["main.py", "--env", str(tmp_path / "x.env"), "--symbol", "FOO-USDT", "paper"])
+    with pytest.raises(SystemExit, match="нет на KuCoin"):
+        main.main()
