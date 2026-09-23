@@ -218,7 +218,7 @@ WantedBy=multi-user.target
 ## Структура
 
 ```
-main.py               — CLI: download / backtest / compare / paper / live
+main.py               — CLI: download / backtest / compare / scan / paper / live / auto / auto-backtest / stats
 bot/kucoin_client.py  — REST-клиент KuCoin (подпись запросов, свечи, ордера)
 bot/indicators.py     — EMA, SMA, RSI, ATR, Боллинджер, Дончиан
 bot/strategy.py       — стратегии trend / meanrev / breakout, уровни стопа и тейка
