@@ -195,25 +195,35 @@ python main.py live --confirm
 
 ## Запуск на сервере 24/7
 
-Пример unit-файла systemd, `/etc/systemd/system/kucoin-bot.service`:
+Нужен VPS с Ubuntu 22.04/24.04 (1 CPU, 1 ГБ RAM достаточно). Затем:
 
-```ini
-[Unit]
-Description=KuCoin bot
-After=network-online.target
+1. Остановите бота на своём компьютере (Ctrl+C), чтобы не было двух копий.
+2. Скопируйте папку бота на сервер из PowerShell (вместе с `.env` и статистикой):
+   ```powershell
+   scp -r "$HOME\Desktop\111-claude-clever-edison-caqk9x\kucoin-bot" root@IP_СЕРВЕРА:/root/
+   ```
+3. Подключитесь к серверу и запустите установку:
+   ```powershell
+   ssh root@IP_СЕРВЕРА
+   ```
+   ```bash
+   cd /root/kucoin-bot && sed -i 's/\r$//' server-setup.sh && bash server-setup.sh
+   ```
 
-[Service]
-WorkingDirectory=/opt/kucoin-bot
-ExecStart=/opt/kucoin-bot/.venv/bin/python main.py paper
-Restart=on-failure
-RestartSec=30
+Скрипт ставит Python, создаёт службу `kucoin-bot` (режим `auto` на виртуальных
+деньгах) и команду `bot`:
 
-[Install]
-WantedBy=multi-user.target
-```
+| Команда | Что делает |
+|---|---|
+| `bot stats` | статистика |
+| `bot log` | лог в реальном времени (выход Ctrl+C, бот продолжит работать) |
+| `bot status` | работает ли бот |
+| `bot restart` | перезапуск, например после правки `.env` (`nano /root/kucoin-bot/.env`) |
 
-`sudo systemctl enable --now kucoin-bot`, логи: `journalctl -u kucoin-bot -f`
-(они также пишутся в `paper_<ПАРА>.log` / `live_<ПАРА>.log`).
+Служба стартует сама после перезагрузки сервера. При сбоях, например при
+пропаже сети, она перезапускает бота через минуту. После аварийной
+остановки риск-менеджментом бот намеренно не перезапускается.
+Для реальной торговли: `bash server-setup.sh "auto --live --confirm"`.
 
 ## Структура
 

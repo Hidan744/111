@@ -56,6 +56,12 @@ def fetch_history(cfg, client, days, symbol=None, timeframe=None):
     return candles
 
 
+def exit_on(result):
+    # код 1 — сбой: служба на сервере (systemd) перезапустит бота;
+    # код 0 — остановка риск-менеджментом: перезапуска не будет
+    sys.exit(1 if result == "errors" else 0)
+
+
 def auto_files(live):
     mode = "live" if live else "paper"
     return f"state_auto_{mode}.json", f"trades_auto_{mode}.csv", f"auto_{mode}.log"
@@ -233,13 +239,13 @@ def main():
         else:
             executor, capital = PaperExecutor(cfg.fee_rate, cfg.slippage), cfg.paper_balance
         setup_logging(log_path)
-        AutoTrader(cfg, client, executor, capital, state_path, journal_path).run()
+        exit_on(AutoTrader(cfg, client, executor, capital, state_path, journal_path).run())
 
     elif args.cmd == "paper":
         check_symbol(client, cfg.symbol)
         setup_logging(f"paper_{cfg.symbol}.log")
         broker = PaperBroker(client, cfg.symbol, cfg.paper_balance, cfg.fee_rate, cfg.slippage)
-        Trader(cfg, client, broker, f"state_paper_{cfg.symbol}.json").run()
+        exit_on(Trader(cfg, client, broker, f"state_paper_{cfg.symbol}.json").run())
 
     elif args.cmd == "live":
         if not (args.confirm and cfg.live_trading):
@@ -249,7 +255,7 @@ def main():
         check_symbol(client, cfg.symbol)
         setup_logging(f"live_{cfg.symbol}.log")
         broker = LiveBroker(client, cfg.symbol, cfg.max_capital)
-        Trader(cfg, client, broker, f"state_live_{cfg.symbol}.json").run()
+        exit_on(Trader(cfg, client, broker, f"state_live_{cfg.symbol}.json").run())
 
 
 if __name__ == "__main__":

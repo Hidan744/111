@@ -259,6 +259,8 @@ class AutoTrader:
                 log.warning("%s: покупка не удалась: %s", s, e)
 
     def run(self):
+        """Возвращает "halt" (остановлен риск-менеджментом — перезапускать не надо)
+        или "errors" (серия сбоев, например нет сети — стоит перезапустить)."""
         sp = self.cfg.strategy
         log.info("Старт auto: %s, стратегия %s, до %d позиций, капитал %.2f, открыто: %s",
                  self.cfg.timeframe, sp.name, self.cfg.max_positions, self.capital,
@@ -268,7 +270,7 @@ class AutoTrader:
             try:
                 if not self.step():
                     log.error("Бот остановлен риск-менеджментом. Проверьте ситуацию вручную.")
-                    return
+                    return "halt"
                 errors = 0
             except KeyboardInterrupt:
                 raise
@@ -277,7 +279,7 @@ class AutoTrader:
                 log.exception("Ошибка итерации (%d подряд)", errors)
                 if errors >= 10:
                     log.error("Слишком много ошибок подряд — остановка")
-                    return
+                    return "errors"
                 time.sleep(min(300, 5 * 2 ** errors))
                 continue
             time.sleep(self.cfg.poll_seconds)

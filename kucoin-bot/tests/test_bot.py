@@ -343,3 +343,14 @@ def test_cli_rejects_unknown_symbol(monkeypatch, tmp_path):
     monkeypatch.setattr("sys.argv", ["main.py", "--env", str(tmp_path / "x.env"), "--symbol", "FOO-USDT", "paper"])
     with pytest.raises(SystemExit, match="нет на KuCoin"):
         main.main()
+
+
+def test_run_reports_error_streak_for_restart(tmp_path, monkeypatch):
+    from bot.portfolio import AutoTrader, PaperExecutor
+    monkeypatch.setattr("bot.portfolio.time.sleep", lambda s: None)
+    cfg = load_config(tmp_path / "none.env")
+    t = AutoTrader(cfg, FakeClient(), PaperExecutor(), 1000, tmp_path / "s.json", tmp_path / "j.csv")
+    monkeypatch.setattr(t, "step", lambda: (_ for _ in ()).throw(ConnectionError("нет сети")))
+    assert t.run() == "errors"
+    monkeypatch.setattr(t, "step", lambda: False)
+    assert t.run() == "halt"

@@ -126,6 +126,8 @@ class Trader:
         return True
 
     def run(self):
+        """Возвращает "halt" (остановлен риск-менеджментом — перезапускать не надо)
+        или "errors" (серия сбоев, например нет сети — стоит перезапустить)."""
         sp = self.cfg.strategy
         log.info("Старт: %s %s, стратегия %s, стоп %s ATR, тейк %s, трейлинг %s, позиция: %s",
                  self.cfg.symbol, self.cfg.timeframe, sp.name, sp.stop_atr,
@@ -137,7 +139,7 @@ class Trader:
             try:
                 if not self.step():
                     log.error("Бот остановлен риск-менеджментом. Проверьте ситуацию вручную.")
-                    return
+                    return "halt"
                 errors = 0
             except KeyboardInterrupt:
                 raise
@@ -146,7 +148,7 @@ class Trader:
                 log.exception("Ошибка итерации (%d подряд)", errors)
                 if errors >= 10:
                     log.error("Слишком много ошибок подряд — остановка")
-                    return
+                    return "errors"
                 time.sleep(min(300, 5 * 2 ** errors))
                 continue
             time.sleep(self.cfg.poll_seconds)
