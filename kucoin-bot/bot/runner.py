@@ -20,7 +20,9 @@ class Trader:
         self.state_path = Path(state_path)
         state = self._load()
         self.position = Position.from_dict(state["position"]) if state.get("position") else None
-        self.last_candle_ts = state.get("last_candle_ts", 0)
+        # при смене таймфрейма старая отметка времени свечи не подходит — начинаем заново
+        same_tf = state.get("timeframe", cfg.timeframe) == cfg.timeframe
+        self.last_candle_ts = state.get("last_candle_ts", 0) if same_tf else 0
         self.guard = RiskGuard(cfg.risk, state.get("guard"))
         self.realized_pnl = state.get("realized_pnl", 0.0)
         if hasattr(broker, "quote") and state.get("broker"):
@@ -37,6 +39,7 @@ class Trader:
         data = {
             "position": self.position.to_dict() if self.position else None,
             "last_candle_ts": self.last_candle_ts,
+            "timeframe": self.cfg.timeframe,
             "guard": self.guard.to_dict(),
             "realized_pnl": self.realized_pnl,
             "broker": self.broker.to_dict(),

@@ -310,3 +310,15 @@ def test_scan_table():
     for name in STRATEGIES:
         assert out.count(name) == 1
     assert "держать" in out and "мало данных" in out
+
+
+def test_timeframe_change_resets_candle_marker(tmp_path):
+    cfg = load_config(tmp_path / "missing.env")
+    client = FakeClient(synthetic_candles(10), price=100)
+    cfg.timeframe = "1hour"
+    t = Trader(cfg, client, PaperBroker(client, "BTC-USDT", 1000), tmp_path / "s.json")
+    t.last_candle_ts = 123
+    t.save()
+    assert Trader(cfg, client, PaperBroker(client, "BTC-USDT", 1000), tmp_path / "s.json").last_candle_ts == 123
+    cfg.timeframe = "4hour"
+    assert Trader(cfg, client, PaperBroker(client, "BTC-USDT", 1000), tmp_path / "s.json").last_candle_ts == 0
