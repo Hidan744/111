@@ -13,7 +13,8 @@ from bot.kucoin_client import KucoinClient, sign
 from bot.models import Candle, Position
 from bot.risk import RiskGuard, RiskParams, position_funds
 from bot.runner import Trader
-from bot.strategy import Signals, StrategyParams, update_trailing
+from bot.backtest import compare
+from bot.strategy import STRATEGIES, StrategyParams, TrendSignals, make_signals, update_trailing
 from tests.helpers import FakeClient, synthetic_candles
 
 
@@ -38,10 +39,13 @@ def test_atr_constant_range():
 
 def test_indicators_have_no_lookahead():
     candles = synthetic_candles(600)
-    full = Signals(candles, StrategyParams())
-    part = Signals(candles[:400], StrategyParams())
-    for a, b in ((full.fast, part.fast), (full.rsi, part.rsi), (full.atr, part.atr)):
-        assert a[:400] == b
+    for name in STRATEGIES:
+        full = make_signals(candles, StrategyParams(name=name))
+        part = make_signals(candles[:400], StrategyParams(name=name))
+        for attr in ("trend", "rsi", "atr", "fast", "slow", "lower", "mid", "upper"):
+            if hasattr(full, attr):
+                assert getattr(full, attr)[:400] == getattr(part, attr), (name, attr)
+        assert [full.entry(i) for i in range(400)] == [part.entry(i) for i in range(400)]
 
 
 # ---------- риск ----------
@@ -194,8 +198,8 @@ def test_trader_opens_and_closes_with_persisted_state(tmp_path, monkeypatch):
     state = tmp_path / "state.json"
     trader = Trader(cfg, client, broker, state)
 
-    monkeypatch.setattr(Signals, "entry", lambda self, i: True)
-    monkeypatch.setattr(Signals, "exit", lambda self, i: False)
+    monkeypatch.setattr(TrendSignals, "entry", lambda self, i: True)
+    monkeypatch.setattr(TrendSignals, "exit", lambda self, i: False)
     trader.step()
     assert trader.position is not None
     assert broker.base > 0
@@ -211,3 +215,62 @@ def test_trader_opens_and_closes_with_persisted_state(tmp_path, monkeypatch):
     trader2.step()
     assert trader2.position is None
     assert trader2.realized_pnl < 0
+
+
+# ---------- новые стратегии ----------
+
+def test_sma_and_bollinger():
+    assert ind.sma([1, 2, 3, 4], 2) == [None, 1.5, 2.5, 3.5]
+    lower, mid, upper = ind.bollinger([10.0] * 25, 20, 2)
+    assert lower[-1] == mid[-1] == upper[-1] == pytest.approx(10.0)
+
+
+def test_donchian_excludes_current_candle():
+    assert ind.highest_prev([1, 5, 3, 9], 2) == [None, None, 5, 5]
+    assert ind.lowest_prev([4, 2, 3, 1], 2) == [None, None, 2, 2]
+
+
+def _candles_from_closes(closes):
+    return [Candle(i * 3600, c, c * 1.001, c * 0.999, c, 1) for i, c in enumerate(closes)]
+
+
+def test_meanrev_buys_dip_and_exits_at_mean():
+    closes = [100 + (i % 2) * 0.5 for i in range(40)] + [96, 94] + [100] * 3
+    sig = make_signals(_candles_from_closes(closes), StrategyParams(name="meanrev", trend_ema=0))
+    dip = 41
+    assert sig.entry(dip)
+    assert not sig.exit(dip)
+    assert sig.exit(dip + 3)
+
+
+def test_breakout_enters_on_new_high_and_exits_on_new_low():
+    closes = [100 + (i % 3) for i in range(30)] + [110] + [95]
+    sig = make_signals(_candles_from_closes(closes), StrategyParams(name="breakout", trend_ema=0))
+    assert sig.entry(30) and not sig.entry(29)
+    assert sig.exit(31)
+
+
+def test_unknown_strategy():
+    with pytest.raises(ValueError):
+        make_signals(synthetic_candles(10), StrategyParams(name="magic"))
+
+
+@pytest.mark.parametrize("name", list(STRATEGIES))
+def test_every_strategy_backtests_consistently(name):
+    res = run_backtest(synthetic_candles(3000, seed=5), StrategyParams(name=name), RiskParams())
+    assert len(res.trades) > 0
+    assert res.end_equity == pytest.approx(1000 + sum(t.pnl for t in res.trades))
+
+
+def test_backtest_start_index_skips_trading_before_it():
+    candles = synthetic_candles(3000)
+    res = run_backtest(candles, StrategyParams(), RiskParams(), start=2000)
+    assert all(t.entry_ts >= candles[2000].ts for t in res.trades)
+    assert len(res.equity_curve) == 1000
+
+
+def test_compare_lists_all_strategies_and_parts():
+    out = compare(synthetic_candles(2000), StrategyParams(), RiskParams(), parts=2)
+    assert out.count("купить+ждать") == 3
+    for name in STRATEGIES:
+        assert out.count(name) == 3

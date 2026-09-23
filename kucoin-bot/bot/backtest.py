@@ -5,11 +5,12 @@
 задеты и стоп, и тейк, считаем, что сработал стоп (консервативно)."""
 import csv
 import math
+import time
 from dataclasses import dataclass, field
 
 from .models import Candle, Position
 from .risk import RiskGuard, RiskParams, position_funds
-from .strategy import Signals, StrategyParams, update_trailing
+from .strategy import StrategyParams, make_signals, update_trailing
 
 
 @dataclass
@@ -65,11 +66,14 @@ class Result:
         ])
 
 
-def run_backtest(candles, sp: StrategyParams, rp: RiskParams, balance=1000.0, fee_rate=0.001, slippage=0.0005):
-    sig = Signals(candles, sp)
+def run_backtest(candles, sp: StrategyParams, rp: RiskParams, balance=1000.0, fee_rate=0.001, slippage=0.0005,
+                 start=0):
+    """start — индекс свечи, с которой разрешена торговля. Свечи до него служат
+    только для прогрева индикаторов (нужно, чтобы честно тестировать отдельные отрезки)."""
+    sig = make_signals(candles, sp)
     guard = RiskGuard(rp)
     cash, pos, pending_entry = balance, None, None
-    res = Result(balance, balance, candles[-1].close / candles[0].open - 1 if candles else 0.0)
+    res = Result(balance, balance, candles[-1].close / candles[start].open - 1 if candles else 0.0)
 
     def close(i, price, reason):
         nonlocal cash, pos
@@ -80,7 +84,8 @@ def run_backtest(candles, sp: StrategyParams, rp: RiskParams, balance=1000.0, fe
                                 pos.qty, proceeds - pos.cost, reason))
         pos = None
 
-    for i, c in enumerate(candles):
+    for i in range(start, len(candles)):
+        c = candles[i]
         # 1. исполняем вход, решённый на предыдущей свече, по цене открытия
         if pending_entry is not None and pos is None:
             fill_price = c.open * (1 + slippage)
@@ -123,6 +128,41 @@ def run_backtest(candles, sp: StrategyParams, rp: RiskParams, balance=1000.0, fe
     if res.equity_curve:
         res.equity_curve[-1] = cash
     return res
+
+
+def compare(candles, sp: StrategyParams, rp: RiskParams, balance=1000.0, fee_rate=0.001, slippage=0.0005,
+            parts=2):
+    """Прогоняет все стратегии на одной истории: весь период и каждую из parts частей
+    отдельно. Стратегия, которая выигрывает только на одном отрезке, скорее всего
+    просто подогнана под него. Возвращает текст таблицы."""
+    from dataclasses import replace
+    from .strategy import STRATEGIES
+
+    warmup = sp.min_candles()
+    usable = len(candles) - warmup
+    periods = [("Весь период", warmup, len(candles))]
+    if parts > 1 and usable >= parts * 50:
+        size = usable // parts
+        for k in range(parts):
+            a = warmup + k * size
+            b = len(candles) if k == parts - 1 else a + size
+            periods.append((f"Часть {k + 1}/{parts}", a, b))
+
+    fmt = lambda ts: time.strftime("%Y-%m-%d", time.gmtime(ts))
+    lines = []
+    for title, a, b in periods:
+        seg = candles[a - warmup:b]
+        lines.append(f"\n{title}: {fmt(candles[a].ts)} — {fmt(candles[b - 1].ts)}")
+        lines.append(f"{'стратегия':<12}{'сделок':>8}{'win%':>8}{'PF':>7}{'доход':>10}{'просадка':>10}")
+        bh = None
+        for name in STRATEGIES:
+            r = run_backtest(seg, replace(sp, name=name), rp, balance, fee_rate, slippage, start=warmup)
+            bh = r.buy_hold_return
+            pf = "inf" if r.profit_factor == math.inf else f"{r.profit_factor:.2f}"
+            lines.append(f"{name:<12}{len(r.trades):>8}{r.win_rate:>8.0%}{pf:>7}"
+                         f"{r.total_return:>+10.1%}{r.max_drawdown:>10.1%}")
+        lines.append(f"{'купить+ждать':<12}{'':>8}{'':>8}{'':>7}{bh:>+10.1%}")
+    return "\n".join(lines)
 
 
 def save_csv(candles, path):

@@ -3,6 +3,7 @@
   python main.py download --days 365          # скачать историю в data/
   python main.py backtest --days 365          # проверить стратегию на истории
   python main.py backtest --csv data/x.csv    # бэктест по сохранённому файлу
+  python main.py compare --days 730           # сравнить все стратегии на одной истории
   python main.py paper                        # бумажная торговля на живых котировках
   python main.py live --confirm               # реальная торговля (нужен LIVE_TRADING=yes)
 """
@@ -12,10 +13,11 @@ import sys
 import time
 from pathlib import Path
 
-from bot.backtest import load_csv, run_backtest, save_csv
+from bot.backtest import compare, load_csv, run_backtest, save_csv
 from bot.brokers import LiveBroker, PaperBroker
 from bot.config import load_config
 from bot.kucoin_client import INTERVAL_SECONDS, KucoinClient
+from bot.strategy import STRATEGIES
 from bot.runner import Trader
 
 
@@ -42,6 +44,10 @@ def main():
     b.add_argument("--days", type=int, default=365)
     b.add_argument("--csv", help="CSV со свечами вместо загрузки с биржи")
     b.add_argument("--trades", action="store_true", help="вывести список сделок")
+    cp = sub.add_parser("compare", help="сравнить все стратегии на одной истории")
+    cp.add_argument("--days", type=int, default=730)
+    cp.add_argument("--csv", help="CSV со свечами вместо загрузки с биржи")
+    cp.add_argument("--parts", type=int, default=2, help="на сколько отрезков делить историю")
     sub.add_parser("paper", help="бумажная торговля")
     lv = sub.add_parser("live", help="реальная торговля")
     lv.add_argument("--confirm", action="store_true", help="подтверждаю торговлю реальными деньгами")
@@ -50,6 +56,8 @@ def main():
     cfg = load_config(args.env)
     if cfg.timeframe not in INTERVAL_SECONDS:
         sys.exit(f"Неизвестный TIMEFRAME={cfg.timeframe}. Допустимо: {', '.join(INTERVAL_SECONDS)}")
+    if cfg.strategy.name not in STRATEGIES:
+        sys.exit(f"Неизвестная STRATEGY={cfg.strategy.name}. Допустимо: {', '.join(STRATEGIES)}")
     client = KucoinClient(cfg.api_key, cfg.api_secret, cfg.api_passphrase)
 
     if args.cmd == "download":
@@ -65,12 +73,20 @@ def main():
             sys.exit(f"Мало данных: {len(candles)} свечей, нужно минимум {cfg.strategy.min_candles()}")
         res = run_backtest(candles, cfg.strategy, cfg.risk, cfg.paper_balance, cfg.fee_rate, cfg.slippage)
         fmt = lambda ts: time.strftime("%Y-%m-%d %H:%M", time.gmtime(ts))
+        print(f"Стратегия: {cfg.strategy.name}")
         print(f"{cfg.symbol} {cfg.timeframe}: {fmt(candles[0].ts)} — {fmt(candles[-1].ts)}, {len(candles)} свечей")
         print(res.summary())
         if args.trades:
             for t in res.trades:
                 print(f"{fmt(t.entry_ts)} -> {fmt(t.exit_ts)}  {t.entry:.6f} -> {t.exit:.6f}  "
                       f"{t.pnl:+.2f}  {t.reason}")
+
+    elif args.cmd == "compare":
+        candles = load_csv(args.csv) if args.csv else fetch_history(cfg, client, args.days)
+        if len(candles) < cfg.strategy.min_candles() + 50:
+            sys.exit(f"Мало данных: {len(candles)} свечей")
+        print(f"{cfg.symbol} {cfg.timeframe}, комиссия {cfg.fee_rate:.2%}, проскальзывание {cfg.slippage:.2%}")
+        print(compare(candles, cfg.strategy, cfg.risk, cfg.paper_balance, cfg.fee_rate, cfg.slippage, args.parts))
 
     elif args.cmd == "paper":
         setup_logging("paper.log")

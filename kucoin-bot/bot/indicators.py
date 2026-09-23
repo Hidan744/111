@@ -58,3 +58,42 @@ def atr(highs, lows, closes, period=14):
         a = (a * (period - 1) + trs[i]) / period
         out[i] = a
     return out
+
+
+def sma(values, period):
+    out = [None] * len(values)
+    if period <= 0 or len(values) < period:
+        return out
+    s = sum(values[:period])
+    out[period - 1] = s / period
+    for i in range(period, len(values)):
+        s += values[i] - values[i - period]
+        out[i] = s / period
+    return out
+
+
+def bollinger(values, period=20, num_std=2.0):
+    """(нижняя, средняя, верхняя) полосы Боллинджера."""
+    mid = sma(values, period)
+    lower, upper = [None] * len(values), [None] * len(values)
+    for i in range(period - 1, len(values)):
+        window = values[i - period + 1:i + 1]
+        m = mid[i]
+        sd = (sum((v - m) ** 2 for v in window) / period) ** 0.5
+        lower[i], upper[i] = m - num_std * sd, m + num_std * sd
+    return lower, mid, upper
+
+
+def highest_prev(values, period):
+    """Максимум за period свечей ДО текущей (текущая не входит) — канал Дончиана."""
+    out = [None] * len(values)
+    for i in range(period, len(values)):
+        out[i] = max(values[i - period:i])
+    return out
+
+
+def lowest_prev(values, period):
+    out = [None] * len(values)
+    for i in range(period, len(values)):
+        out[i] = min(values[i - period:i])
+    return out

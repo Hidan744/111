@@ -7,7 +7,7 @@ from pathlib import Path
 from .kucoin_client import INTERVAL_SECONDS
 from .models import Position
 from .risk import RiskGuard, position_funds
-from .strategy import Signals, update_trailing
+from .strategy import make_signals, update_trailing
 
 log = logging.getLogger(__name__)
 
@@ -108,11 +108,10 @@ class Trader:
         last = candles[-1]
         if last.ts > self.last_candle_ts:
             self.last_candle_ts = last.ts
-            sig = Signals(candles, cfg.strategy)
+            sig = make_signals(candles, cfg.strategy)
             i = len(candles) - 1
-            log.info("Свеча %s закрыта: %.6f | EMA %.6f/%.6f | RSI %.1f",
-                     time.strftime("%Y-%m-%d %H:%M", time.gmtime(last.ts)), last.close,
-                     sig.fast[i] or 0, sig.slow[i] or 0, sig.rsi[i] or 0)
+            log.info("Свеча %s закрыта: %.6f | %s",
+                     time.strftime("%Y-%m-%d %H:%M", time.gmtime(last.ts)), last.close, sig.describe(i))
             if self.position:
                 if sig.exit(i):
                     self.close_position("signal")
@@ -124,7 +123,8 @@ class Trader:
         return True
 
     def run(self):
-        log.info("Старт: %s %s, позиция: %s", self.cfg.symbol, self.cfg.timeframe,
+        log.info("Старт: %s %s, стратегия %s, позиция: %s", self.cfg.symbol, self.cfg.timeframe,
+                 self.cfg.strategy.name,
                  "есть" if self.position else "нет")
         errors = 0
         while True:
