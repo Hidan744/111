@@ -404,8 +404,29 @@ function finishWorkout(){
   nav();
   $app.innerHTML=`<div class="head"><div class="logo">Готово!</div></div><section class="hero"><div class="lab">Тренировка сохранена</div><h1>${a.title}</h1>
    <div class="chips"><span class="chip">${mins} мин</span><span class="chip">${plural(sets,"подход","подхода","подходов")}</span><span class="chip">${ton} кг поднято</span></div><p>Отличная работа. Следующая тренировка — день ${nextDay()+1}. Не забудь пить воду и хорошо выспаться.</p></section>
-   <div class="row"><button class="btn main" id="toPlan">К программе</button><button class="btn alt" id="toProg">Прогресс</button></div>`;
+   <div class="row"><button class="btn teal" id="shareNow">Скинуть результат</button><button class="btn main" id="toPlan">К программе</button><button class="btn alt" id="toProg">Прогресс</button></div><div id="shareHost"></div>`;
   document.getElementById("toPlan").onclick=()=>go("plan"); document.getElementById("toProg").onclick=()=>go("prog");
+  document.getElementById("shareNow").onclick=()=>shareBox(document.getElementById("shareHost"),sess);
+}
+
+
+/* ===== Скинуть результат ===== */
+function sessionText(s){
+  const mins=Math.max(1,Math.round((s.end-s.start)/60000)), sets=s.ex.reduce((a,e)=>a+e.sets.length,0);
+  const ton=Math.round(s.ex.reduce((b,e)=>b+e.sets.reduce((c,x)=>c+x.w*x.r,0),0));
+  const d=new Date(s.end).toLocaleDateString("ru-RU",{day:"numeric",month:"long"});
+  const lines=s.ex.map((e,i)=>{ const x=E[e.id]; const sets=e.sets.map(z=>x.u==="kg"&&z.w?`${String(z.w).replace(".",",")}×${z.r}`:x.u==="kg"?`${z.r} повт.`:x.u==="sec"?`${z.r} с`:`${z.r}`).join(", ");
+    return `${i+1}. ${x.n}: ${sets}${x.u==="reps"?" повт.":""}`; });
+  return [`🏋️ Тренировка ${d} — ${s.title}`,`⏱ ${mins} мин · ${plural(sets,"подход","подхода","подходов")}${ton?` · поднято ${ton} кг`:""}`,"",...lines,"",`Цель: ${GOALS[S.profile.goal].t.toLowerCase()} · всего тренировок: ${S.sessions.length}`].join("\n");
+}
+function shareBox(host,s){
+  const txt=sessionText(s);
+  host.innerHTML=`<div class="card"><h3 style="font-size:16px">Результат для отправки</h3><p class="muted" style="font-size:14px;margin:4px 0 8px">Скопируй текст и вставь в WhatsApp, Telegram или заметки.</p>
+   <textarea readonly aria-label="Текст результата">${esc(txt)}</textarea><div class="row"><button class="btn teal" data-cp>Скопировать</button><span class="muted" data-msg style="align-self:center"></span></div></div>`;
+  const t=host.querySelector("textarea"), m=host.querySelector("[data-msg]");
+  t.style.minHeight=Math.min(420,60+txt.split("\n").length*20)+"px";
+  host.querySelector("[data-cp]").onclick=()=>{ const sel=()=>{ t.focus(); t.select(); m.textContent="Текст выделен — нажми «Копировать» в меню"; };
+    try{ navigator.clipboard.writeText(txt).then(()=>{ m.textContent="Скопировано ✓"; }).catch(sel); }catch(e){ sel(); } };
 }
 
 /* ===== Таймер отдыха ===== */
@@ -451,7 +472,8 @@ function progView(){
    <div class="sec"><h2>Рекорды</h2><small>максимальный рабочий вес</small></div>
    ${Object.keys(bests).length?`<div class="hist">${Object.entries(bests).sort((a,b)=>b[1]-a[1]).map(([id,kg])=>`<div class="hrow"><span>${E[id].n}</span><b class="num">${kg} кг</b></div>`).join("")}</div>`:`<p class="muted">Здесь появятся твои лучшие веса после первых тренировок.</p>`}
    <div class="sec"><h2>История</h2><small>${S.sessions.length} тренировок</small></div>
-   ${S.sessions.length?`<div class="hist">${S.sessions.slice().reverse().slice(0,30).map(s=>`<div class="hrow"><span><b>${fmtD(s.end)}</b> · ${s.title}</span><span class="num muted">${s.ex.reduce((a,e)=>a+e.sets.length,0)} подх. · ${Math.max(1,Math.round((s.end-s.start)/60000))} мин</span></div>`).join("")}</div>`:`<p class="muted">Пока пусто. Начни первую тренировку во вкладке «Программа».</p>`}`;
+   ${S.sessions.length?`<div class="hist">${S.sessions.map((s,i)=>[s,i]).reverse().slice(0,30).map(([s,i])=>`<div><div class="hrow"><span><b>${fmtD(s.end)}</b> · ${s.title}<br><span class="num muted">${s.ex.reduce((a,e)=>a+e.sets.length,0)} подх. · ${Math.max(1,Math.round((s.end-s.start)/60000))} мин</span></span><button class="small" data-share="${i}" style="align-self:center">Скинуть</button></div><div data-sh="${i}"></div></div>`).join("")}</div>`:`<p class="muted">Пока пусто. Начни первую тренировку во вкладке «Программа».</p>`}`;
+  $app.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.share, h=$app.querySelector(`[data-sh="${i}"]`); if(h.innerHTML) h.innerHTML=""; else shareBox(h,S.sessions[i]); });
   document.getElementById("wadd").onclick=()=>{ const v=parseFloat(document.getElementById("wkg").value.replace(",","."));
     if(!(v>25&&v<300)){ document.getElementById("wmsg").textContent="Введи вес в килограммах, например 62,5"; return; }
     const today=new Date(); today.setHours(12,0,0,0); S.weights=S.weights.filter(x=>new Date(x.d).toDateString()!==today.toDateString()); S.weights.push({d:today.getTime(),kg:v}); save(); render(); };
