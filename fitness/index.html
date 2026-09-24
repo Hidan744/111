@@ -249,11 +249,6 @@ const TPL={
  FullC:{t:"Всё тело",s:["glute","pullV","pushH","legiso","delt","core"]},
  Lower:{t:"Ноги и ягодицы",s:["squat","glute","hinge","abd","legiso","core"]}
 };
-const WEEK={
- glutes:{2:["LowerA","Full"],3:["LowerA","Upper","LowerB"],4:["LowerA","Upper","LowerB","Full"],5:["LowerA","Upper","LowerB","UpperB","Full"]},
- full:{2:["Full","FullB"],3:["Full","FullB","FullC"],4:["Full","FullB","FullC","Full"],5:["Full","FullB","FullC","Full","FullB"]},
- upper:{2:["Upper","Lower"],3:["Upper","Lower","UpperB"],4:["Upper","Lower","UpperB","Lower"],5:["Upper","Lower","UpperB","Lower","Upper"]}
-};
 const GOALS={
  loss:{t:"Похудеть",d:"Круговой темп, кардио-финиш",sets:3,reps:"12–15",rest:45,fin:"Кардио-финиш 15 мин: дорожка, 6 × (1 мин быстрым шагом в горку + 1 мин спокойно), затем 3 мин заминки."},
  muscle:{t:"Мышцы и сила",d:"Прогрессия весов, больше отдыха",sets:3,reps:"8–12",rest:90,fin:"Заминка 5–10 мин: лёгкая растяжка ягодиц, бёдер и спины."},
@@ -261,7 +256,16 @@ const GOALS={
  endur:{t:"Выносливость",d:"Короткий отдых, больше кардио",sets:3,reps:"15–20",rest:30,fin:"Кардио 20–25 мин: эллипс или велотренажёр в ровном темпе, при котором можно говорить фразами."}
 };
 const LEVELS={beg:["Новичок","до 6 месяцев в зале"],mid:["Средний","6 мес. – 2 года"],adv:["Продвинутый","больше 2 лет"]};
-const FOCUS={glutes:["Ягодицы и ноги","главный акцент на низ"],full:["Всё тело","равномерно"],upper:["Верх и осанка","спина, плечи, руки"]};
+const AUTO={2:["Full","FullB"],3:["LowerA","Upper","FullC"],4:["LowerA","Upper","LowerB","UpperB"],5:["LowerA","Upper","LowerB","UpperB","Full"]};
+const SPLIT={2:"2 × всё тело",3:"низ · верх · всё тело",4:"верх / низ × 2",5:"верх / низ × 2 + всё тело"};
+const WEEKS=[
+ {t:"Втягивание",d:"Умеренный вес: в каждом подходе оставляй 3–4 повтора в запасе. Отрабатывай технику."},
+ {t:"Рост",d:"Прибавь 2,5–5% веса в основных упражнениях, 2–3 повтора в запасе."},
+ {t:"Пик",d:"Самая тяжёлая неделя: +1 подход, 1–2 повтора в запасе. Сон и питание — особенно важны."},
+ {t:"Разгрузка",d:"Вес на 20% легче и на 1 подход меньше. Тело восстанавливается и закрепляет результат."}];
+const pos=()=>S.sessions.length;
+const curWeek=()=>Math.floor(pos()/S.profile.days)%4;
+const curCycle=()=>Math.floor(pos()/S.profile.days/4)+1;
 const LIMITS={knee:"Колени",back:"Поясница",shoulder:"Плечи"};
 
 /* ===== Состояние ===== */
@@ -280,8 +284,9 @@ const $app=document.getElementById("app");
 function allowed(id){ return !E[id].lim.some(l=>S.profile.limits.includes(l)) && !(E[id].adv && S.profile.level==="beg"); }
 function eqScore(id){ const e=EQ[id], pref=S.profile.equip||"mix"; if(pref==="machines") return (e==="m"||e==="c")?0:(e==="db"||e==="bw")?1:2; if(pref==="free") return (e==="bb"||e==="db"||e==="kb")?0:(e==="bw"||e==="c")?1:2; return 0; }
 function byPref(list){ return list.map((c,i)=>[c,i]).sort((a,b)=>eqScore(a[0])-eqScore(b[0])||a[1]-b[1]).map(x=>x[0]); }
-function plan(){
-  const p=S.profile, keys=WEEK[p.focus][p.days], seen={}, slotN={};
+function plan(week){
+  if(week==null) week=curWeek();
+  const p=S.profile, keys=AUTO[p.days], seen={}, slotN={}, block=week>=2?1:0;
   return keys.map((k,di)=>{
     const tpl=TPL[k], variant=seen[k]=(seen[k]||0)+1;
     let slots=tpl.s.slice();
@@ -291,25 +296,28 @@ function plan(){
     slots=slots.slice(0,n);
     const used=new Set();
     const ex=slots.map((sl,si)=>{
-      const key=`${di}:${si}`;
+      const key=`${block}:${di}:${si}`;
       let id=S.swaps[key];
       if(!id || !allowed(id) || used.has(id)){
         const cands=byPref(SLOTS[sl].filter(c=>allowed(c)&&!used.has(c)));
         const top=cands.filter(c=>eqScore(c)===eqScore(cands[0]||c));
         const pool=top.length?top:Object.keys(E).filter(c=>allowed(c)&&!used.has(c)&&E[c].g===E[SLOTS[sl][0]].g);
-        const idx=(slotN[sl]||0)+variant-1;
+        const idx=(slotN[sl]||0)+variant-1+block;
         id=pool.length?pool[idx%pool.length]:SLOTS.core.find(c=>!used.has(c)&&allowed(c))||"plank";
       }
       slotN[sl]=(slotN[sl]||0)+1;
       used.add(id);
       return {id,slot:sl,key};
     });
-    return {di,key:k,title:tpl.t,ex};
+    return {di,key:k,title:tpl.t,ex,week};
   });
 }
-function scheme(id){
+function scheme(id,week){
+  if(week==null) week=curWeek();
   const g=GOALS[S.profile.goal], lv=S.profile.level; const u=E[id].u;
-  let sets=g.sets+(lv==="adv"&&S.profile.goal==="muscle"?1:0)-(lv==="beg"&&S.profile.goal!=="loss"?0:0);
+  let sets=g.sets+(lv==="adv"&&S.profile.goal==="muscle"?1:0);
+  if(week===2&&E[id].g!=="Кор") sets=Math.min(5,sets+1);
+  if(week===3) sets=Math.max(2,sets-1);
   let reps=g.reps;
   if(u==="sec") reps=lv==="beg"?"20–30 с":lv==="mid"?"30–45 с":"45–60 с";
   else if(id==="deadbug") reps="8–10 на сторону";
@@ -321,7 +329,7 @@ function scheme(id){
   return {sets,reps,rest:g.rest};
 }
 function topReps(r){ const m=String(r).match(/(\d+)(?:–(\d+))?/); return m?+(m[2]||m[1]):10; }
-const nextDay=()=>S.sessions.length%S.profile.days;
+const nextDay=()=>pos()%S.profile.days;
 
 /* ===== Навигация ===== */
 const ICONS={
@@ -346,28 +354,32 @@ function render(){
 /* ===== Программа ===== */
 function planView(){
   if(S.active) return workView();
-  const p=S.profile, g=GOALS[p.goal], pl=plan(), nd=nextDay();
+  const p=S.profile, g=GOALS[p.goal], cw=curWeek(), nd=nextDay();
+  let vw=S.viewWeek; if(vw==null||vw<0||vw>3) vw=cw;
+  const pl=plan(vw), cur=plan(cw);
   const week=S.sessions.filter(s=>Date.now()-s.end<7*864e5).length;
-  const minsAll=S.sessions.reduce((a,s)=>a+Math.max(1,Math.round((s.end-s.start)/60000)),0);
   const firstRun=!S.sessions.length;
   $app.innerHTML=`<div class="head"><div class="logo">Мой <b>фитнес</b>-тренер</div><button class="ghost" id="edit">Параметры</button></div>
-   <section class="hero"><div class="lab">Твоя программа</div><h1>${g.t}</h1>
-    <div class="chips"><span class="chip">${LEVELS[p.level][0]}</span><span class="chip">${p.days} трен. в неделю</span><span class="chip">${FOCUS[p.focus][0]}</span><span class="chip">~${p.dur} мин</span><span class="chip">${EQUIP[p.equip||"mix"][0]}</span>${p.limits.map(l=>`<span class="chip">Бережём: ${LIMITS[l].toLowerCase()}</span>`).join("")}</div>
-    <p>${g.d}. Отдых между подходами — ${g.rest} с.</p>
-    <div class="row" style="margin-top:0"><button class="btn main" id="startNext">Начать: день ${nd+1} — ${pl[nd].title}</button><button class="btn alt" id="copyPlan" style="background:transparent;color:inherit;border-color:rgba(255,255,255,.3)">Копировать программу</button></div></section>
+   <section class="hero"><div class="lab">План на 4 недели · цикл ${curCycle()}</div><h1>${g.t}</h1>
+    <div class="chips"><span class="chip">${LEVELS[p.level][0]}</span><span class="chip">${p.days} трен. в неделю: ${SPLIT[p.days]}</span><span class="chip">~${p.dur} мин</span><span class="chip">${EQUIP[p.equip||"mix"][0]}</span>${p.limits.map(l=>`<span class="chip">Бережём: ${LIMITS[l].toLowerCase()}</span>`).join("")}</div>
+    <p>Сейчас неделя ${cw+1} — «${WEEKS[cw].t}». Отдых между подходами — ${g.rest} с.</p>
+    <div class="row" style="margin-top:0"><button class="btn main" id="startNext">Начать: неделя ${cw+1}, день ${nd+1} — ${cur[nd].title}</button><button class="btn alt" id="copyPlan" style="background:transparent;color:inherit;border-color:rgba(255,255,255,.3)">Копировать неделю ${vw+1}</button></div></section>
    <div id="copyHost"></div>
-   ${firstRun?`<div class="note">Это стартовая программа. Нажми «Параметры», чтобы выбрать цель, уровень, число дней, акцент и ограничения. Программа сразу перестроится.</div>`:""}
-   <div class="stats"><div class="stat"><b class="num">${S.sessions.length}</b><span>тренировок всего</span></div><div class="stat"><b class="num">${week}/${p.days}</b><span>за 7 дней</span></div><div class="stat"><b class="num">${minsAll>=120?Math.round(minsAll/60)+" ч":minsAll+" мин"}</b><span>в зале</span></div></div>
-   <div class="sec"><h2>Неделя</h2><small>Дни идут по кругу</small></div>
-   <div class="days">${pl.map(d=>`<div class="day ${d.di===nd?"next":""}"><div class="top"><div><div class="tag">День ${d.di+1}${d.di===nd?" · следующая":""}</div><h3>${d.title}</h3></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="small" data-copy="${d.di}">Копировать</button><button class="small" data-start="${d.di}">Начать</button></div></div>
-     <ol>${d.ex.map(e=>{const sc=scheme(e.id);return `<li><b>${E[e.id].n}</b> <span class="chip" style="font-size:11px;padding:1px 7px">${EQN[EQ[e.id]]}</span> — ${sc.sets} × ${sc.reps}</li>`;}).join("")}</ol>
-     <div class="muted" style="font-size:14px">В конце: ${g.fin}</div><div data-ch="${d.di}"></div></div>`).join("")}</div>
+   ${firstRun?`<div class="note">Тренер сам распределил нагрузку по ${p.days} дням и расписал 4 недели вперёд. Цель, уровень, число тренировок и ограничения меняются в «Параметрах».</div>`:""}
+   <div class="stats"><div class="stat"><b class="num">${S.sessions.length}</b><span>тренировок всего</span></div><div class="stat"><b class="num">${week}/${p.days}</b><span>за 7 дней</span></div><div class="stat"><b class="num">${cw+1}/4</b><span>неделя цикла</span></div></div>
+   <div class="sec"><h2>4 недели</h2><small>неделя = ${plural(p.days,"тренировка","тренировки","тренировок")}</small></div>
+   <div class="opts four" role="tablist">${WEEKS.map((w,i)=>`<button class="o" role="tab" data-wk="${i}" aria-pressed="${i===vw}"><b>Неделя ${i+1}${i===cw?" •":""}</b><span>${w.t}</span></button>`).join("")}</div>
+   <div class="note" style="margin-top:10px"><b>Неделя ${vw+1} — ${WEEKS[vw].t}.</b> ${WEEKS[vw].d}${vw>=2?" Упражнения обновлены, чтобы мышцы получили новый стимул.":""}</div>
+   <div class="days" style="margin-top:10px">${pl.map(d=>{ const isNext=vw===cw&&d.di===nd; return `<div class="day ${isNext?"next":""}"><div class="top"><div><div class="tag">День ${d.di+1}${isNext?" · следующая":""}</div><h3>${d.title}</h3></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="small" data-copy="${d.di}">Копировать</button>${vw===cw?`<button class="small" data-start="${d.di}">Начать</button>`:""}</div></div>
+     <ol>${d.ex.map(e=>{const sc=scheme(e.id,vw);return `<li><b>${E[e.id].n}</b> <span class="chip" style="font-size:11px;padding:1px 7px">${EQN[EQ[e.id]]}</span> — ${sc.sets} × ${sc.reps}</li>`;}).join("")}</ol>
+     <div class="muted" style="font-size:14px">В конце: ${g.fin}</div><div data-ch="${d.di}"></div></div>`; }).join("")}</div>
    <div class="warn">Перед началом тренировок проконсультируйся с врачом, особенно если есть хронические заболевания, травмы или беременность. При острой боли упражнение сразу прекращай.</div>`;
   document.getElementById("edit").onclick=()=>{ S.setup=true; render(); window.scrollTo(0,0); };
-  document.getElementById("startNext").onclick=()=>{ startWorkout(nd); go("plan"); };
-  $app.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>{ startWorkout(+b.dataset.start); go("plan"); });
-  document.getElementById("copyPlan").onclick=()=>{ const h=document.getElementById("copyHost"); copyBox(h,planText(pl),"Программа на неделю"); h.scrollIntoView({behavior:"smooth",block:"nearest"}); };
-  $app.querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.copy, h=$app.querySelector(`[data-ch="${i}"]`); if(h.innerHTML){ h.innerHTML=""; return; } copyBox(h,planText([pl[i]]),`День ${i+1}`); });
+  document.getElementById("startNext").onclick=()=>{ S.viewWeek=null; startWorkout(nd,cw); go("plan"); };
+  $app.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>{ startWorkout(+b.dataset.start,cw); go("plan"); });
+  $app.querySelectorAll("[data-wk]").forEach(b=>b.onclick=()=>{ S.viewWeek=+b.dataset.wk; save(); render(); });
+  document.getElementById("copyPlan").onclick=()=>{ const h=document.getElementById("copyHost"); copyBox(h,planText(pl,vw),`Неделя ${vw+1}`); h.scrollIntoView({behavior:"smooth",block:"nearest"}); };
+  $app.querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.copy, h=$app.querySelector(`[data-ch="${i}"]`); if(h.innerHTML){ h.innerHTML=""; return; } copyBox(h,planText([pl[i]],vw),`День ${i+1}`); });
 }
 
 /* ===== Параметры ===== */
@@ -379,10 +391,9 @@ function setupView(){
      <div class="form">
       <div class="field"><h3>Цель</h3><div class="opts">${Object.entries(GOALS).map(([k,g])=>opt("goal",k,g.t,g.d)).join("")}</div></div>
       <div class="field"><h3>Уровень подготовки</h3><div class="opts three">${Object.entries(LEVELS).map(([k,l])=>opt("level",k,l[0],l[1])).join("")}</div></div>
-      <div class="field"><h3>Тренировок в неделю</h3><div class="opts four">${[2,3,4,5].map(d=>opt("days",d,d,"")).join("")}</div></div>
+      <div class="field"><h3>Тренировок в неделю</h3><div class="opts four">${[2,3,4,5].map(d=>opt("days",d,d,SPLIT[d])).join("")}</div><p class="muted" style="font-size:14px;margin:8px 0 0">Тренер сам распределяет мышцы по дням и строит план на 4 недели.</p></div>
       <div class="field"><h3>Длительность тренировки</h3><div class="opts three">${[45,60,75].map(d=>opt("dur",d,d+" мин","")).join("")}</div></div>
       <div class="field"><h3>Инвентарь</h3><div class="opts three">${Object.entries(EQUIP).map(([k,f])=>opt("equip",k,f[0],f[1])).join("")}</div></div>
-      <div class="field"><h3>Акцент</h3><div class="opts three">${Object.entries(FOCUS).map(([k,f])=>opt("focus",k,f[0],f[1])).join("")}</div></div>
       <div class="field"><h3>Что беречь (можно несколько)</h3><div class="opts three">${Object.entries(LIMITS).map(([k,l])=>opt("limits",k,l,"")).join("")}</div><p class="muted" style="font-size:14px;margin:8px 0 0">Упражнения, которые нагружают выбранную зону, будут заменены на более щадящие.</p></div>
       <button class="btn main wide" id="apply">Сохранить и собрать программу</button>
      </div>
@@ -393,7 +404,7 @@ function setupView(){
     $app.querySelectorAll(".o").forEach(b=>b.onclick=()=>{ const g=b.dataset.g,v=b.dataset.v;
       if(g==="limits"){ p.limits=p.limits.includes(v)?p.limits.filter(x=>x!==v):p.limits.concat(v); }
       else p[g]=(g==="days"||g==="dur")?+v:v; draw(); });
-    document.getElementById("apply").onclick=()=>{ const changed=p.days!==S.profile.days||p.focus!==S.profile.focus||p.equip!==(S.profile.equip||"mix")||p.level!==S.profile.level; S.profile=p; if(changed) S.swaps={}; S.setup=false; S.tab="plan"; save(); render(); window.scrollTo(0,0); };
+    document.getElementById("apply").onclick=()=>{ const changed=p.days!==S.profile.days||p.equip!==(S.profile.equip||"mix")||p.level!==S.profile.level; S.profile=p; S.viewWeek=null; if(changed) S.swaps={}; S.setup=false; S.tab="plan"; save(); render(); window.scrollTo(0,0); };
     document.getElementById("exp").onclick=()=>{ const data=JSON.stringify({profile:S.profile,sessions:S.sessions,last:S.last,weights:S.weights,swaps:S.swaps});
       document.getElementById("bk").innerHTML=`<textarea id="bkt" readonly>${esc(data)}</textarea><div class="row"><button class="btn teal" id="cp">Скопировать</button><span id="cpm" class="muted"></span></div>`;
       document.getElementById("cp").onclick=()=>{ const t=document.getElementById("bkt"); navigator.clipboard.writeText(t.value).then(()=>{document.getElementById("cpm").textContent="Скопировано";}).catch(()=>{ t.focus(); t.select(); document.getElementById("cpm").textContent="Выделено — скопируй вручную"; }); }; };
@@ -408,18 +419,19 @@ function setupView(){
 }
 
 /* ===== Тренировка ===== */
-function startWorkout(di){
-  const d=plan()[di];
-  S.active={di,title:d.title,start:Date.now(),open:null,ex:d.ex.map(e=>({id:e.id,key:e.key,slot:e.slot,done:false}))};
+function startWorkout(di,week){
+  if(week==null) week=curWeek();
+  const d=plan(week)[di];
+  S.active={di,week,title:d.title,start:Date.now(),open:null,ex:d.ex.map(e=>({id:e.id,key:e.key,slot:e.slot,done:false}))};
   save();
 }
 function workView(){
   const a=S.active, g=GOALS[S.profile.goal];
   const done=a.ex.filter(e=>e.done).length;
-  $app.innerHTML=`<div class="head"><div><div class="logo">День ${a.di+1}</div><div class="muted" style="font-weight:700">${a.title} · сделано ${done} из ${a.ex.length}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="ghost" id="finishTop" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Завершить</button><button class="ghost" id="cancelW">Отменить</button></div></div>
+  $app.innerHTML=`<div class="head"><div><div class="logo">Неделя ${(a.week??curWeek())+1} · день ${a.di+1}</div><div class="muted" style="font-weight:700">${a.title} · сделано ${done} из ${a.ex.length}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="ghost" id="finishTop" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Завершить</button><button class="ghost" id="cancelW">Отменить</button></div></div>
    <div id="cw"></div>
-   <div class="note"><b>Разминка 5–7 минут:</b> эллипс или дорожка, затем вращения в суставах.</div>
-   ${a.ex.map((e,i)=>{ const x=E[e.id], sc=scheme(e.id);
+   <div class="note"><b>Разминка 5–7 минут:</b> эллипс или дорожка, затем вращения в суставах.<br><b>${WEEKS[a.week??curWeek()].t}:</b> ${WEEKS[a.week??curWeek()].d}</div>
+   ${a.ex.map((e,i)=>{ const x=E[e.id], sc=scheme(e.id,a.week);
      return `<div class="exc ${e.done?"done":""}"><div class="top"><div><h3>${i+1}. ${x.n}</h3><div class="meta">${EQN[EQ[e.id]]} · <b style="color:var(--ink)">${sc.sets} × ${sc.reps}</b> · отдых ${sc.rest} с</div></div>
        <button class="tick ${e.done?"on":""}" data-done="${i}" style="min-width:120px;padding:0 12px;font-size:15px;white-space:nowrap" aria-pressed="${e.done}">${e.done?"✓ Сделано":"Сделано"}</button></div>
        <div class="row" style="margin-top:8px"><button class="small" data-tech="${i}">Техника</button><button class="small" data-swap="${i}">Заменить</button></div>
@@ -438,13 +450,13 @@ function workView(){
   document.getElementById("finishTop").onclick=finishWorkout;
 }
 function finishWorkout(){
-  const a=S.active; const ex=a.ex.filter(e=>e.done).map(e=>{ const sc=scheme(e.id); return {id:e.id,sets:sc.sets,reps:sc.reps}; });
+  const a=S.active; const ex=a.ex.filter(e=>e.done).map(e=>{ const sc=scheme(e.id,a.week); return {id:e.id,sets:sc.sets,reps:sc.reps}; });
   if(!ex.length){ document.getElementById("cw").innerHTML=`<div class="warn">Отметь хотя бы одно упражнение кнопкой «Сделано», чтобы сохранить тренировку.</div>`; window.scrollTo(0,0); return; }
-  const sess={di:a.di,title:a.title,start:a.start,end:Date.now(),ex}; S.sessions.push(sess); S.active=null; save();
+  const sess={di:a.di,week:a.week,title:a.title,start:a.start,end:Date.now(),ex}; S.sessions.push(sess); S.active=null; save();
   const mins=Math.max(1,Math.round((sess.end-sess.start)/60000));
   nav();
   $app.innerHTML=`<div class="head"><div class="logo">Готово!</div></div><section class="hero"><div class="lab">Тренировка сохранена</div><h1>${a.title}</h1>
-   <div class="chips"><span class="chip">${mins} мин</span><span class="chip">${plural(ex.length,"упражнение","упражнения","упражнений")}</span></div><p>Отличная работа. Следующая тренировка — день ${nextDay()+1}. Не забудь пить воду и хорошо выспаться.</p></section>
+   <div class="chips"><span class="chip">${mins} мин</span><span class="chip">${plural(ex.length,"упражнение","упражнения","упражнений")}</span></div><p>Отличная работа. Следующая тренировка — неделя ${curWeek()+1}, день ${nextDay()+1}. Не забудь пить воду и хорошо выспаться.</p></section>
    <div class="row"><button class="btn teal" id="shareNow">Скинуть результат</button><button class="btn main" id="toPlan">К программе</button></div><div id="shareHost"></div>`;
   document.getElementById("toPlan").onclick=()=>go("plan");
   document.getElementById("shareNow").onclick=()=>shareBox(document.getElementById("shareHost"),sess);
@@ -457,7 +469,7 @@ function sessionText(s){
   const lines=s.ex.map((e,i)=>{ const x=E[e.id];
     if(Array.isArray(e.sets)) return `${i+1}. ${x.n}: ${e.sets.map(z=>z.w?`${String(z.w).replace(".",",")}×${z.r}`:`${z.r}`).join(", ")}`;
     return `${i+1}. ${x.n} — ${e.sets} × ${e.reps}`; });
-  return [`🏋️ Тренировка ${d} — ${s.title}`,`⏱ ${mins} мин · ${plural(s.ex.length,"упражнение","упражнения","упражнений")}`,"",...lines,"",`Цель: ${GOALS[S.profile.goal].t.toLowerCase()} · всего тренировок: ${S.sessions.length}`].join("\n");
+  return [`🏋️ Тренировка ${d} — ${s.title}${s.week!=null?` (неделя ${s.week+1} из 4)`:""}`,`⏱ ${mins} мин · ${plural(s.ex.length,"упражнение","упражнения","упражнений")}`,"",...lines,"",`Цель: ${GOALS[S.profile.goal].t.toLowerCase()} · всего тренировок: ${S.sessions.length}`].join("\n");
 }
 function copyBox(host,txt,title){
   host.innerHTML=`<div class="card"><h3 style="font-size:16px">${title}</h3><p class="muted" style="font-size:14px;margin:4px 0 8px">Текст скопирован — вставь его в Telegram, WhatsApp или заметки. Если не скопировалось, нажми кнопку ещё раз.</p>
@@ -469,10 +481,10 @@ function copyBox(host,txt,title){
   host.querySelector("[data-cp]").onclick=copy; copy();
 }
 function shareBox(host,s){ copyBox(host,sessionText(s),"Результат для отправки"); }
-function planText(days){
+function planText(days,week){
   const p=S.profile, g=GOALS[p.goal];
-  const head=[`🏋️ Моя программа: ${g.t}`,`${LEVELS[p.level][0]} · ${plural(p.days,"тренировка","тренировки","тренировок")} в неделю · ~${p.dur} мин`,`Отдых между подходами — ${g.rest} с. Перед тренировкой разминка 5–7 мин.`];
-  const body=days.map(d=>[``,`📅 День ${d.di+1} — ${d.title}`,...d.ex.map((e,i)=>{ const sc=scheme(e.id); return `${i+1}. ${E[e.id].n} (${EQN[EQ[e.id]]}) — ${sc.sets} × ${sc.reps}`; }),`В конце: ${g.fin}`].join("\n"));
+  const head=[`🏋️ Моя программа: ${g.t}`,`Неделя ${week+1} из 4 — ${WEEKS[week].t}. ${WEEKS[week].d}`,`${LEVELS[p.level][0]} · ${plural(p.days,"тренировка","тренировки","тренировок")} в неделю · ~${p.dur} мин`,`Отдых между подходами — ${g.rest} с. Перед тренировкой разминка 5–7 мин.`];
+  const body=days.map(d=>[``,`📅 День ${d.di+1} — ${d.title}`,...d.ex.map((e,i)=>{ const sc=scheme(e.id,week); return `${i+1}. ${E[e.id].n} (${EQN[EQ[e.id]]}) — ${sc.sets} × ${sc.reps}`; }),`В конце: ${g.fin}`].join("\n"));
   return head.join("\n")+"\n"+body.join("\n");
 }
 
