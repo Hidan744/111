@@ -442,7 +442,7 @@ function workView(){
          <label>${unit}<input inputmode="numeric" data-r="${i}:${j}" value="${esc(s.r)}" placeholder="${topReps(sc.reps)}" aria-label="Повторы, подход ${j+1}"></label>
          <button class="tick ${s.done?"on":""}" data-done="${i}:${j}" aria-label="Подход ${j+1} выполнен">✓</button></div>`).join("")}</div></div>`; }).join("")}
    <div class="note"><b>В конце:</b> ${g.fin}</div>
-   <div class="row" style="margin-top:16px"><button class="btn main wide" id="finish">Завершить тренировку</button></div>`;
+   <div class="row" style="margin-top:16px"><button class="btn main wide" id="finish">Завершить тренировку</button><button class="btn teal wide" id="shareCur">Скинуть результат</button></div><div id="shareCurHost"></div>`;
   $app.querySelectorAll("[data-w]").forEach(inp=>inp.oninput=()=>{ const [i,j]=inp.dataset.w.split(":").map(Number); a.ex[i].sets[j].w=inp.value.replace(",","."); save(); });
   $app.querySelectorAll("[data-r]").forEach(inp=>inp.oninput=()=>{ const [i,j]=inp.dataset.r.split(":").map(Number); a.ex[i].sets[j].r=inp.value; save(); });
   $app.querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>{ const [i,j]=b.dataset.done.split(":").map(Number), s=a.ex[i].sets[j], sc=scheme(a.ex[i].id);
@@ -454,6 +454,10 @@ function workView(){
   document.getElementById("cancelW").onclick=()=>{ document.getElementById("cw").innerHTML=`<div class="warn row" style="align-items:center">Отменить тренировку без сохранения? <button class="btn alt" id="cn">Нет</button><button class="btn main" id="cy">Да</button></div>`;
     document.getElementById("cn").onclick=()=>document.getElementById("cw").innerHTML=""; document.getElementById("cy").onclick=()=>{ S.active=null; stopTimer(); save(); go("plan"); }; };
   document.getElementById("finish").onclick=finishWorkout;
+  document.getElementById("shareCur").onclick=()=>{ const h=document.getElementById("shareCurHost");
+    const ex=a.ex.map(e=>({id:e.id,sets:e.sets.filter(x=>x.done).map(x=>({w:+x.w||0,r:+x.r||0}))})).filter(e=>e.sets.length);
+    if(!ex.length){ h.innerHTML=`<div class="warn">Отметь хотя бы один подход кнопкой ✓ — тогда будет что скинуть.</div>`; return; }
+    shareBox(h,{title:a.title+" (в процессе)",start:a.start,end:Date.now(),ex}); h.scrollIntoView({behavior:"smooth",block:"nearest"}); };
 }
 function finishWorkout(){
   const a=S.active; const ex=a.ex.map(e=>({id:e.id,sets:e.sets.filter(s=>s.done).map(s=>({w:+s.w||0,r:+s.r||0}))})).filter(e=>e.sets.length);
@@ -532,7 +536,7 @@ function progView(){
    <div class="sec"><h2>Рекорды</h2><small>максимальный рабочий вес</small></div>
    ${Object.keys(bests).length?`<div class="hist">${Object.entries(bests).sort((a,b)=>b[1]-a[1]).map(([id,kg])=>`<div class="hrow"><span>${E[id].n}</span><b class="num">${kg} кг</b></div>`).join("")}</div>`:`<p class="muted">Здесь появятся твои лучшие веса после первых тренировок.</p>`}
    <div class="sec"><h2>История</h2><small>${S.sessions.length} тренировок</small></div>
-   ${S.sessions.length?`<div class="hist">${S.sessions.map((s,i)=>[s,i]).reverse().slice(0,30).map(([s,i])=>`<div><div class="hrow"><span><b>${fmtD(s.end)}</b> · ${s.title}<br><span class="num muted">${s.ex.reduce((a,e)=>a+e.sets.length,0)} подх. · ${Math.max(1,Math.round((s.end-s.start)/60000))} мин</span></span><button class="small" data-share="${i}" style="align-self:center">Скинуть</button></div><div data-sh="${i}"></div></div>`).join("")}</div>`:`<p class="muted">Пока пусто. Начни первую тренировку во вкладке «Программа».</p>`}`;
+   ${S.sessions.length?`<div class="hist">${S.sessions.map((s,i)=>[s,i]).reverse().slice(0,30).map(([s,i])=>`<div><div class="hrow"><span><b>${fmtD(s.end)}</b> · ${s.title}<br><span class="num muted">${s.ex.reduce((a,e)=>a+e.sets.length,0)} подх. · ${Math.max(1,Math.round((s.end-s.start)/60000))} мин</span></span><button class="small" data-share="${i}" style="align-self:center">Скинуть</button></div><div data-sh="${i}"></div></div>`).join("")}</div>`:`<p class="muted">Пока пусто. ${S.active?"Сейчас идёт тренировка: заверши её во вкладке «Тренировка», и здесь появится кнопка «Скинуть». Текущий результат можно скинуть прямо на экране тренировки.":"Начни первую тренировку во вкладке «Программа». После завершения здесь появится кнопка «Скинуть»."}</p>`}`;
   $app.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.share, h=$app.querySelector(`[data-sh="${i}"]`); if(h.innerHTML) h.innerHTML=""; else shareBox(h,S.sessions[i]); });
   document.getElementById("wadd").onclick=()=>{ const v=parseFloat(document.getElementById("wkg").value.replace(",","."));
     if(!(v>25&&v<300)){ document.getElementById("wmsg").textContent="Введи вес в килограммах, например 62,5"; return; }
