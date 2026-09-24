@@ -47,7 +47,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .ghost{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 12px;font-weight:700;font-size:14px}
 
 .nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));z-index:20}
-.nav .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.nav .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .nav button{border:0;background:none;border-radius:10px;padding:6px 4px;font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
 .nav button svg{width:22px;height:22px}
 .nav button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
@@ -344,19 +344,21 @@ const ICONS={
  lib:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4z"/><path d="M9 8h6M9 12h6"/></svg>'
 };
 function nav(){
-  const items=[["plan","Программа"],["work","Тренировка"],["prog","Прогресс"],["lib","Упражнения"]];
-  document.getElementById("nav").innerHTML=items.map(([k,t])=>`<button data-k="${k}" ${S.tab===k?'aria-current="page"':""}>${ICONS[k]}${t}${k==="work"&&S.active?" •":""}</button>`).join("");
+  const items=[["plan","Программа"],["prog","Прогресс"],["lib","Упражнения"]];
+  document.getElementById("nav").innerHTML=items.map(([k,t])=>`<button data-k="${k}" ${S.tab===k?'aria-current="page"':""}>${ICONS[k]}${t}${k==="plan"&&S.active?" •":""}</button>`).join("");
   document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>go(b.dataset.k));
 }
 function go(tab){ S.tab=tab; S.setup=false; save(); render(); window.scrollTo(0,0); }
 function render(){
   nav();
   if(S.setup) return setupView();
-  ({plan:planView,work:workView,prog:progView,lib:libView})[S.tab]();
+  if(S.tab==="work") S.tab="plan";
+  ({plan:planView,prog:progView,lib:libView})[S.tab]();
 }
 
 /* ===== Программа ===== */
 function planView(){
+  if(S.active) return workView();
   const p=S.profile, g=GOALS[p.goal], pl=plan(), nd=nextDay();
   const week=S.sessions.filter(s=>Date.now()-s.end<7*864e5).length;
   const ton=Math.round(S.sessions.reduce((a,s)=>a+s.ex.reduce((b,e)=>b+e.sets.reduce((c,x)=>c+(+x.w||0)*(+x.r||0),0),0),0));
@@ -365,7 +367,7 @@ function planView(){
    <section class="hero"><div class="lab">Твоя программа</div><h1>${g.t}</h1>
     <div class="chips"><span class="chip">${LEVELS[p.level][0]}</span><span class="chip">${p.days} трен. в неделю</span><span class="chip">${FOCUS[p.focus][0]}</span><span class="chip">~${p.dur} мин</span><span class="chip">${EQUIP[p.equip||"mix"][0]}</span>${p.limits.map(l=>`<span class="chip">Бережём: ${LIMITS[l].toLowerCase()}</span>`).join("")}</div>
     <p>${g.d}. Отдых между подходами — ${g.rest} с.</p>
-    <button class="btn main" id="startNext">${S.active?"Продолжить тренировку":`Начать: день ${nd+1} — ${pl[nd].title}`}</button></section>
+    <button class="btn main" id="startNext">Начать: день ${nd+1} — ${pl[nd].title}</button></section>
    ${firstRun?`<div class="note">Это стартовая программа. Нажми «Параметры», чтобы выбрать цель, уровень, число дней, акцент и ограничения. Программа сразу перестроится.</div>`:""}
    <div class="stats"><div class="stat"><b class="num">${S.sessions.length}</b><span>тренировок всего</span></div><div class="stat"><b class="num">${week}/${p.days}</b><span>за 7 дней</span></div><div class="stat"><b class="num">${ton>=1000?(ton/1000).toFixed(1).replace(".",",")+" т":ton+" кг"}</b><span>поднято всего</span></div></div>
    <div class="sec"><h2>Неделя</h2><small>Дни идут по кругу</small></div>
@@ -374,8 +376,8 @@ function planView(){
      <div class="muted" style="font-size:14px">В конце: ${g.fin}</div></div>`).join("")}</div>
    <div class="warn">Перед началом тренировок проконсультируйся с врачом, особенно если есть хронические заболевания, травмы или беременность. При острой боли упражнение сразу прекращай.</div>`;
   document.getElementById("edit").onclick=()=>{ S.setup=true; render(); window.scrollTo(0,0); };
-  document.getElementById("startNext").onclick=()=>{ if(!S.active) startWorkout(nd); go("work"); };
-  $app.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>{ startWorkout(+b.dataset.start); go("work"); });
+  document.getElementById("startNext").onclick=()=>{ startWorkout(nd); go("plan"); };
+  $app.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>{ startWorkout(+b.dataset.start); go("plan"); });
 }
 
 /* ===== Параметры ===== */
@@ -429,7 +431,7 @@ function workView(){
     document.getElementById("st").onclick=()=>{ startWorkout(nd); render(); }; return; }
   const g=GOALS[S.profile.goal];
   const doneSets=a.ex.reduce((x,e)=>x+e.sets.filter(s=>s.done).length,0), allSets=a.ex.reduce((x,e)=>x+e.sets.length,0);
-  $app.innerHTML=`<div class="head"><div><div class="logo">День ${a.di+1}</div><div class="muted" style="font-weight:700">${a.title} · выполнено ${doneSets} из ${allSets} подходов</div></div><button class="ghost" id="cancelW">Отменить</button></div>
+  $app.innerHTML=`<div class="head"><div><div class="logo">День ${a.di+1}</div><div class="muted" style="font-weight:700">${a.title} · выполнено ${doneSets} из ${allSets} подходов</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="ghost" id="finishTop" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Завершить</button><button class="ghost" id="cancelW">Отменить</button></div></div>
    <div id="cw"></div>
    <div class="note"><b>Разминка 5–7 минут:</b> эллипс или дорожка, затем вращения в суставах. Перед первым упражнением сделай 1 разминочный подход с лёгким весом.</div>
    ${a.ex.map((e,i)=>{ const x=E[e.id], sc=scheme(e.id), sug=suggestion(e.id), done=e.sets.every(s=>s.done), unit=x.u==="sec"?"с":"повт.";
@@ -454,6 +456,7 @@ function workView(){
   document.getElementById("cancelW").onclick=()=>{ document.getElementById("cw").innerHTML=`<div class="warn row" style="align-items:center">Отменить тренировку без сохранения? <button class="btn alt" id="cn">Нет</button><button class="btn main" id="cy">Да</button></div>`;
     document.getElementById("cn").onclick=()=>document.getElementById("cw").innerHTML=""; document.getElementById("cy").onclick=()=>{ S.active=null; stopTimer(); save(); go("plan"); }; };
   document.getElementById("finish").onclick=finishWorkout;
+  document.getElementById("finishTop").onclick=finishWorkout;
   document.getElementById("shareCur").onclick=()=>{ const h=document.getElementById("shareCurHost");
     const ex=a.ex.map(e=>({id:e.id,sets:e.sets.filter(x=>x.done).map(x=>({w:+x.w||0,r:+x.r||0}))})).filter(e=>e.sets.length);
     if(!ex.length){ h.innerHTML=`<div class="warn">Отметь хотя бы один подход кнопкой ✓ — тогда будет что скинуть.</div>`; return; }
@@ -510,33 +513,22 @@ let AC=null;
 function beep(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); [880,880,1175].forEach((f,i)=>{ const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+i*.18; o.frequency.value=f; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.25,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.15); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.16); }); }catch(e){} }
 
 /* ===== Прогресс ===== */
-function chart(pts){
-  if(pts.length<2) return `<p class="muted" style="font-size:14px">Добавь хотя бы два замера, чтобы увидеть график.</p>`;
-  const W=600,H=180,pl=44,pr=16,pt=16,pb=28, xs=pts.map(p=>p.d), ys=pts.map(p=>p.kg);
-  let lo=Math.min(...ys), hi=Math.max(...ys); if(hi-lo<2){ lo-=1; hi+=1; }
-  const x=t=>pl+(t-xs[0])/((xs[xs.length-1]-xs[0])||1)*(W-pl-pr), y=v=>pt+(hi-v)/(hi-lo)*(H-pt-pb);
-  const line=pts.map((p,i)=>`${i?"L":"M"}${x(p.d).toFixed(1)},${y(p.kg).toFixed(1)}`).join(" ");
-  const area=line+` L${x(xs[xs.length-1]).toFixed(1)},${H-pb} L${pl},${H-pb} Z`;
-  const ticks=[lo,(lo+hi)/2,hi];
-  const lp=pts[pts.length-1];
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="График веса тела">
-   ${ticks.map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="var(--muted)" font-family="Manrope,sans-serif">${v.toFixed(1).replace(".",",")}</text>`).join("")}
-   <path d="${area}" fill="var(--accent-soft)" stroke="none"/><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
-   <circle cx="${x(lp.d)}" cy="${y(lp.kg)}" r="5" fill="var(--accent)"/>
-   <text x="${pl}" y="${H-8}" font-size="12" fill="var(--muted)" font-family="Manrope,sans-serif">${fmtD(xs[0])}</text><text x="${W-pr}" y="${H-8}" text-anchor="end" font-size="12" fill="var(--muted)" font-family="Manrope,sans-serif">${fmtD(lp.d)}</text></svg>`;
-}
 function progView(){
-  const w=S.weights.slice().sort((a,b)=>a.d-b.d);
-  const bests={}; S.sessions.forEach(s=>s.ex.forEach(e=>e.sets.forEach(x=>{ if(E[e.id].u==="kg"&&x.w>(bests[e.id]||0)) bests[e.id]=x.w; })));
-  const diff=w.length>1?(w[w.length-1].kg-w[0].kg):0;
+  const w=S.weights.slice().sort((a,b)=>a.d-b.d), lastW=w[w.length-1];
+  const diff=w.length>1?lastW.kg-w[0].kg:0;
+  const week=S.sessions.filter(s=>Date.now()-s.end<7*864e5).length;
+  const list=S.sessions.map((s,i)=>[s,i]).reverse().slice(0,20);
   $app.innerHTML=`<div class="head"><div class="logo">Прогресс</div></div>
-   <div class="card"><div class="sec" style="margin:0"><h2>Вес тела</h2>${w.length>1?`<small>${diff>0?"+":""}${diff.toFixed(1).replace(".",",")} кг с ${fmtD(w[0].d)}</small>`:""}</div>
-    ${chart(w)}
-    <div class="wform"><input id="wkg" inputmode="decimal" placeholder="Вес сегодня, кг" aria-label="Вес сегодня, кг"><button class="btn teal" id="wadd">Записать</button></div><div id="wmsg" class="muted" style="font-size:14px;margin-top:6px"></div></div>
-   <div class="sec"><h2>Рекорды</h2><small>максимальный рабочий вес</small></div>
-   ${Object.keys(bests).length?`<div class="hist">${Object.entries(bests).sort((a,b)=>b[1]-a[1]).map(([id,kg])=>`<div class="hrow"><span>${E[id].n}</span><b class="num">${kg} кг</b></div>`).join("")}</div>`:`<p class="muted">Здесь появятся твои лучшие веса после первых тренировок.</p>`}
-   <div class="sec"><h2>История</h2><small>${S.sessions.length} тренировок</small></div>
-   ${S.sessions.length?`<div class="hist">${S.sessions.map((s,i)=>[s,i]).reverse().slice(0,30).map(([s,i])=>`<div><div class="hrow"><span><b>${fmtD(s.end)}</b> · ${s.title}<br><span class="num muted">${s.ex.reduce((a,e)=>a+e.sets.length,0)} подх. · ${Math.max(1,Math.round((s.end-s.start)/60000))} мин</span></span><button class="small" data-share="${i}" style="align-self:center">Скинуть</button></div><div data-sh="${i}"></div></div>`).join("")}</div>`:`<p class="muted">Пока пусто. ${S.active?"Сейчас идёт тренировка: заверши её во вкладке «Тренировка», и здесь появится кнопка «Скинуть». Текущий результат можно скинуть прямо на экране тренировки.":"Начни первую тренировку во вкладке «Программа». После завершения здесь появится кнопка «Скинуть»."}</p>`}`;
+   <div class="stats" style="margin-top:0">
+    <div class="stat"><b class="num">${S.sessions.length}</b><span>тренировок</span></div>
+    <div class="stat"><b class="num">${week}/${S.profile.days}</b><span>на этой неделе</span></div>
+    <div class="stat"><b class="num">${lastW?String(lastW.kg).replace(".",","):"—"}</b><span>${lastW?(w.length>1?`вес, ${diff>0?"+":diff<0?"−":"±"}${Math.abs(diff).toFixed(1).replace(".",",")} кг`:"вес, кг"):"вес не записан"}</span></div>
+   </div>
+   <div class="wform"><input id="wkg" inputmode="decimal" placeholder="Мой вес сегодня, кг" aria-label="Мой вес сегодня, кг"><button class="btn teal" id="wadd">Записать</button></div>
+   <div id="wmsg" class="muted" style="font-size:14px;margin-top:6px"></div>
+   <div class="sec"><h2>Мои тренировки</h2></div>
+   ${list.length?`<div class="hist">${list.map(([s,i])=>`<div><div class="hrow" style="align-items:center"><span><b>${fmtD(s.end)}</b> · ${s.title}</span><button class="small" data-share="${i}">Скинуть</button></div><div data-sh="${i}"></div></div>`).join("")}</div>`
+     :`<p class="muted">Пока пусто. Нажми «Начать» во вкладке «Программа», а после тренировки — «Завершить». Она появится здесь, и её можно будет скинуть.</p>`}`;
   $app.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.share, h=$app.querySelector(`[data-sh="${i}"]`); if(h.innerHTML) h.innerHTML=""; else shareBox(h,S.sessions[i]); });
   document.getElementById("wadd").onclick=()=>{ const v=parseFloat(document.getElementById("wkg").value.replace(",","."));
     if(!(v>25&&v<300)){ document.getElementById("wmsg").textContent="Введи вес в килограммах, например 62,5"; return; }
