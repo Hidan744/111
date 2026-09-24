@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Математика 3 Тренажёр</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Nunito:wght@600;700;800&display=swap">
+<style>
+:root{
+  --bg:#EDF5F9; --surface:#FFFFFF; --surface-2:#DAE9F2; --ink:#14304A; --muted:#566F88; --line:#CADCE7;
+  --sea:#1C7FBF; --sea-deep:#0F5C8F; --sea-soft:#D4EAF7;
+  --red:#D6402C; --yellow:#FFC43D; --green:#4E9F33; --pink:#D94F9A;
+  --ok:#2E9D4E; --ok-soft:#D8F2DF; --bad:#D6453A; --bad-soft:#FBE1DE;
+  --shadow:0 3px 0 rgba(20,48,74,.14);
+  --display:"Rubik","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0E1824; --surface:#172536; --surface-2:#20334A; --ink:#EAF2F8; --muted:#A0B3C6; --line:#2A3F56;
+    --sea:#4FA9E3; --sea-deep:#1B6FA6; --sea-soft:#183349;
+    --red:#FF7361; --yellow:#FFCF5C; --green:#7CCB5E; --pink:#F07BBC;
+    --ok:#5CD17C; --ok-soft:#1E3A28; --bad:#FF7A6E; --bad-soft:#442320;
+    --shadow:0 3px 0 rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0E1824; --surface:#172536; --surface-2:#20334A; --ink:#EAF2F8; --muted:#A0B3C6; --line:#2A3F56;
+  --sea:#4FA9E3; --sea-deep:#1B6FA6; --sea-soft:#183349;
+  --red:#FF7361; --yellow:#FFCF5C; --green:#7CCB5E; --pink:#F07BBC;
+  --ok:#5CD17C; --ok-soft:#1E3A28; --bad:#FF7A6E; --bad-soft:#442320;
+  --shadow:0 3px 0 rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;padding-inline:16px;padding-block:0 40px}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.logo{font-family:var(--display);font-weight:800;font-size:21px;white-space:nowrap}
+.logo span{display:inline-block}
+.logo span:nth-child(odd){color:var(--red)}.logo span:nth-child(3n){color:var(--green)}.logo span:nth-child(4n){color:var(--sea)}
+.logo b{color:var(--ink)}
+.right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip .st{color:var(--yellow);font-size:18px;line-height:1}
+.back{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:6px 14px;font-weight:800}
+.icon{border:2px solid var(--line);background:var(--surface);border-radius:12px;width:40px;height:40px;font-size:18px}
+
+.hero{position:relative;overflow:hidden;background:var(--sea);color:#fff;border-radius:22px;padding:20px 20px 34px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;background:radial-gradient(circle at 12px -4px,transparent 13px,rgba(255,255,255,.22) 14px) 0 0/24px 22px repeat-x}
+.hero h1{font-size:clamp(24px,5.5vw,34px);font-weight:800}
+.hero p{margin:6px 0 0;font-weight:700;opacity:.95}
+.rank{background:rgba(255,255,255,.18);border-radius:16px;padding:10px 14px;text-align:center;font-weight:800;min-width:110px}
+.rank .big{font-size:34px;line-height:1}
+.rank small{display:block;font-size:13px;opacity:.9}
+.lvl{grid-column:1/-1;height:12px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden}
+.lvl i{display:block;height:100%;background:var(--yellow);border-radius:99px}
+.lvlnote{grid-column:1/-1;margin-top:-6px;font-size:14px;font-weight:700}
+
+.warm{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin-top:14px;background:var(--surface);border:2px solid var(--yellow);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow)}
+.warm .ic{font-size:34px}
+.warm h3{font-size:19px}
+.warm p{margin:0;color:var(--muted);font-weight:700;font-size:14px}
+
+.sec{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;margin:26px 0 10px}
+.islands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.isl{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow);transition:transform .12s}
+.isl:hover{transform:translateY(-2px)}
+.isl.last{border-color:var(--sea)}
+.num{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:20px;color:#fff}
+.isl h3{font-size:18px}
+.isl .sub{color:var(--muted);font-size:14px;font-weight:700;display:block;margin-top:2px}
+.isl .mini{display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+.isl .mb{flex:1;height:8px;background:var(--surface-2);border-radius:9px;overflow:hidden}
+.isl .mb i{display:block;height:100%;background:var(--yellow)}
+
+.thead{display:flex;gap:14px;align-items:center;margin-top:4px}
+.thead .num{width:58px;height:58px;font-size:26px;flex-shrink:0}
+.thead h1{font-size:clamp(24px,5vw,32px);font-weight:800}
+.thead p{margin:2px 0 0;color:var(--muted);font-weight:700}
+.tabs{display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap}
+.tab{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:800}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.levels{display:grid;gap:12px}
+.level{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow)}
+.level .ic{font-size:30px}
+.level h3{font-size:19px}
+.level p{margin:2px 0 0;color:var(--muted);font-weight:700;font-size:14px}
+.stars{font-size:20px;letter-spacing:2px;color:var(--line);white-space:nowrap}
+.stars .on{color:var(--yellow)}
+.rule{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:12px}
+.rule h3{font-size:18px;margin-bottom:6px}
+.rule p{margin:6px 0;font-weight:600}
+.rule .ex{background:var(--sea-soft);border-radius:12px;padding:10px 14px;font-family:var(--display);font-weight:700;margin-top:8px;font-variant-numeric:tabular-nums}
+
+.gtop{display:flex;align-items:center;gap:12px;margin-top:4px}
+.prog{flex:1;height:14px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--sea);border-radius:99px;transition:width .3s}
+.qbox{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:20px 16px;margin-top:16px;text-align:center;box-shadow:var(--shadow)}
+.task{font-weight:800;color:var(--muted);font-size:15px;margin:0 0 10px}
+.expr{font-family:var(--display);font-weight:700;font-size:clamp(26px,7vw,40px);line-height:1.3;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.story{font-weight:700;font-size:19px;line-height:1.5;text-align:left;max-width:60ch;margin:0 auto}
+.sets{font-family:var(--display);font-weight:700;font-size:clamp(20px,5vw,26px);line-height:1.6}
+.box{display:inline-block;min-width:64px;padding:0 10px;border-bottom:4px solid var(--sea);color:var(--sea)}
+.fig{max-width:100%;height:auto;margin:6px auto 0;display:block}
+.answer{margin:16px auto 0;max-width:300px;height:64px;border-radius:16px;border:3px solid var(--sea);background:var(--sea-soft);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:34px;font-variant-numeric:tabular-nums}
+.answer.empty{color:var(--muted);font-size:20px;font-weight:700}
+.answer.ok{border-color:var(--ok);background:var(--ok-soft)}
+.answer.bad{border-color:var(--bad);background:var(--bad-soft)}
+.pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:340px;margin:14px auto 0}
+.key{height:60px;border-radius:16px;border:2px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:800;font-size:26px;box-shadow:var(--shadow)}
+.key:active{transform:translateY(2px);box-shadow:none}
+.key.go{background:var(--green);color:#fff;border-color:var(--green);font-size:20px}
+.key.del{font-size:22px}
+.key:disabled{opacity:.4}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.opt{min-height:72px;border-radius:18px;border:2px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:700;font-size:22px;padding:10px;box-shadow:var(--shadow);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.opt.ok{background:var(--ok-soft);border-color:var(--ok)}
+.opt.bad{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{margin-top:16px;border-radius:18px;padding:14px 16px;font-weight:800;text-align:left}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.bad{background:var(--bad-soft);color:var(--bad)}
+.fb .steps{color:var(--ink);font-weight:700;margin-top:8px;font-variant-numeric:tabular-nums}
+.fb .steps div{padding:2px 0}
+.fb .foot{display:flex;justify-content:flex-end;margin-top:10px}
+.next{border:0;background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 22px;font-weight:800;font-size:18px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.btn{border:0;border-radius:16px;padding:14px 22px;font-weight:800;font-size:18px;box-shadow:var(--shadow)}
+.btn.main{background:var(--sea);color:#fff}
+.btn.alt{background:var(--surface);border:2px solid var(--line)}
+.result{text-align:center;padding-block:20px}
+.bigstars{font-size:64px;letter-spacing:6px;color:var(--line)}
+.bigstars .on{color:var(--yellow);display:inline-block;animation:pop .5s both}
+.bigstars .on:nth-child(2){animation-delay:.2s}.bigstars .on:nth-child(3){animation-delay:.4s}
+.result h1{font-size:30px;margin-top:8px}
+.result p{font-weight:700;color:var(--muted);font-size:18px}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.parents{margin-top:28px;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px 18px}
+.parents h2{font-size:18px;margin-bottom:6px}
+.parents li{font-weight:600;color:var(--muted);font-size:15px}
+.parents ul{margin:6px 0;padding-left:20px}
+.link{background:none;border:0;padding:0;color:var(--red);font-weight:800;text-decoration:underline}
+.confirm{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-weight:700}
+@media (max-width:560px){
+  .islands{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
+  .rank{display:flex;align-items:center;gap:10px;text-align:left}
+  .rank .big{font-size:28px}
+  .logo{font-size:18px}
+  .level{grid-template-columns:auto 1fr;}
+  .level .stars{grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ===== Помощники ===== */
+const R = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = a => a[R(0,a.length-1)];
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const BOX = `<span class="box">?</span>`;
+const fmt = s => String(s).replace(/\*/g," · ").replace(/\//g," : ").replace(/\s+/g," ");
+const setStr = s => s.length ? "{" + s.join(", ") + "}" : "∅";
+function mkSet(n, lo, hi){ const s=new Set(); while(s.size<n) s.add(R(lo,hi)); return [...s].sort((a,b)=>a-b); }
+function numQ(html, ans, explain, task){ return {type:"num", html, ans:String(ans), explain, task:task||"Вычисли и введи ответ"}; }
+function optQ(html, ans, wrong, explain, task){
+  const opts = shuffle([String(ans), ...[...new Set(wrong.map(String))].filter(w=>w!==String(ans)).slice(0,3)]);
+  return {type:"opt", html, ans:String(ans), opts, explain, task:task||"Выбери правильный ответ"};
+}
+const ex = s => `<div class="expr">${s}</div>`;
+
+/* ===== Темы первой части: генераторы заданий ===== */
+const TOPICS = [
+{id:"sets", n:1, color:"#D94F9A", t:"Множества", s:"Элементы, подмножества, пересечение и объединение",
+ rule:{h:"Множество", p:["Множество — это группа предметов или чисел. Каждый предмет — элемент множества.","∈ — «принадлежит», ∉ — «не принадлежит». ∅ — пустое множество.","A ∩ B (пересечение) — элементы, которые есть и в A, и в B.","A ∪ B (объединение) — все элементы A и B вместе, общие пишем один раз."],
+       ex:"A = {1, 3, 5, 7}, B = {3, 4, 5}<br>A ∩ B = {3, 5}<br>A ∪ B = {1, 3, 4, 5, 7}"},
+ gen(L){
+  if (L===1){
+    const A = mkSet(R(4,6),1,20);
+    if (Math.random()<.5){
+      const not = shuffle([...Array(20).keys()].map(i=>i+1).filter(x=>!A.includes(x))).slice(0,3);
+      const a = pick(A);
+      return optQ(`<div class="sets">A = ${setStr(A)}</div>`, a, not, `<div>${a} ∈ A: это число есть в фигурных скобках.</div>`, "Какое число принадлежит множеству A?");
+    }
+    return numQ(`<div class="sets">A = ${setStr(A)}</div>`, A.length, `<div>Считаем элементы: ${A.join(", ")} — всего ${A.length}.</div>`, "Сколько элементов в множестве A?");
+  }
+  if (L===2){
+    let A,B,I; do { A=mkSet(R(4,5),1,15); B=mkSet(R(4,5),1,15); I=A.filter(x=>B.includes(x)); } while(I.length<1 || I.length===A.length);
+    const U=[...new Set([...A,...B])].sort((a,b)=>a-b), AB=A.filter(x=>!B.includes(x));
+    const wrong=[setStr(U), setStr(AB), setStr(B.filter(x=>!A.includes(x))), setStr(I.slice(0,-1)), setStr([...I, pick(AB.length?AB:[99])].sort((a,b)=>a-b))];
+    return optQ(`<div class="sets">A = ${setStr(A)}<br>B = ${setStr(B)}<br>A ∩ B = ${BOX}</div>`, setStr(I), wrong, `<div>Ищем числа, которые есть и в A, и в B: ${I.join(", ")}.</div><div>A ∩ B = ${setStr(I)}</div>`, "Найди пересечение множеств");
+  }
+  if (Math.random()<.5){
+    let A,B; do { A=mkSet(R(3,5),1,12); B=mkSet(R(3,5),1,12); } while(!A.some(x=>B.includes(x)));
+    const U=[...new Set([...A,...B])].sort((a,b)=>a-b), I=A.filter(x=>B.includes(x));
+    return numQ(`<div class="sets">A = ${setStr(A)}<br>B = ${setStr(B)}</div>`, U.length, `<div>A ∪ B = ${setStr(U)}</div><div>Общие элементы (${I.join(", ")}) считаем один раз: ${A.length} + ${B.length} − ${I.length} = ${U.length}.</div>`, "Сколько элементов в A ∪ B?");
+  }
+  const A = mkSet(5,1,20), sub = shuffle(A).slice(0,2).sort((a,b)=>a-b);
+  const outs = shuffle([...Array(20).keys()].map(i=>i+1).filter(x=>!A.includes(x)));
+  const wrong = [0,1,2].map(i=>setStr([pick(A), outs[i]].sort((a,b)=>a-b)));
+  return optQ(`<div class="sets">A = ${setStr(A)}</div>`, setStr(sub), wrong, `<div>Подмножество — это часть A: все его элементы должны быть в A.</div><div>${setStr(sub)} ⊂ A, а в других вариантах есть лишнее число.</div>`, "Какое множество — подмножество A?");
+ }},
+
+{id:"tab", n:2, color:"#1C7FBF", t:"Таблица умножения", s:"Умножение и деление, неизвестный множитель",
+ rule:{h:"Умножение и деление связаны", p:["a · b — это b раз по a. Если знаешь 7 · 8, то знаешь и 56 : 7, и 56 : 8.","Трудный пример можно разложить: 7 · 9 = 7 · 10 − 7 = 70 − 7 = 63."],
+       ex:"6 · 8 = 48<br>48 : 6 = 8<br>48 : 8 = 6"},
+ gen(L){
+  const a=R(2, L===1?5:9), b=R(2,9), c=a*b;
+  const hint = b>2 ? `<div>Подсказка: ${a} · ${b} = ${a} · ${b-1} + ${a} = ${a*(b-1)} + ${a} = ${c}</div>` : "";
+  const kind = L===1 ? pick(["m","m","d"]) : L===2 ? pick(["m","d","d"]) : pick(["x1","x2","x3","d"]);
+  if (kind==="m") return numQ(ex(`${a} · ${b} = ${BOX}`), c, `<div>${a} · ${b} = ${c}</div>${hint}`);
+  if (kind==="d") return numQ(ex(`${c} : ${a} = ${BOX}`), b, `<div>${c} : ${a} = ${b}, потому что ${a} · ${b} = ${c}</div>`);
+  if (kind==="x1") return numQ(ex(`${a} · ${BOX} = ${c}`), b, `<div>Неизвестный множитель: ${c} : ${a} = ${b}</div>`, "Найди пропущенное число");
+  if (kind==="x2") return numQ(ex(`${BOX} : ${a} = ${b}`), c, `<div>Неизвестное делимое: ${b} · ${a} = ${c}</div>`, "Найди пропущенное число");
+  return numQ(ex(`${c} : ${BOX} = ${b}`), a, `<div>Неизвестный делитель: ${c} : ${b} = ${a}</div>`, "Найди пропущенное число");
+ }},
+
+{id:"eq", n:3, color:"#4E9F33", t:"Уравнения", s:"Неизвестное слагаемое, множитель, делимое",
+ rule:{h:"Как найти x", p:["Неизвестное слагаемое: из суммы вычитаем известное слагаемое.","Неизвестное уменьшаемое: к разности прибавляем вычитаемое. Неизвестное вычитаемое: из уменьшаемого вычитаем разность.","Неизвестный множитель: произведение делим на известный множитель.","Неизвестное делимое: частное умножаем на делитель. Неизвестный делитель: делимое делим на частное."],
+       ex:"x + 27 = 64 → x = 64 − 27 → x = 37<br>x : 6 = 7 → x = 7 · 6 → x = 42"},
+ gen(L){
+  const T="Реши уравнение: чему равен x?";
+  if (L===1 || (L===3 && Math.random()<.4)){
+    const big = L===3, k = pick(["s","m","v"]);
+    const a=R(big?120:11, big?480:45), x=R(big?110:10, big?450:50);
+    if (k==="s") return numQ(ex(`x + ${a} = ${x+a}`), x, `<div>x — неизвестное слагаемое. Из суммы вычитаем известное слагаемое:</div><div>x = ${x+a} − ${a} = ${x}</div>`, T);
+    if (k==="m") return numQ(ex(`x − ${a} = ${x}`), x+a, `<div>x — неизвестное уменьшаемое. К разности прибавляем вычитаемое:</div><div>x = ${x} + ${a} = ${x+a}</div>`, T);
+    return numQ(ex(`${x+a} − x = ${a}`), x, `<div>x — неизвестное вычитаемое. Из уменьшаемого вычитаем разность:</div><div>x = ${x+a} − ${a} = ${x}</div>`, T);
+  }
+  const a=R(2,9), b=R(2,9), c=a*b, k=pick(["x1","x2","x3"]);
+  if (L===3){
+    const p=R(c+5,c+60), q=p-c;
+    return numQ(ex(`x · ${a} = ${p} − ${q}`), b, `<div>Сначала вычисляем правую часть: ${p} − ${q} = ${c}</div><div>x · ${a} = ${c} → x = ${c} : ${a} = ${b}</div>`, T);
+  }
+  if (k==="x1") return numQ(ex(`${a} · x = ${c}`), b, `<div>x — неизвестный множитель. Произведение делим на известный множитель:</div><div>x = ${c} : ${a} = ${b}</div>`, T);
+  if (k==="x2") return numQ(ex(`x : ${a} = ${b}`), c, `<div>x — неизвестное делимое. Частное умножаем на делитель:</div><div>x = ${b} · ${a} = ${c}</div>`, T);
+  return numQ(ex(`${c} : x = ${b}`), a, `<div>x — неизвестный делитель. Делимое делим на частное:</div><div>x = ${c} : ${b} = ${a}</div>`, T);
+ }},
+
+{id:"ord", n:4, color:"#E07A1F", t:"Порядок действий", s:"Скобки, умножение и деление, сложение и вычитание",
+ rule:{h:"В каком порядке считать", p:["1) Сначала — действия в скобках.","2) Потом — умножение и деление по порядку слева направо.","3) В конце — сложение и вычитание слева направо."],
+       ex:"40 − (3 + 5) · 4 =<br>1) 3 + 5 = 8<br>2) 8 · 4 = 32<br>3) 40 − 32 = 8"},
+ gen(L){
+  const T = pick(L===1?["t1","t2"]:L===2?["t3","t4","t5"]:["t6","t7"]);
+  let e, st, ans;
+  if (T==="t1"){ const a=R(10,60),b=R(2,9),c=R(2,9); e=`${a} + ${b} · ${c}`; st=[`${b} · ${c} = ${b*c}`,`${a} + ${b*c} = ${a+b*c}`]; ans=a+b*c; }
+  if (T==="t2"){ const c=R(2,9),k=R(2,9),b=c*k,a=k+R(5,60); e=`${a} − ${b} : ${c}`; st=[`${b} : ${c} = ${k}`,`${a} − ${k} = ${a-k}`]; ans=a-k; }
+  if (T==="t3"){ const a=R(2,12),b=R(2,12),c=R(2,6); e=`(${a} + ${b}) · ${c}`; st=[`${a} + ${b} = ${a+b}`,`${a+b} · ${c} = ${(a+b)*c}`]; ans=(a+b)*c; }
+  if (T==="t4"){ const c=R(2,9),k=R(2,9),b=R(2,30),a=b+c*k; e=`(${a} − ${b}) : ${c}`; st=[`${a} − ${b} = ${a-b}`,`${a-b} : ${c} = ${k}`]; ans=k; }
+  if (T==="t5"){ const a=R(3,9),b=R(3,9),p=a*b,d=R(2,9),k=R(2,Math.min(9,p-1)),c=d*k; e=`${a} · ${b} − ${c} : ${d}`; st=[`${a} · ${b} = ${p}`,`${c} : ${d} = ${k}`,`${p} − ${k} = ${p-k}`]; ans=p-k; }
+  if (T==="t6"){ const d=R(2,5),m=R(2,9),c=R(2,20),b=c+m,a=R(10,50); e=`${a} + (${b} − ${c}) · ${d}`; st=[`${b} − ${c} = ${m}`,`${m} · ${d} = ${m*d}`,`${a} + ${m*d} = ${a+m*d}`]; ans=a+m*d; }
+  if (T==="t7"){ const c=R(2,9),k=R(2,9),s=c*k,a=R(1,s-1),b=s-a,d=R(2,9),f=R(2,9); e=`(${a} + ${b}) : ${c} + ${d} · ${f}`; st=[`${a} + ${b} = ${s}`,`${s} : ${c} = ${k}`,`${d} · ${f} = ${d*f}`,`${k} + ${d*f} = ${k+d*f}`]; ans=k+d*f; }
+  return numQ(ex(`${e} = ${BOX}`), ans, st.map((s,i)=>`<div>${i+1}) ${s}</div>`).join(""), "Вычисли, соблюдая порядок действий");
+ }},
+
+{id:"prop", n:5, color:"#7A5BC4", t:"Свойства умножения", s:"Переставить, сгруппировать, умножить сумму",
+ rule:{h:"Свойства помогают считать быстро", p:["Переместительное: a · b = b · a.","Сочетательное: (a · b) · c = a · (b · c). Удобно искать пары: 4 · 25 = 100, 2 · 50 = 100, 5 · 20 = 100.","Умножение суммы на число: (a + b) · c = a · c + b · c. Деление суммы на число: (a + b) : c = a : c + b : c.","a · 1 = a, a · 0 = 0, 0 : a = 0, a : a = 1, a : 1 = a. На 0 делить нельзя!"],
+       ex:"(40 + 6) · 3 = 40 · 3 + 6 · 3 = 120 + 18 = 138<br>4 · 7 · 25 = (4 · 25) · 7 = 700"},
+ gen(L){
+  const T="Найди пропущенное число";
+  if (L===1){
+    const a=R(2,99), b=R(2,9), k=pick(["c","z1","z2","o1","o2","o3"]);
+    if (k==="c") return numQ(ex(`${a} · ${b} = ${b} · ${BOX}`), a, `<div>От перестановки множителей произведение не меняется: ${a} · ${b} = ${b} · ${a}</div>`, T);
+    if (k==="z1") return numQ(ex(`${a} · 0 = ${BOX}`), 0, `<div>При умножении на 0 всегда получается 0.</div>`);
+    if (k==="z2") return numQ(ex(`0 : ${a} = ${BOX}`), 0, `<div>0 разделить на любое число (кроме 0) — будет 0.</div>`);
+    if (k==="o1") return numQ(ex(`${a} : 1 = ${BOX}`), a, `<div>При делении на 1 получается то же число: ${a}.</div>`);
+    if (k==="o2") return numQ(ex(`${a} : ${a} = ${BOX}`), 1, `<div>Число, делённое на само себя, равно 1.</div>`);
+    return numQ(ex(`1 · ${a} = ${BOX}`), a, `<div>При умножении на 1 получается то же число: ${a}.</div>`);
+  }
+  if (L===2){
+    const k=pick(["d","s","a"]);
+    if (k==="d"){ const a=R(1,9)*10,b=R(1,9),c=R(2,9); return numQ(ex(`(${a} + ${b}) · ${c} = ${a} · ${c} + ${BOX} · ${c}`), b, `<div>Чтобы умножить сумму на число, умножаем каждое слагаемое: (${a} + ${b}) · ${c} = ${a} · ${c} + ${b} · ${c}</div>`, T); }
+    if (k==="s"){ const c=R(2,9),a=c*10*R(1,Math.floor(9/c)||1),b=c*R(1,9); return numQ(ex(`(${a} + ${b}) : ${c} = ${a} : ${c} + ${BOX} : ${c}`), b, `<div>Чтобы разделить сумму на число, делим каждое слагаемое: (${a} + ${b}) : ${c} = ${a} : ${c} + ${b} : ${c}</div>`, T); }
+    const a=R(2,9),b=R(2,9),c=R(2,9); return numQ(ex(`${a} · ${b} · ${c} = ${a} · (${b} · ${BOX})`), c, `<div>Множители можно группировать как удобно: (${a} · ${b}) · ${c} = ${a} · (${b} · ${c})</div>`, T);
+  }
+  const k=pick(["p","d","s"]);
+  if (k==="p"){ const [x,y]=pick([[4,25],[2,50],[5,20],[25,4],[50,2]]), m=R(3,9); return numQ(ex(`${x} · ${m} · ${y} = ${BOX}`), x*y*m, `<div>Удобно сгруппировать: (${x} · ${y}) · ${m} = ${x*y} · ${m} = ${x*y*m}</div>`, "Вычисли удобным способом"); }
+  if (k==="d"){ const a=R(2,9)*10,b=R(1,9),c=R(2,9); return numQ(ex(`(${a} + ${b}) · ${c} = ${BOX}`), (a+b)*c, `<div>(${a} + ${b}) · ${c} = ${a} · ${c} + ${b} · ${c} = ${a*c} + ${b*c} = ${(a+b)*c}</div>`, "Вычисли удобным способом"); }
+  const c=R(2,9), a=c*10, b=c*R(1,9); return numQ(ex(`(${a} + ${b}) : ${c} = ${BOX}`), (a+b)/c, `<div>(${a} + ${b}) : ${c} = ${a} : ${c} + ${b} : ${c} = ${a/c} + ${b/c} = ${(a+b)/c}</div>`, "Вычисли удобным способом");
+ }},
+
+{id:"round", n:6, color:"#C8452F", t:"Круглые числа", s:"Умножение и деление десятков и сотен",
+ rule:{h:"Считаем десятками и сотнями", p:["Круглое число удобно читать в десятках: 80 = 8 дес., 240 = 24 дес.","Умножаем или делим десятки как обычные числа, а в конце приписываем 0.","Круглое на круглое: 360 : 40 = 36 дес. : 4 дес. = 9."],
+       ex:"30 · 4 = 3 дес. · 4 = 12 дес. = 120<br>240 : 6 = 24 дес. : 6 = 4 дес. = 40"},
+ gen(L){
+  if (L===1){
+    if (Math.random()<.5){ const a=R(2,9),b=R(2,4); return numQ(ex(`${a*10} · ${b} = ${BOX}`), a*b*10, `<div>${a*10} · ${b} = ${a} дес. · ${b} = ${a*b} дес. = ${a*b*10}</div>`); }
+    const b=R(2,4), k=R(1,Math.floor(9/b)); return numQ(ex(`${b*k*10} : ${b} = ${BOX}`), k*10, `<div>${b*k*10} : ${b} = ${b*k} дес. : ${b} = ${k} дес. = ${k*10}</div>`);
+  }
+  if (L===2){
+    const k=pick(["h","t","t"]);
+    if (k==="h"){ const b=R(2,4), a=R(1,Math.floor(9/b)); return numQ(ex(`${a*100} · ${b} = ${BOX}`), a*b*100, `<div>${a*100} · ${b} = ${a} сот. · ${b} = ${a*b} сот. = ${a*b*100}</div>`); }
+    const b=R(2,9),q=R(2,9); return numQ(ex(`${b*q*10} : ${b} = ${BOX}`), q*10, `<div>${b*q*10} : ${b} = ${b*q} дес. : ${b} = ${q} дес. = ${q*10}</div>`);
+  }
+  if (Math.random()<.5){ const [a,b]=pick([[2,3],[3,3],[2,4],[4,2],[3,2],[2,2],[5,2],[2,5],[3,3]]); return numQ(ex(`${a*10} · ${b*10} = ${BOX}`), a*b*100, `<div>${a*10} · ${b*10} = ${a} · ${b} · 10 · 10 = ${a*b} · 100 = ${a*b*100}</div>`); }
+  const d=R(2,9), q=R(2,9); return numQ(ex(`${d*q*10} : ${d*10} = ${BOX}`), q, `<div>${d*q*10} : ${d*10} = ${d*q} дес. : ${d} дес. = ${q}</div>`);
+ }},
+
+{id:"out", n:7, color:"#138A8A", t:"Внетабличное умножение и деление", s:"23 · 4, 72 : 3, 84 : 21",
+ rule:{h:"Раскладываем на удобные слагаемые", p:["Умножение: 23 · 4 = 20 · 4 + 3 · 4 = 80 + 12 = 92.","Деление: делимое раскладываем так, чтобы каждую часть было удобно разделить: 72 : 3 = (60 + 12) : 3 = 20 + 4 = 24.","Деление на двузначное число — подбором: 84 : 21. Пробуем 4: 21 · 4 = 84. Ответ 4."],
+       ex:"36 · 2 = 30 · 2 + 6 · 2 = 60 + 12 = 72<br>96 : 4 = (80 + 16) : 4 = 20 + 4 = 24"},
+ gen(L){
+  if (L===1){
+    if (Math.random()<.5){ const b=R(2,3), t=R(1,Math.floor(9/b)), u=R(1,Math.floor(9/b)), a=t*10+u; return numQ(ex(`${a} · ${b} = ${BOX}`), a*b, `<div>${a} · ${b} = ${t*10} · ${b} + ${u} · ${b} = ${t*10*b} + ${u*b} = ${a*b}</div>`); }
+    const d=R(2,4), t=R(1,Math.floor(9/d)), u=R(1,Math.floor(9/d)), n=(t*10+u)*d; return numQ(ex(`${n} : ${d} = ${BOX}`), t*10+u, `<div>${n} : ${d} = (${t*10*d} + ${u*d}) : ${d} = ${t*10} + ${u} = ${t*10+u}</div>`);
+  }
+  if (L===2){
+    if (Math.random()<.5){ const a=R(12,49), b=R(2,9), t=Math.floor(a/10)*10, u=a%10; return numQ(ex(`${a} · ${b} = ${BOX}`), a*b, `<div>${a} · ${b} = ${t} · ${b} + ${u} · ${b} = ${t*b} + ${u*b} = ${a*b}</div>`); }
+    let d,q; do { d=R(2,9); q=R(11,49); } while(q*d>99 || q%10===0);
+    const n=q*d, p1=Math.floor(q/10)*10*d, p2=n-p1;
+    return numQ(ex(`${n} : ${d} = ${BOX}`), q, `<div>${n} : ${d} = (${p1} + ${p2}) : ${d} = ${p1/d} + ${p2/d} = ${q}</div>`);
+  }
+  if (Math.random()<.6){ let d,q; do { d=R(11,32); q=R(2,6); } while(d*q>99); return numQ(ex(`${d*q} : ${d} = ${BOX}`), q, `<div>Подбираем: ${d} · ${q} = ${d*q}. Значит, ${d*q} : ${d} = ${q}</div>`); }
+  const a=R(101,322), b=R(2,3); const h=Math.floor(a/100)*100, t=Math.floor(a%100/10)*10, u=a%10;
+  return numQ(ex(`${a} · ${b} = ${BOX}`), a*b, `<div>${a} · ${b} = ${h} · ${b} + ${t} · ${b} + ${u} · ${b} = ${h*b} + ${t*b} + ${u*b} = ${a*b}</div>`);
+ }},
+
+{id:"units", n:8, color:"#8A6A2E", t:"Единицы длины и массы", s:"мм, см, дм, м, км · г, кг, ц, т",
+ rule:{h:"Таблица единиц", p:["Длина: 1 см = 10 мм, 1 дм = 10 см, 1 м = 10 дм = 100 см, 1 км = 1000 м.","Масса: 1 кг = 1000 г, 1 ц = 100 кг, 1 т = 10 ц = 1000 кг.","Чтобы сравнить величины, переведи их в одинаковые единицы."],
+       ex:"3 дм 4 см = 30 см + 4 см = 34 см<br>2 кг 300 г = 2000 г + 300 г = 2300 г"},
+ gen(L){
+  const T="Переведи в нужные единицы";
+  if (L===1){
+    const k=pick(["dc","md","cm","dcc","cd"]), a=R(2,9), b=R(1,9);
+    if (k==="dc") return numQ(ex(`${a} дм = ${BOX} см`), a*10, `<div>1 дм = 10 см, значит ${a} дм = ${a} · 10 = ${a*10} см</div>`, T);
+    if (k==="md") return numQ(ex(`${a} м = ${BOX} дм`), a*10, `<div>1 м = 10 дм, значит ${a} м = ${a*10} дм</div>`, T);
+    if (k==="cm") return numQ(ex(`${a} см = ${BOX} мм`), a*10, `<div>1 см = 10 мм, значит ${a} см = ${a*10} мм</div>`, T);
+    if (k==="dcc") return numQ(ex(`${a} дм ${b} см = ${BOX} см`), a*10+b, `<div>${a} дм = ${a*10} см, ${a*10} + ${b} = ${a*10+b} см</div>`, T);
+    return numQ(ex(`${a*10} см = ${BOX} дм`), a, `<div>10 см = 1 дм, значит ${a*10} см = ${a*10} : 10 = ${a} дм</div>`, T);
+  }
+  if (L===2){
+    const k=pick(["kg","kgg","t","c","gk"]), a=R(2,9), b=R(1,9)*100;
+    if (k==="kg") return numQ(ex(`${a} кг = ${BOX} г`), a*1000, `<div>1 кг = 1000 г, значит ${a} кг = ${a*1000} г</div>`, T);
+    if (k==="kgg") return numQ(ex(`${a} кг ${b} г = ${BOX} г`), a*1000+b, `<div>${a} кг = ${a*1000} г, ${a*1000} + ${b} = ${a*1000+b} г</div>`, T);
+    if (k==="t") return numQ(ex(`${a} т = ${BOX} кг`), a*1000, `<div>1 т = 1000 кг, значит ${a} т = ${a*1000} кг</div>`, T);
+    if (k==="c") return numQ(ex(`${a} ц = ${BOX} кг`), a*100, `<div>1 ц = 100 кг, значит ${a} ц = ${a*100} кг</div>`, T);
+    return numQ(ex(`${a*1000} г = ${BOX} кг`), a, `<div>1000 г = 1 кг, значит ${a*1000} г = ${a} кг</div>`, T);
+  }
+  const k=pick(["mc","km","kmm","cmp","cmp"]), a=R(2,9), b=R(1,99);
+  if (k==="mc") return numQ(ex(`${a} м ${b} см = ${BOX} см`), a*100+b, `<div>${a} м = ${a*100} см, ${a*100} + ${b} = ${a*100+b} см</div>`, T);
+  if (k==="km") return numQ(ex(`${a} км = ${BOX} м`), a*1000, `<div>1 км = 1000 м, значит ${a} км = ${a*1000} м</div>`, T);
+  if (k==="kmm"){ const m=R(1,9)*100; return numQ(ex(`${a} км ${m} м = ${BOX} м`), a*1000+m, `<div>${a} км = ${a*1000} м, ${a*1000} + ${m} = ${a*1000+m} м</div>`, T); }
+  const d=R(1,9), left=a*100+d*10, right=left+pick([-10,0,10,-5,5]);
+  const s = left>right?">":left<right?"<":"=";
+  return optQ(ex(`${a} м ${d} дм ○ ${right} см`), s, [">","<","="], `<div>${a} м ${d} дм = ${a*100} см + ${d*10} см = ${left} см</div><div>${left} ${s} ${right}</div>`, "Сравни: поставь знак >, < или =");
+ }},
+
+{id:"geo", n:9, color:"#2F6FD6", t:"Периметр и площадь", s:"Прямоугольник и квадрат, см и см²",
+ rule:{h:"Формулы прямоугольника", p:["a — длина, b — ширина.","Периметр — длина границы: P = (a + b) · 2. У квадрата P = a · 4.","Площадь — сколько квадратных сантиметров помещается внутри: S = a · b. У квадрата S = a · a.","Найти сторону по площади: b = S : a."],
+       ex:"a = 6 см, b = 4 см<br>P = (6 + 4) · 2 = 20 см<br>S = 6 · 4 = 24 см²"},
+ gen(L){
+  const rect=(a,b,la,lb)=>{ const W=Math.min(260,40+a*18), H=Math.min(150,30+b*14); return `<svg class="fig" width="${W+100}" height="${H+60}" viewBox="0 0 ${W+100} ${H+60}" aria-hidden="true"><rect x="80" y="16" width="${W}" height="${H}" rx="4" fill="var(--sea-soft)" stroke="var(--sea)" stroke-width="3"/><text x="${80+W/2}" y="${H+44}" text-anchor="middle" fill="var(--ink)" font-family="Rubik,sans-serif" font-weight="700" font-size="18">${la}</text><text x="72" y="${16+H/2+6}" text-anchor="end" fill="var(--ink)" font-family="Rubik,sans-serif" font-weight="700" font-size="18">${lb}</text></svg>`; };
+  if (L===1){
+    if (Math.random()<.7){ const a=R(3,15), b=R(2,a-1); return numQ(rect(a,b,`${a} см`,`${b} см`), (a+b)*2, `<div>P = (${a} + ${b}) · 2 = ${a+b} · 2 = ${(a+b)*2} см</div>`, "Найди периметр прямоугольника (в см)"); }
+    const a=R(2,12); return numQ(rect(a,a,`${a} см`,`${a} см`), a*4, `<div>У квадрата все стороны равны: P = ${a} · 4 = ${a*4} см</div>`, "Найди периметр квадрата (в см)");
+  }
+  if (L===2){
+    if (Math.random()<.7){ const a=R(3,9), b=R(2,a); return numQ(rect(a,b,`${a} см`,`${b} см`), a*b, `<div>S = ${a} · ${b} = ${a*b} см²</div>`, "Найди площадь прямоугольника (в см²)"); }
+    const a=R(2,9); return numQ(rect(a,a,`${a} см`,`${a} см`), a*a, `<div>S = ${a} · ${a} = ${a*a} см²</div>`, "Найди площадь квадрата (в см²)");
+  }
+  const a=R(3,9), b=R(2,9);
+  if (Math.random()<.5) return numQ(rect(a,b,`${a} см`,`b = ?`)+`<div class="sets">S = ${a*b} см²</div>`, b, `<div>b = S : a = ${a*b} : ${a} = ${b} см</div>`, "Найди ширину b (в см)");
+  return numQ(rect(a,b,`${a} см`,`b = ?`)+`<div class="sets">P = ${(a+b)*2} см</div>`, b, `<div>Половина периметра: ${(a+b)*2} : 2 = ${a+b} см — это a + b.</div><div>b = ${a+b} − ${a} = ${b} см</div>`, "Найди ширину b (в см)");
+ }},
+
+{id:"task", n:10, color:"#B8860B", t:"Задачи", s:"Цена, количество, стоимость; в … раз, на …",
+ rule:{h:"Как решать задачу", p:["Прочитай задачу и найди, что известно и что нужно узнать.","Стоимость = цена · количество. Цена = стоимость : количество. Количество = стоимость : цена.","«В … раз больше» — умножаем, «в … раз меньше» — делим. «На … больше» — прибавляем, «на … меньше» — вычитаем.","Во сколько раз одно больше другого — делим. На сколько больше — вычитаем."],
+       ex:"Фонарь стоит 8 монет. Сколько стоят 6 фонарей?<br>8 · 6 = 48 (мон.)"},
+ gen(L){
+  const T="Реши задачу и введи ответ";
+  if (L===1){
+    const k=pick(["cost","price","less"]);
+    if (k==="cost"){ const p=R(3,9), n=R(2,9); return numQ(`<p class="story">Бочка пресной воды стоит ${p} монет. Сколько монет стоят ${n} таких бочек?</p>`, p*n, `<div>Стоимость = цена · количество</div><div>${p} · ${n} = ${p*n} (мон.)</div>`, T); }
+    if (k==="price"){ const p=R(3,9), n=R(2,9); return numQ(`<p class="story">Капитан купил ${n} одинаковых фонарей и заплатил ${p*n} монет. Сколько стоит один фонарь?</p>`, p, `<div>Цена = стоимость : количество</div><div>${p*n} : ${n} = ${p} (мон.)</div>`, T); }
+    const a=R(20,60), b=R(3,15); return numQ(`<p class="story">На корабле ${a} матросов, а юнг на ${b} меньше. Сколько юнг на корабле?</p>`, a-b, `<div>«На ${b} меньше» — вычитаем: ${a} − ${b} = ${a-b} (юнг)</div>`, T);
+  }
+  if (L===2){
+    const k=pick(["div","mul","diff","times"]);
+    if (k==="div"){ const n=R(2,9), q=R(3,9); return numQ(`<p class="story">У капитана ${n*q} золотых монет, а у боцмана в ${n} раз меньше. Сколько монет у боцмана?</p>`, q, `<div>«В ${n} раз меньше» — делим: ${n*q} : ${n} = ${q} (мон.)</div>`, T); }
+    if (k==="mul"){ const a=R(3,9), n=R(2,9); return numQ(`<p class="story">Попугай Кеша знает ${a} слов, а капитан — в ${n} раз больше. Сколько слов знает капитан?</p>`, a*n, `<div>«В ${n} раз больше» — умножаем: ${a} · ${n} = ${a*n} (сл.)</div>`, T); }
+    if (k==="diff"){ const a=R(40,95), b=R(10,a-5); return numQ(`<p class="story">На одном острове ${a} пальм, а на другом ${b}. На сколько больше пальм на первом острове?</p>`, a-b, `<div>«На сколько больше» — вычитаем: ${a} − ${b} = ${a-b} (п.)</div>`, T); }
+    const b=R(3,9), n=R(2,9); return numQ(`<p class="story">В сундуке ${b*n} золотых и ${b} серебряных монет. Во сколько раз золотых монет больше, чем серебряных?</p>`, n, `<div>«Во сколько раз больше» — делим: ${b*n} : ${b} = ${n} (раз)</div>`, T);
+  }
+  const k=pick(["load","change","share","way"]);
+  if (k==="load"){ const a=R(10,40), c=R(2,6), m=R(3,9); return numQ(`<p class="story">В трюме было ${a} бочек. Погрузили ещё ${c} ящика по ${m} бочек в каждом. Сколько бочек стало в трюме?</p>`, a+c*m, `<div>1) ${c} · ${m} = ${c*m} (б.) — погрузили</div><div>2) ${a} + ${c*m} = ${a+c*m} (б.)</div>`, T); }
+  if (k==="change"){ const n=R(2,6), p=R(4,9), C=pick([50,100]); if (n*p>=C) return this.gen(3); return numQ(`<p class="story">Купили ${n} каната по ${p} монет и отдали ${C} монет. Сколько монет сдачи получили?</p>`, C-n*p, `<div>1) ${p} · ${n} = ${n*p} (мон.) — стоят канаты</div><div>2) ${C} − ${n*p} = ${C-n*p} (мон.)</div>`, T); }
+  if (k==="share"){ const n=R(2,6), q=R(5,12), s=R(1,q-1); return numQ(`<p class="story">${n} пирата поровну разделили ${n*q} монет. Потом каждый потратил ${s} монет. Сколько монет осталось у каждого пирата?</p>`, q-s, `<div>1) ${n*q} : ${n} = ${q} (мон.) — досталось каждому</div><div>2) ${q} − ${s} = ${q-s} (мон.)</div>`, T); }
+  const dd=R(3,6), d=R(20,90), r=R(10,99); return numQ(`<p class="story">Корабль плыл ${dd} дня и каждый день проходил ${d} км. Ему осталось проплыть ${r} км. Какой длины весь путь?</p>`, dd*d+r, `<div>1) ${d} · ${dd} = ${d*dd} (км) — уже проплыл</div><div>2) ${d*dd} + ${r} = ${dd*d+r} (км)</div>`, T);
+ }}
+];
+const LEVELS = [["🛶","Лёгкий","Разминка по теме"],["⛵","Средний","Задания как в учебнике"],["🚢","Сложный","Для настоящих капитанов"]];
+const RANKS = [[0,"🐣","Юнга"],[8,"🧭","Матрос"],[22,"⚓","Боцман"],[40,"🗺️","Штурман"],[60,"🏴‍☠️","Капитан"],[85,"👑","Адмирал"]];
+const PRAISE = ["Верно!","Молодец!","Отлично!","Так держать!","Точно в цель!","Супер!"];
+const NQ = 10;
+
+/* ===== Состояние ===== */
+const KEY="peterson3-tutor";
+let S={stars:{}, last:null, sound:true};
+try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S, JSON.parse(raw)); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+const starOf=(t,l)=>(S.stars[t]&&S.stars[t][l])||0;
+const topicStars=t=>[1,2,3].reduce((a,l)=>a+starOf(t,l),0);
+const totalStars=()=>TOPICS.reduce((a,t)=>a+topicStars(t.id),0);
+const MAX=TOPICS.length*9;
+function rankOf(n){ let r=RANKS[0],nx=null; RANKS.forEach((x,i)=>{ if(n>=x[0]){ r=x; nx=RANKS[i+1]||null; } }); return {r,nx}; }
+const starsHTML=n=>`<span class="stars" aria-label="${n} из 3 звёзд">${[0,1,2].map(i=>`<span class="${i<n?"on":""}">★</span>`).join("")}</span>`;
+const byId=id=>TOPICS.find(t=>t.id===id);
+
+let AC=null;
+function beep(ok){
+  if(!S.sound) return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    (ok?[660,880,1175]:[220,180]).forEach((f,i)=>{ const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+i*.09; o.type=ok?"triangle":"square"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(ok?.18:.07,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.18); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.2); });
+  }catch(e){}
+}
+
+const $app=document.getElementById("app");
+function header(left){
+  return `<div class="bar"><div>${left||`<div class="logo" aria-label="Математика 3"><span>М</span><span>а</span><span>т</span><span>е</span><span>м</span><span>а</span><span>т</span><span>и</span><span>к</span><span>а</span> <b>3</b></div>`}</div>
+   <div class="right"><span class="chip"><span class="st">★</span>${totalStars()}</span><button class="icon" id="snd" aria-label="Звуки">${S.sound?"🔔":"🔕"}</button></div></div>`;
+}
+function bindHeader(){ const b=document.getElementById("snd"); if(b) b.onclick=()=>{ S.sound=!S.sound; save(); b.textContent=S.sound?"🔔":"🔕"; }; }
+
+/* ===== Главный экран ===== */
+function home(){
+  const t=totalStars(), {r,nx}=rankOf(t), pct=nx?Math.round((t-r[0])/(nx[0]-r[0])*100):100;
+  $app.innerHTML = header() + `<section class="hero">
+    <div><h1>Полный вперёд, капитан!</h1><p>Выбирай остров, решай задания и собирай звёзды ★</p></div>
+    <div class="rank"><div class="big">${r[1]}</div><div>${r[2]}<small>твоё звание</small></div></div>
+    <div class="lvl"><i style="width:${pct}%"></i></div>
+    <div class="lvlnote">${nx?`До звания «${nx[2]}» ${nx[1]} осталось ${nx[0]-t} ★`:"Все острова покорены! Ты — Адмирал!"}</div>
+  </section>
+  <button class="warm" id="warm"><span class="ic">🧭</span><span><h3>Разминка на 10 заданий</h3><p>Задания из всех тем вперемешку. Хорошо начинать с неё каждый день.</p></span></button>
+  <h2 class="sec">Острова первой части учебника</h2>
+  <div class="islands">${TOPICS.map(tp=>{ const s=topicStars(tp.id); return `<button class="isl ${S.last===tp.id?"last":""}" data-t="${tp.id}">
+     <span class="num" style="background:${tp.color}">${tp.n}</span>
+     <span><h3>${tp.t}</h3><span class="sub">${tp.s}</span><span class="mini"><span class="mb"><i style="width:${s/9*100}%"></i></span>★ ${s}/9</span></span></button>`; }).join("")}</div>
+  <section class="parents"><h2>Для родителей</h2><ul>
+    <li>Темы подобраны по программе Л. Г. Петерсон «Учусь учиться», 3 класс, часть 1: множества, таблица умножения, уравнения, порядок действий, свойства умножения, круглые числа, внетабличное умножение и деление, единицы длины и массы, периметр и площадь, задачи.</li>
+    <li>Задания создаются заново при каждом запуске, поэтому они не повторяются и не заканчиваются.</li>
+    <li>При ошибке показывается решение по шагам. В каждой теме есть вкладка «Как решать» с правилом и примером.</li>
+    <li>В каждой теме 3 уровня по 10 заданий. Звёзды: 9–10 верных — 3 ★, 7–8 — 2 ★, 5–6 — 1 ★. Прогресс хранится только на этом устройстве.</li>
+  </ul><button class="link" id="reset">Сбросить прогресс</button><div id="rc"></div></section>`;
+  bindHeader(); window.scrollTo(0,0);
+  document.getElementById("warm").onclick=()=>startGame(null,0);
+  $app.querySelectorAll(".isl").forEach(b=>b.onclick=()=>topicView(b.dataset.t,"lv"));
+  document.getElementById("reset").onclick=()=>{
+    document.getElementById("rc").innerHTML=`<div class="confirm">Удалить все звёзды? <button class="btn alt" id="rn">Нет</button><button class="btn main" id="ry" style="background:var(--red)">Да, сбросить</button></div>`;
+    document.getElementById("rn").onclick=()=>document.getElementById("rc").innerHTML="";
+    document.getElementById("ry").onclick=()=>{ S.stars={}; S.last=null; save(); home(); };
+  };
+}
+
+/* ===== Экран темы ===== */
+function topicView(id, tab){
+  const tp=byId(id); S.last=id; save();
+  const body = tab==="lv"
+    ? `<div class="levels">${LEVELS.map((l,i)=>`<button class="level" data-l="${i+1}"><span class="ic">${l[0]}</span><span><h3>${l[1]}</h3><p>${l[2]} · ${NQ} заданий</p></span>${starsHTML(starOf(id,i+1))}</button>`).join("")}</div>`
+    : `<div class="rule"><h3>${tp.rule.h}</h3>${tp.rule.p.map(p=>`<p>${p}</p>`).join("")}<div class="ex">${tp.rule.ex}</div></div>
+       <div class="row"><button class="btn main" id="go1">Попробовать: лёгкий уровень</button></div>`;
+  $app.innerHTML = header(`<button class="back" id="bk">← Острова</button>`) + `
+    <div class="thead"><span class="num" style="background:${tp.color}">${tp.n}</span><div><h1>${tp.t}</h1><p>${tp.s}</p></div></div>
+    <div class="tabs" role="tablist"><button class="tab" role="tab" data-v="lv" aria-selected="${tab==="lv"}">🎯 Уровни</button><button class="tab" role="tab" data-v="rule" aria-selected="${tab==="rule"}">📘 Как решать</button></div>${body}`;
+  bindHeader(); window.scrollTo(0,0);
+  document.getElementById("bk").onclick=home;
+  $app.querySelectorAll(".tab").forEach(b=>b.onclick=()=>topicView(id,b.dataset.v));
+  $app.querySelectorAll(".level").forEach(b=>b.onclick=()=>startGame(id,+b.dataset.l));
+  const g=document.getElementById("go1"); if(g) g.onclick=()=>startGame(id,1);
+}
+
+/* ===== Игра ===== */
+let G=null;
+function makeQ(tid, L){
+  if (tid) return byId(tid).gen(L);
+  const tp=pick(TOPICS); const q=tp.gen(R(1,2)); q.topic=tp.t; return q;
+}
+function startGame(tid, L){
+  const qs=[]; const seen=new Set();
+  for (let i=0; qs.length<NQ && i<200; i++){ const q=makeQ(tid,L); const k=q.html+q.ans; if(!seen.has(k)){ seen.add(k); qs.push(q); } }
+  G={tid, L, qs, i:0, right:0, input:"", locked:false};
+  renderQ();
+}
+function renderQ(){
+  const q=G.qs[G.i]; G.input=""; G.locked=false;
+  const title = G.tid ? `${byId(G.tid).t} · ${LEVELS[G.L-1][1]}` : `Разминка${q.topic?` · ${q.topic}`:""}`;
+  let inp;
+  if (q.type==="num"){
+    inp = `<div class="answer empty" id="ans" aria-live="polite">введи ответ</div>
+      <div class="pad">${[1,2,3,4,5,6,7,8,9].map(d=>`<button class="key" data-d="${d}">${d}</button>`).join("")}
+      <button class="key del" id="del" aria-label="Стереть">⌫</button><button class="key" data-d="0">0</button><button class="key go" id="go">Готово</button></div>`;
+  } else {
+    inp = `<div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>`;
+  }
+  $app.innerHTML = `<div class="bar"><div><button class="back" id="quit">✕ Выйти</button></div><div class="right"><span class="chip">${G.i+1} / ${G.qs.length}</span></div></div>
+    <div class="gtop"><div class="prog"><i style="width:${G.i/G.qs.length*100}%"></i></div><span class="chip"><span class="st">✓</span>${G.right}</span></div>
+    <div class="qbox" id="qbox"><p class="task">${title}</p><p class="task" style="color:var(--ink)">${q.task}</p>${q.html}${inp}</div><div id="fb"></div>`;
+  document.getElementById("quit").onclick=()=> G.tid ? topicView(G.tid,"lv") : home();
+  if (q.type==="num"){
+    $app.querySelectorAll(".key[data-d]").forEach(k=>k.onclick=()=>typeD(k.dataset.d));
+    document.getElementById("del").onclick=()=>{ if(!G.locked){ G.input=G.input.slice(0,-1); drawIn(); } };
+    document.getElementById("go").onclick=submitNum;
+  } else {
+    $app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>choose(b));
+  }
+}
+function typeD(d){ if(G.locked || G.input.length>=6) return; if(G.input==="0") G.input=""; G.input+=d; drawIn(); }
+function drawIn(){ const a=document.getElementById("ans"); a.textContent=G.input||"введи ответ"; a.classList.toggle("empty",!G.input); }
+function submitNum(){
+  if (G.locked || !G.input) return;
+  const q=G.qs[G.i], ok = String(+G.input)===q.ans;
+  const a=document.getElementById("ans"); a.classList.add(ok?"ok":"bad"); if(!ok) a.classList.add("shake");
+  $app.querySelectorAll(".key").forEach(k=>k.disabled=true);
+  $app.querySelectorAll(".box").forEach(b=>b.textContent=q.ans);
+  feedback(ok);
+}
+function choose(b){
+  if (G.locked) return;
+  const q=G.qs[G.i], ok=q.opts[+b.dataset.i]===q.ans;
+  $app.querySelectorAll(".opt").forEach((x,j)=>{ x.disabled=true; if(q.opts[j]===q.ans) x.classList.add("ok"); });
+  if(!ok) b.classList.add("bad","shake");
+  $app.querySelectorAll(".box").forEach(x=>x.textContent=q.ans);
+  feedback(ok);
+}
+function feedback(ok){
+  G.locked=true; if(ok) G.right++; beep(ok);
+  const q=G.qs[G.i], last=G.i===G.qs.length-1;
+  document.getElementById("fb").innerHTML = `<div class="fb ${ok?"ok":"bad"}">
+    ${ok?"✅ "+pick(PRAISE):"Не страшно! Правильный ответ: <span style=\"color:var(--ink)\">"+q.ans+"</span>. Смотри, как решать:"}
+    <div class="steps">${q.explain}</div>
+    <div class="foot"><button class="next" id="nx">${last?"Готово":"Дальше →"}</button></div></div>`;
+  const nx=document.getElementById("nx"); nx.focus({preventScroll:true});
+  document.getElementById("fb").scrollIntoView({behavior:"smooth",block:"nearest"});
+  nx.onclick=()=>{ if(last) finish(); else { G.i++; renderQ(); window.scrollTo(0,0); } };
+}
+document.addEventListener("keydown",e=>{
+  if(!G || !document.getElementById("qbox")) return;
+  const q=G.qs[G.i];
+  if (G.locked){ if(e.key==="Enter"){ const nx=document.getElementById("nx"); if(nx && document.activeElement!==nx){ e.preventDefault(); nx.click(); } } return; }
+  if (q.type!=="num") return;
+  if (/^[0-9]$/.test(e.key)){ typeD(e.key); e.preventDefault(); }
+  else if (e.key==="Backspace"){ G.input=G.input.slice(0,-1); drawIn(); e.preventDefault(); }
+  else if (e.key==="Enter"){ submitNum(); e.preventDefault(); }
+});
+function finish(){
+  const n=G.qs.length, r=G.right, st=r>=9?3:r>=7?2:r>=5?1:0;
+  let extra="";
+  if (G.tid){
+    const before=rankOf(totalStars()).r;
+    S.stars[G.tid]=S.stars[G.tid]||{}; const prev=S.stars[G.tid][G.L]||0;
+    if(st>prev) S.stars[G.tid][G.L]=st; save();
+    const after=rankOf(totalStars()).r;
+    if (st>prev && prev>0) extra+=`<p>Новый рекорд: было ${prev} ★, стало ${st} ★</p>`;
+    if (after!==before) extra+=`<p style="color:var(--ink);font-size:22px">Новое звание: ${after[1]} ${after[2]}!</p>`;
+    if (st===3 && G.L<3) extra+=`<p>Можно переходить на следующий уровень!</p>`;
+  }
+  const title=st===3?"Отлично, капитан!":st===2?"Хорошо!":st===1?"Неплохо!":"Попробуем ещё раз!";
+  const note=st===3?"Почти без ошибок!":st===0?"Загляни во вкладку «Как решать» и попробуй снова.":"Сыграй ещё раз, чтобы получить 3 звезды.";
+  $app.innerHTML = header() + `<div class="result"><div class="bigstars">${[0,1,2].map(i=>`<span class="${i<st?"on":""}">★</span>`).join("")}</div>
+    <h1>${title}</h1><p>Верных ответов: ${r} из ${n}. ${note}</p>${extra}
+    <div class="row"><button class="btn main" id="again">Ещё раз</button>${G.tid?`<button class="btn alt" id="totopic">К теме</button>`:""}<button class="btn alt" id="tohome">Острова</button></div></div>`;
+  bindHeader(); if(st===3) beep(true);
+  document.getElementById("again").onclick=()=>startGame(G.tid,G.L);
+  const tt=document.getElementById("totopic"); if(tt) tt.onclick=()=>topicView(G.tid,"lv");
+  document.getElementById("tohome").onclick=home;
+}
+home();
+</script>
+</body>
+</html>
