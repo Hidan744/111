@@ -220,12 +220,15 @@ const E={
  cablecurl:{n:"Сгибание рук на нижнем блоке",g:"Бицепс",u:"kg",lim:[],cues:["Локти прижаты","Сгибай до конца","Медленно разгибай"],err:"Раскачка корпусом"},
  ohtriceps:{n:"Разгибание рук из-за головы на блоке",g:"Трицепс",u:"kg",lim:["shoulder"],cues:["Спиной к блоку, канат за головой","Разгибай руки вперёд-вверх","Локти направлены вперёд"],err:"Локти разъезжаются"},
  dips:{n:"Отжимания на брусьях в гравитроне",g:"Трицепс",u:"kg",lim:["shoulder"],cues:["Противовес помогает — больше вес, легче","Опускайся до угла 90° в локтях","Корпус вертикален — больше трицепс"],err:"Слишком глубокое опускание"},
+ closepulldown:{n:"Тяга верхнего блока узким хватом",g:"Спина",u:"kg",lim:[],cues:["Узкая V-рукоять","Тяни к верху груди, локти вдоль корпуса","Грудь вперёд, без раскачки"],err:"Отклонение корпуса назад"},
+ straightpull:{n:"Пуловер на верхнем блоке прямыми руками",g:"Спина",u:"kg",lim:["shoulder"],cues:["Лёгкий наклон вперёд, руки почти прямые","Опускай рукоять к бёдрам за счёт спины","Медленно возвращай вверх"],err:"Сгибание рук — работают трицепсы"},
+ seatedcalf:{n:"Подъёмы на носки сидя",g:"Икры",u:"kg",lim:[],cues:["Валик на бёдрах у колен","Полная амплитуда","Пауза наверху"],err:"Короткая амплитуда"},
  abcrunch:{n:"Скручивания на верхнем блоке",g:"Кор",u:"kg",lim:["back"],cues:["Встань на колени, канат у головы","Скручивайся, приближая рёбра к тазу","Таз неподвижен"],err:"Наклон тазом вместо скручивания"}
 };
 const EQ={goblet:"db",legpress:"m",smith:"m",rdl:"db",hyper:"m",pullthrough:"c",hipthrust:"bb",kickback:"c",lunge:"db",bulgarian:"db",stepup:"db",legcurl:"m",legext:"m",abduction:"m",cableabd:"c",calf:"m",pulldown:"c",gravitron:"m",seatedrow:"c",dbrow:"db",facepull:"c",chestpress:"m",dbpress:"db",inclinepush:"bw",dbshoulder:"db",machineshoulder:"m",lateral:"db",curl:"db",pushdown:"c",plank:"bw",deadbug:"bw",pallof:"c",kneeraise:"bw",
  bbsquat:"bb",frontsquat:"bb",deadlift:"bb",sumodl:"bb",bbrdl:"bb",goodmorning:"bb",bbrevlunge:"bb",bbrow:"bb",bench:"bb",inclinebench:"bb",ohp:"bb",bbcurl:"bb",
  kbswing:"kb",kbdl:"kb",kbsumo:"kb",kbgoblet:"kb",kbrow:"kb",kbpress:"kb",kbhalo:"kb",kbfarmer:"kb",kbgetup:"kb",
- hacksquat:"m",hipthrustm:"m",glutemachine:"m",seatedcurl:"m",adductor:"m",pecdeck:"m",reversepec:"m",machinerow:"m",tbar:"bb",cablelateral:"c",cablecurl:"c",ohtriceps:"c",dips:"m",abcrunch:"c"};
+ hacksquat:"m",hipthrustm:"m",glutemachine:"m",seatedcurl:"m",adductor:"m",pecdeck:"m",reversepec:"m",machinerow:"m",tbar:"bb",cablelateral:"c",cablecurl:"c",ohtriceps:"c",dips:"m",abcrunch:"c",closepulldown:"c",straightpull:"c",seatedcalf:"m"};
 const EQN={bb:"штанга",db:"гантели",kb:"гиря",m:"тренажёр",c:"блок",bw:"свой вес"};
 const EQUIP={mix:["Всё вперемешку","тренажёры и свободные веса"],machines:["Больше тренажёров","тренажёры и блоки"],free:["Больше свободных весов","штанга, гантели, гири"]};
 const SLOTS={
@@ -233,8 +236,8 @@ const SLOTS={
  hinge:["rdl","bbrdl","kbdl","deadlift","pullthrough","kbswing","sumodl","hyper","goodmorning"],
  glute:["hipthrust","hipthrustm","glutemachine","kickback","kbswing","pullthrough"],
  single:["lunge","bbrevlunge","bulgarian","glutemachine","stepup","kickback"],
- legiso:["legcurl","seatedcurl","legext"], abd:["abduction","cableabd","adductor"], calf:["calf"],
- pullV:["pulldown","gravitron"], pullH:["seatedrow","bbrow","machinerow","dbrow","kbrow","tbar"],
+ legiso:["legcurl","seatedcurl","legext"], abd:["abduction","cableabd","adductor"], calf:["calf","seatedcalf"],
+ pullV:["pulldown","gravitron","closepulldown","straightpull"], pullH:["seatedrow","bbrow","machinerow","dbrow","kbrow","tbar"],
  pushH:["chestpress","dbpress","bench","inclinebench","inclinepush","pecdeck"], pushV:["dbshoulder","machineshoulder","kbpress","ohp","lateral"],
  delt:["lateral","facepull","cablelateral","reversepec","kbhalo"], arms:["curl","pushdown","bbcurl","cablecurl","ohtriceps","dips"],
  core:["plank","deadbug","pallof","kbfarmer","abcrunch","kneeraise","kbgetup"]
@@ -284,25 +287,25 @@ const $app=document.getElementById("app");
 function allowed(id){ return !E[id].lim.some(l=>S.profile.limits.includes(l)) && !(E[id].adv && S.profile.level==="beg"); }
 function eqScore(id){ const e=EQ[id], pref=S.profile.equip||"mix"; if(pref==="machines") return (e==="m"||e==="c")?0:(e==="db"||e==="bw")?1:2; if(pref==="free") return (e==="bb"||e==="db"||e==="kb")?0:(e==="bw"||e==="c")?1:2; return 0; }
 function byPref(list){ return list.map((c,i)=>[c,i]).sort((a,b)=>eqScore(a[0])-eqScore(b[0])||a[1]-b[1]).map(x=>x[0]); }
-function plan(week){
+function plan(week,cycle){
   if(week==null) week=curWeek();
-  const p=S.profile, keys=AUTO[p.days], seen={}, slotN={}, block=week>=2?1:0;
+  if(cycle==null) cycle=curCycle();
+  const p=S.profile, keys=AUTO[p.days], seen={}, slotN={}, block=(cycle-1)*2+(week>=2?1:0);
+  let n=6+(p.dur===75?1:0)-(p.dur===45?1:0)-(p.level==="beg"?1:0); n=Math.max(4,n);
+  const days=keys.map(k=>{ let slots=TPL[k].s.slice(); ["abd","delt","calf","core"].forEach(x=>{ if(slots.length<n && !slots.includes(x)) slots.push(x); }); return slots.slice(0,n); });
+  const perWeek={}; days.forEach(sl=>sl.forEach(x=>perWeek[x]=(perWeek[x]||0)+1));
   return keys.map((k,di)=>{
     const tpl=TPL[k], variant=seen[k]=(seen[k]||0)+1;
-    let slots=tpl.s.slice();
-    let n=6+(p.dur===75?1:0)-(p.dur===45?1:0)-(p.level==="beg"?1:0);
-    n=Math.max(4,n);
-    ["abd","delt","calf","core"].forEach(x=>{ if(slots.length<n && !slots.includes(x)) slots.push(x); });
-    slots=slots.slice(0,n);
     const used=new Set();
-    const ex=slots.map((sl,si)=>{
+    const ex=days[di].map((sl,si)=>{
       const key=`${block}:${di}:${si}`;
       let id=S.swaps[key];
       if(!id || !allowed(id) || used.has(id)){
         const cands=byPref(SLOTS[sl].filter(c=>allowed(c)&&!used.has(c)));
         const top=cands.filter(c=>eqScore(c)===eqScore(cands[0]||c));
-        const pool=top.length?top:Object.keys(E).filter(c=>allowed(c)&&!used.has(c)&&E[c].g===E[SLOTS[sl][0]].g);
-        const idx=(slotN[sl]||0)+variant-1+block;
+        const wide=top.length>=perWeek[sl]*2?top:cands;
+        const pool=wide.length?wide:Object.keys(E).filter(c=>allowed(c)&&!used.has(c)&&E[c].g===E[SLOTS[sl][0]].g);
+        const idx=(slotN[sl]||0)+(week>=2?perWeek[sl]:0)+(cycle-1)*(2*perWeek[sl]+1);
         id=pool.length?pool[idx%pool.length]:SLOTS.core.find(c=>!used.has(c)&&allowed(c))||"plank";
       }
       slotN[sl]=(slotN[sl]||0)+1;
@@ -365,11 +368,12 @@ function planView(){
     <p>Сейчас неделя ${cw+1} — «${WEEKS[cw].t}». Отдых между подходами — ${g.rest} с.</p>
     <div class="row" style="margin-top:0"><button class="btn main" id="startNext">Начать: неделя ${cw+1}, день ${nd+1} — ${cur[nd].title}</button><button class="btn alt" id="copyPlan" style="background:transparent;color:inherit;border-color:rgba(255,255,255,.3)">Копировать неделю ${vw+1}</button></div></section>
    <div id="copyHost"></div>
+   ${!firstRun&&cw===0&&nd===0&&curCycle()>1?`<div class="note"><b>Цикл ${curCycle()-1} завершён!</b> Начинается цикл ${curCycle()} с новыми упражнениями. Бери веса чуть больше, чем в начале прошлого цикла.</div>`:""}
    ${firstRun?`<div class="note">Тренер сам распределил нагрузку по ${p.days} дням и расписал 4 недели вперёд. Цель, уровень, число тренировок и ограничения меняются в «Параметрах».</div>`:""}
    <div class="stats"><div class="stat"><b class="num">${S.sessions.length}</b><span>тренировок всего</span></div><div class="stat"><b class="num">${week}/${p.days}</b><span>за 7 дней</span></div><div class="stat"><b class="num">${cw+1}/4</b><span>неделя цикла</span></div></div>
    <div class="sec"><h2>4 недели</h2><small>неделя = ${plural(p.days,"тренировка","тренировки","тренировок")}</small></div>
    <div class="opts four" role="tablist">${WEEKS.map((w,i)=>`<button class="o" role="tab" data-wk="${i}" aria-pressed="${i===vw}"><b>Неделя ${i+1}${i===cw?" •":""}</b><span>${w.t}</span></button>`).join("")}</div>
-   <div class="note" style="margin-top:10px"><b>Неделя ${vw+1} — ${WEEKS[vw].t}.</b> ${WEEKS[vw].d}${vw>=2?" Упражнения обновлены, чтобы мышцы получили новый стимул.":""}</div>
+   <div class="note" style="margin-top:10px"><b>Неделя ${vw+1} — ${WEEKS[vw].t}.</b> ${WEEKS[vw].d}${vw===2?" Упражнения обновлены, чтобы мышцы получили новый стимул.":""}${vw===0&&curCycle()>1?` Новый цикл — новые упражнения.`:""}</div>
    <div class="days" style="margin-top:10px">${pl.map(d=>{ const isNext=vw===cw&&d.di===nd; return `<div class="day ${isNext?"next":""}"><div class="top"><div><div class="tag">День ${d.di+1}${isNext?" · следующая":""}</div><h3>${d.title}</h3></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="small" data-copy="${d.di}">Копировать</button>${vw===cw?`<button class="small" data-start="${d.di}">Начать</button>`:""}</div></div>
      <ol>${d.ex.map(e=>{const sc=scheme(e.id,vw);return `<li><b>${E[e.id].n}</b> <span class="chip" style="font-size:11px;padding:1px 7px">${EQN[EQ[e.id]]}</span> — ${sc.sets} × ${sc.reps}</li>`;}).join("")}</ol>
      <div class="muted" style="font-size:14px">В конце: ${g.fin}</div><div data-ch="${d.di}"></div></div>`; }).join("")}</div>
