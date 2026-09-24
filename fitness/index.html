@@ -106,6 +106,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .tech ul{margin:4px 0;padding-left:18px}
 .tech .err{color:var(--accent);font-weight:700}
 .alts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.alts .small{white-space:normal;text-align:left;max-width:100%}
 
 .timer{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:19;padding:0 16px}
 .timer .in{max-width:760px;margin:0 auto;background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
@@ -186,13 +187,62 @@ const E={
  plank:{n:"Планка",g:"Кор",u:"sec",lim:[],cues:["Локти под плечами","Тело — прямая линия, живот и ягодицы напряжены","Дыши ровно"],err:"Провисание поясницы или таз слишком высоко"},
  deadbug:{n:"«Мёртвый жук»",g:"Кор",u:"reps",lim:[],cues:["Лёжа на спине, поясница прижата к полу","Опускай противоположные руку и ногу","Не отрывай поясницу — это главное"],err:"Поясница отрывается от пола"},
  pallof:{n:"Жим Паллофа",g:"Кор",u:"kg",lim:[],cues:["Боком к блоку, рукоять у груди","Выжми руки вперёд и не дай корпусу повернуться","Пауза 2 секунды"],err:"Корпус поворачивается к блоку"},
- kneeraise:{n:"Подъём коленей в упоре",g:"Кор",u:"reps",lim:["back"],cues:["Спина прижата к спинке","Поднимай колени, подкручивая таз","Без раскачки"],err:"Махи ногами за счёт инерции"}
+ kneeraise:{n:"Подъём коленей в упоре",g:"Кор",u:"reps",lim:["back"],cues:["Спина прижата к спинке","Поднимай колени, подкручивая таз","Без раскачки"],err:"Махи ногами за счёт инерции"},
+ /* --- Штанга --- */
+ bbsquat:{n:"Приседания со штангой на спине",g:"Ноги и ягодицы",u:"kg",lim:["knee","back"],adv:1,cues:["Гриф на трапециях, лопатки сведены","Вдох, напряги пресс, садись назад-вниз, колени по линии носков","Глубина — до параллели бедра с полом, вставай через всю стопу"],err:"Округление поясницы внизу и заваливание колен внутрь"},
+ frontsquat:{n:"Фронтальные приседания со штангой",g:"Ноги и ягодицы",u:"kg",lim:["knee"],adv:1,cues:["Гриф на передних дельтах, локти высоко","Корпус вертикальнее, чем в классическом приседе","Опускайся под контролем, не теряя положения локтей"],err:"Локти падают, гриф съезжает вперёд"},
+ deadlift:{n:"Становая тяга со штангой",g:"Ягодицы и задняя поверхность бедра",u:"kg",lim:["back"],adv:1,cues:["Гриф над серединой стопы, голени почти касаются грифа","Спина прямая, лопатки над грифом, пресс напряжён","Толкай пол ногами, гриф идёт вдоль ног, наверху выпрямись без прогиба"],err:"Круглая спина и рывок грифа с пола"},
+ sumodl:{n:"Становая тяга сумо",g:"Ягодицы и задняя поверхность бедра",u:"kg",lim:["back"],adv:1,cues:["Широкая постановка стоп, носки развёрнуты","Хват между ногами на ширине плеч","Колени разведены по линии носков, спина прямая"],err:"Колени сводятся внутрь при подъёме"},
+ bbrdl:{n:"Румынская тяга со штангой",g:"Ягодицы и задняя поверхность бедра",u:"kg",lim:["back"],cues:["Хват чуть шире бёдер, колени слегка согнуты","Отводи таз назад, гриф скользит по бёдрам","Опускай до середины голени или до натяжения бедра, спина прямая"],err:"Гриф уходит от ног, спина округляется"},
+ goodmorning:{n:"Наклоны со штангой «гуд морнинг»",g:"Ягодицы и задняя поверхность бедра",u:"kg",lim:["back"],adv:1,cues:["Лёгкая штанга на трапециях","Отводи таз назад, наклоняясь с прямой спиной","Поднимайся за счёт ягодиц"],err:"Слишком большой вес и круглая спина"},
+ bbrevlunge:{n:"Обратные выпады со штангой",g:"Ноги и ягодицы",u:"kg",lim:["knee"],cues:["Шаг назад, опускайся до почти касания коленом пола","Вес на передней ноге","Возвращайся, толкаясь передней пяткой"],err:"Корпус заваливается вперёд, потеря равновесия"},
+ bbrow:{n:"Тяга штанги в наклоне",g:"Спина",u:"kg",lim:["back"],cues:["Наклон 30–45°, спина прямая, колени согнуты","Тяни гриф к низу живота, своди лопатки","Опускай под контролем"],err:"Раскачка корпусом и рывки"},
+ bench:{n:"Жим штанги лёжа",g:"Грудь и трицепс",u:"kg",lim:["shoulder"],cues:["Лопатки сведены и опущены, стопы упираются в пол","Опускай гриф к нижней части груди","Выжимай вверх, локти под 45° к корпусу"],err:"Отбив штанги от груди и разведённые на 90° локти"},
+ inclinebench:{n:"Жим штанги на наклонной скамье",g:"Грудь и трицепс",u:"kg",lim:["shoulder"],cues:["Наклон скамьи 30°","Гриф опускается к верхней части груди","Лопатки прижаты к скамье"],err:"Слишком крутой наклон — работают плечи вместо груди"},
+ ohp:{n:"Жим штанги стоя",g:"Плечи",u:"kg",lim:["shoulder","back"],adv:1,cues:["Гриф на груди, хват чуть шире плеч","Напряги ягодицы и пресс","Выжимай вверх, голову чуть уводи назад, затем под гриф"],err:"Прогиб в пояснице"},
+ bbcurl:{n:"Подъём штанги на бицепс",g:"Бицепс",u:"kg",lim:[],cues:["Хват снизу на ширине плеч","Локти прижаты к корпусу","Без раскачки, медленно вниз"],err:"Помогаешь корпусом"},
+ /* --- Гири --- */
+ kbswing:{n:"Махи гирей",g:"Ягодицы и задняя поверхность бедра",u:"kg",lim:["back"],adv:1,cues:["Это наклон тазом, а не присед","Резко выпрямляй таз, гиря летит до уровня груди за счёт ягодиц","Руки расслаблены, спина прямая"],err:"Поднимаешь гирю руками и приседаешь"},
+ kbdl:{n:"Становая тяга с гирей",g:"Ягодицы и задняя поверхность бедра",u:"kg",lim:[],cues:["Гиря между стоп, стойка чуть шире плеч","Отводи таз назад, спина прямая","Вставай, сжимая ягодицы"],err:"Круглая спина"},
+ kbsumo:{n:"Сумо-приседания с гирей",g:"Ноги и ягодицы",u:"kg",lim:["knee"],cues:["Широкая стойка, носки развёрнуты","Гиря в опущенных руках","Колени разводи по линии носков, спина прямая"],err:"Колени сводятся внутрь"},
+ kbgoblet:{n:"Гоблет-присед с гирей",g:"Ноги и ягодицы",u:"kg",lim:["knee"],cues:["Держи гирю за рога у груди","Садись глубоко, локти между коленей","Пятки на полу"],err:"Отрыв пяток"},
+ kbrow:{n:"Тяга гири в наклоне",g:"Спина",u:"kg",lim:[],cues:["Опора рукой на скамью","Тяни гирю к поясу","Своди лопатку в верхней точке"],err:"Скручивание корпуса"},
+ kbpress:{n:"Жим гири одной рукой стоя",g:"Плечи",u:"kg",lim:["shoulder"],cues:["Гиря лежит на предплечье у плеча","Напряги пресс и ягодицы","Выжимай вверх, не прогибаясь"],err:"Наклон корпуса в сторону"},
+ kbhalo:{n:"«Гало» с гирей",g:"Плечи",u:"reps",lim:["shoulder"],cues:["Держи гирю за рога дном вверх","Обводи вокруг головы близко к ней","Корпус неподвижен, пресс напряжён"],err:"Слишком тяжёлая гиря и прогиб"},
+ kbfarmer:{n:"Прогулка фермера с гирями",g:"Кор",u:"sec",lim:[],cues:["По тяжёлой гире в каждой руке","Иди короткими шагами, плечи опущены","Корпус ровный, не раскачивайся"],err:"Сутулость и наклон в сторону"},
+ kbgetup:{n:"Турецкий подъём с гирей",g:"Кор",u:"reps",lim:["shoulder"],adv:1,cues:["Начни с лёгкой гири или без неё","Рука с гирей всё время вертикальна, смотри на гирю","Поднимайся по шагам, так же медленно опускайся"],err:"Спешка и сгибание руки с гирей"},
+ /* --- Тренажёры и блоки --- */
+ hacksquat:{n:"Гакк-приседания в тренажёре",g:"Ноги и ягодицы",u:"kg",lim:["knee"],cues:["Стопы выше на платформе — больше ягодиц","Спина прижата","Опускайся до параллели, не выпрямляй колени до конца"],err:"Отрыв пяток и таза"},
+ hipthrustm:{n:"Ягодичный мост в тренажёре",g:"Ягодицы",u:"kg",lim:[],cues:["Спина на опоре, ремень или валик на тазу","Поднимай таз до прямой линии","Пауза и сжатие ягодиц наверху"],err:"Прогиб поясницы"},
+ glutemachine:{n:"Отведение ноги назад в тренажёре",g:"Ягодицы",u:"kg",lim:[],cues:["Упрись предплечьями, спина ровная","Отводи ногу назад-вверх ягодицей","Медленно возвращай"],err:"Прогиб поясницы и мах ногой"},
+ seatedcurl:{n:"Сгибание ног сидя в тренажёре",g:"Задняя поверхность бедра",u:"kg",lim:[],cues:["Валик над пятками, бёдра зафиксированы","Сгибай до конца","Медленно возвращай"],err:"Бросание веса"},
+ adductor:{n:"Сведение бёдер в тренажёре",g:"Внутренняя поверхность бедра",u:"kg",lim:[],cues:["Спина прижата","Своди ноги под контролем","Пауза в сведённом положении"],err:"Резкое разведение ног"},
+ pecdeck:{n:"Сведение рук в тренажёре «бабочка»",g:"Грудь и трицепс",u:"kg",lim:["shoulder"],cues:["Рукояти на уровне груди","Своди руки по дуге","Локти чуть согнуты"],err:"Плечи уходят вперёд"},
+ reversepec:{n:"Обратная «бабочка»",g:"Задняя дельта и осанка",u:"kg",lim:[],cues:["Сядь лицом к тренажёру","Разводи прямые руки назад","Своди лопатки"],err:"Слишком большой вес и рывки"},
+ machinerow:{n:"Тяга в тренажёре с упором грудью",g:"Спина",u:"kg",lim:[],cues:["Грудь прижата к упору","Тяни локти назад","Своди лопатки"],err:"Отрыв груди от упора"},
+ tbar:{n:"Тяга Т-грифа",g:"Спина",u:"kg",lim:["back"],cues:["Наклон 45°, спина прямая","Тяни к низу груди","Колени слегка согнуты"],err:"Округление спины"},
+ cablelateral:{n:"Отведение руки на нижнем блоке",g:"Плечи",u:"kg",lim:[],cues:["Стань боком к блоку","Поднимай руку в сторону до уровня плеча","Опускай медленно"],err:"Подъём плеча к уху"},
+ cablecurl:{n:"Сгибание рук на нижнем блоке",g:"Бицепс",u:"kg",lim:[],cues:["Локти прижаты","Сгибай до конца","Медленно разгибай"],err:"Раскачка корпусом"},
+ ohtriceps:{n:"Разгибание рук из-за головы на блоке",g:"Трицепс",u:"kg",lim:["shoulder"],cues:["Спиной к блоку, канат за головой","Разгибай руки вперёд-вверх","Локти направлены вперёд"],err:"Локти разъезжаются"},
+ dips:{n:"Отжимания на брусьях в гравитроне",g:"Трицепс",u:"kg",lim:["shoulder"],cues:["Противовес помогает — больше вес, легче","Опускайся до угла 90° в локтях","Корпус вертикален — больше трицепс"],err:"Слишком глубокое опускание"},
+ abcrunch:{n:"Скручивания на верхнем блоке",g:"Кор",u:"kg",lim:["back"],cues:["Встань на колени, канат у головы","Скручивайся, приближая рёбра к тазу","Таз неподвижен"],err:"Наклон тазом вместо скручивания"}
 };
+const EQ={goblet:"db",legpress:"m",smith:"m",rdl:"db",hyper:"m",pullthrough:"c",hipthrust:"bb",kickback:"c",lunge:"db",bulgarian:"db",stepup:"db",legcurl:"m",legext:"m",abduction:"m",cableabd:"c",calf:"m",pulldown:"c",gravitron:"m",seatedrow:"c",dbrow:"db",facepull:"c",chestpress:"m",dbpress:"db",inclinepush:"bw",dbshoulder:"db",machineshoulder:"m",lateral:"db",curl:"db",pushdown:"c",plank:"bw",deadbug:"bw",pallof:"c",kneeraise:"bw",
+ bbsquat:"bb",frontsquat:"bb",deadlift:"bb",sumodl:"bb",bbrdl:"bb",goodmorning:"bb",bbrevlunge:"bb",bbrow:"bb",bench:"bb",inclinebench:"bb",ohp:"bb",bbcurl:"bb",
+ kbswing:"kb",kbdl:"kb",kbsumo:"kb",kbgoblet:"kb",kbrow:"kb",kbpress:"kb",kbhalo:"kb",kbfarmer:"kb",kbgetup:"kb",
+ hacksquat:"m",hipthrustm:"m",glutemachine:"m",seatedcurl:"m",adductor:"m",pecdeck:"m",reversepec:"m",machinerow:"m",tbar:"bb",cablelateral:"c",cablecurl:"c",ohtriceps:"c",dips:"m",abcrunch:"c"};
+const EQN={bb:"штанга",db:"гантели",kb:"гиря",m:"тренажёр",c:"блок",bw:"свой вес"};
+const EQUIP={mix:["Всё вперемешку","тренажёры и свободные веса"],machines:["Больше тренажёров","тренажёры и блоки"],free:["Больше свободных весов","штанга, гантели, гири"]};
 const SLOTS={
- squat:["goblet","legpress","smith","hipthrust"], hinge:["rdl","pullthrough","hyper"], glute:["hipthrust","kickback","pullthrough"],
- single:["lunge","bulgarian","stepup","kickback"], legiso:["legcurl","legext"], abd:["abduction","cableabd"], calf:["calf"],
- pullV:["pulldown","gravitron"], pullH:["seatedrow","dbrow"], pushH:["chestpress","dbpress","inclinepush"], pushV:["dbshoulder","machineshoulder","lateral"],
- delt:["lateral","facepull"], arms:["curl","pushdown"], core:["plank","deadbug","pallof","kneeraise"]
+ squat:["goblet","bbsquat","legpress","kbgoblet","hacksquat","frontsquat","smith","kbsumo","hipthrust"],
+ hinge:["rdl","bbrdl","kbdl","deadlift","pullthrough","kbswing","sumodl","hyper","goodmorning"],
+ glute:["hipthrust","hipthrustm","glutemachine","kickback","kbswing","pullthrough"],
+ single:["lunge","bbrevlunge","bulgarian","glutemachine","stepup","kickback"],
+ legiso:["legcurl","seatedcurl","legext"], abd:["abduction","cableabd","adductor"], calf:["calf"],
+ pullV:["pulldown","gravitron"], pullH:["seatedrow","bbrow","machinerow","dbrow","kbrow","tbar"],
+ pushH:["chestpress","dbpress","bench","inclinebench","inclinepush","pecdeck"], pushV:["dbshoulder","machineshoulder","kbpress","ohp","lateral"],
+ delt:["lateral","facepull","cablelateral","reversepec","kbhalo"], arms:["curl","pushdown","bbcurl","cablecurl","ohtriceps","dips"],
+ core:["plank","deadbug","pallof","kbfarmer","abcrunch","kneeraise","kbgetup"]
 };
 const TPL={
  LowerA:{t:"Ноги и ягодицы",s:["squat","glute","hinge","single","abd","core"]},
@@ -221,7 +271,7 @@ const LIMITS={knee:"Колени",back:"Поясница",shoulder:"Плечи"}
 
 /* ===== Состояние ===== */
 const KEY="fit-coach-v1";
-const DEF={profile:{goal:"tone",level:"beg",days:3,focus:"glutes",limits:[],dur:60},sessions:[],last:{},weights:[],swaps:{},active:null,tab:"plan",setup:false};
+const DEF={profile:{goal:"tone",level:"beg",days:3,focus:"glutes",limits:[],dur:60,equip:"mix"},sessions:[],last:{},weights:[],swaps:{},active:null,tab:"plan",setup:false};
 let S=JSON.parse(JSON.stringify(DEF));
 try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
@@ -231,9 +281,11 @@ const fmtD=ts=>new Date(ts).toLocaleDateString("ru-RU",{day:"numeric",month:"sho
 const $app=document.getElementById("app");
 
 /* ===== Генерация программы ===== */
-function allowed(id){ return !E[id].lim.some(l=>S.profile.limits.includes(l)); }
+function allowed(id){ return !E[id].lim.some(l=>S.profile.limits.includes(l)) && !(E[id].adv && S.profile.level==="beg"); }
+function eqScore(id){ const e=EQ[id], pref=S.profile.equip||"mix"; if(pref==="machines") return (e==="m"||e==="c")?0:(e==="db"||e==="bw")?1:2; if(pref==="free") return (e==="bb"||e==="db"||e==="kb")?0:(e==="bw"||e==="c")?1:2; return 0; }
+function byPref(list){ return list.map((c,i)=>[c,i]).sort((a,b)=>eqScore(a[0])-eqScore(b[0])||a[1]-b[1]).map(x=>x[0]); }
 function plan(){
-  const p=S.profile, keys=WEEK[p.focus][p.days], seen={};
+  const p=S.profile, keys=WEEK[p.focus][p.days], seen={}, slotN={};
   return keys.map((k,di)=>{
     const tpl=TPL[k], variant=seen[k]=(seen[k]||0)+1;
     let slots=tpl.s.slice();
@@ -246,10 +298,13 @@ function plan(){
       const key=`${di}:${si}`;
       let id=S.swaps[key];
       if(!id || !allowed(id) || used.has(id)){
-        const cands=SLOTS[sl].filter(c=>allowed(c)&&!used.has(c));
-        const pool=cands.length?cands:Object.keys(E).filter(c=>allowed(c)&&!used.has(c)&&E[c].g===E[SLOTS[sl][0]].g);
-        id=pool.length?pool[(variant-1)%pool.length]:SLOTS.core.find(c=>!used.has(c));
+        const cands=byPref(SLOTS[sl].filter(c=>allowed(c)&&!used.has(c)));
+        const top=cands.filter(c=>eqScore(c)===eqScore(cands[0]||c));
+        const pool=top.length?top:Object.keys(E).filter(c=>allowed(c)&&!used.has(c)&&E[c].g===E[SLOTS[sl][0]].g);
+        const idx=(slotN[sl]||0)+variant-1;
+        id=pool.length?pool[idx%pool.length]:SLOTS.core.find(c=>!used.has(c)&&allowed(c))||"plank";
       }
+      slotN[sl]=(slotN[sl]||0)+1;
       used.add(id);
       return {id,slot:sl,key};
     });
@@ -262,7 +317,11 @@ function scheme(id){
   let reps=g.reps;
   if(u==="sec") reps=lv==="beg"?"20–30 с":lv==="mid"?"30–45 с":"45–60 с";
   else if(id==="deadbug") reps="8–10 на сторону";
-  else if(["lunge","bulgarian","stepup","kickback","cableabd","dbrow"].includes(id)) reps=reps+" на сторону";
+  else if(id==="kbgetup") reps="3–5 на сторону";
+  else if(id==="kbhalo") reps="8–10 в каждую сторону";
+  else if(id==="kbswing") reps="15–20";
+  else if(S.profile.goal==="muscle"&&["bbsquat","frontsquat","deadlift","sumodl","bench","ohp","hacksquat"].includes(id)) reps="6–10";
+  if(["lunge","bulgarian","stepup","kickback","cableabd","dbrow","bbrevlunge","glutemachine","kbrow","kbpress","cablelateral"].includes(id)) reps=reps+" на сторону";
   return {sets,reps,rest:g.rest};
 }
 function topReps(r){ const m=String(r).match(/(\d+)(?:–(\d+))?/); return m?+(m[2]||m[1]):10; }
@@ -304,14 +363,14 @@ function planView(){
   const firstRun=!S.sessions.length;
   $app.innerHTML=`<div class="head"><div class="logo">Мой <b>фитнес</b>-тренер</div><button class="ghost" id="edit">Параметры</button></div>
    <section class="hero"><div class="lab">Твоя программа</div><h1>${g.t}</h1>
-    <div class="chips"><span class="chip">${LEVELS[p.level][0]}</span><span class="chip">${p.days} трен. в неделю</span><span class="chip">${FOCUS[p.focus][0]}</span><span class="chip">~${p.dur} мин</span>${p.limits.map(l=>`<span class="chip">Бережём: ${LIMITS[l].toLowerCase()}</span>`).join("")}</div>
+    <div class="chips"><span class="chip">${LEVELS[p.level][0]}</span><span class="chip">${p.days} трен. в неделю</span><span class="chip">${FOCUS[p.focus][0]}</span><span class="chip">~${p.dur} мин</span><span class="chip">${EQUIP[p.equip||"mix"][0]}</span>${p.limits.map(l=>`<span class="chip">Бережём: ${LIMITS[l].toLowerCase()}</span>`).join("")}</div>
     <p>${g.d}. Отдых между подходами — ${g.rest} с.</p>
     <button class="btn main" id="startNext">${S.active?"Продолжить тренировку":`Начать: день ${nd+1} — ${pl[nd].title}`}</button></section>
    ${firstRun?`<div class="note">Это стартовая программа. Нажми «Параметры», чтобы выбрать цель, уровень, число дней, акцент и ограничения. Программа сразу перестроится.</div>`:""}
    <div class="stats"><div class="stat"><b class="num">${S.sessions.length}</b><span>тренировок всего</span></div><div class="stat"><b class="num">${week}/${p.days}</b><span>за 7 дней</span></div><div class="stat"><b class="num">${ton>=1000?(ton/1000).toFixed(1).replace(".",",")+" т":ton+" кг"}</b><span>поднято всего</span></div></div>
    <div class="sec"><h2>Неделя</h2><small>Дни идут по кругу</small></div>
    <div class="days">${pl.map(d=>`<div class="day ${d.di===nd?"next":""}"><div class="top"><div><div class="tag">День ${d.di+1}${d.di===nd?" · следующая":""}</div><h3>${d.title}</h3></div><button class="small" data-start="${d.di}">Начать</button></div>
-     <ol>${d.ex.map(e=>{const sc=scheme(e.id);return `<li><b>${E[e.id].n}</b> — ${sc.sets} × ${sc.reps}</li>`;}).join("")}</ol>
+     <ol>${d.ex.map(e=>{const sc=scheme(e.id);return `<li><b>${E[e.id].n}</b> <span class="chip" style="font-size:11px;padding:1px 7px">${EQN[EQ[e.id]]}</span> — ${sc.sets} × ${sc.reps}</li>`;}).join("")}</ol>
      <div class="muted" style="font-size:14px">В конце: ${g.fin}</div></div>`).join("")}</div>
    <div class="warn">Перед началом тренировок проконсультируйся с врачом, особенно если есть хронические заболевания, травмы или беременность. При острой боли упражнение сразу прекращай.</div>`;
   document.getElementById("edit").onclick=()=>{ S.setup=true; render(); window.scrollTo(0,0); };
@@ -321,7 +380,7 @@ function planView(){
 
 /* ===== Параметры ===== */
 function setupView(){
-  const p=JSON.parse(JSON.stringify(S.profile));
+  const p=JSON.parse(JSON.stringify(S.profile)); p.equip=p.equip||"mix";
   const draw=()=>{
     const opt=(group,val,title,sub)=>`<button class="o" data-g="${group}" data-v="${val}" aria-pressed="${group==="limits"?p.limits.includes(val):String(p[group])===String(val)}"><b>${title}</b>${sub?`<span>${sub}</span>`:""}</button>`;
     $app.innerHTML=`<div class="head"><div class="logo">Параметры</div><button class="ghost" id="cancel">Отмена</button></div>
@@ -330,6 +389,7 @@ function setupView(){
       <div class="field"><h3>Уровень подготовки</h3><div class="opts three">${Object.entries(LEVELS).map(([k,l])=>opt("level",k,l[0],l[1])).join("")}</div></div>
       <div class="field"><h3>Тренировок в неделю</h3><div class="opts four">${[2,3,4,5].map(d=>opt("days",d,d,"")).join("")}</div></div>
       <div class="field"><h3>Длительность тренировки</h3><div class="opts three">${[45,60,75].map(d=>opt("dur",d,d+" мин","")).join("")}</div></div>
+      <div class="field"><h3>Инвентарь</h3><div class="opts three">${Object.entries(EQUIP).map(([k,f])=>opt("equip",k,f[0],f[1])).join("")}</div></div>
       <div class="field"><h3>Акцент</h3><div class="opts three">${Object.entries(FOCUS).map(([k,f])=>opt("focus",k,f[0],f[1])).join("")}</div></div>
       <div class="field"><h3>Что беречь (можно несколько)</h3><div class="opts three">${Object.entries(LIMITS).map(([k,l])=>opt("limits",k,l,"")).join("")}</div><p class="muted" style="font-size:14px;margin:8px 0 0">Упражнения, которые нагружают выбранную зону, будут заменены на более щадящие.</p></div>
       <button class="btn main wide" id="apply">Сохранить и собрать программу</button>
@@ -341,7 +401,7 @@ function setupView(){
     $app.querySelectorAll(".o").forEach(b=>b.onclick=()=>{ const g=b.dataset.g,v=b.dataset.v;
       if(g==="limits"){ p.limits=p.limits.includes(v)?p.limits.filter(x=>x!==v):p.limits.concat(v); }
       else p[g]=(g==="days"||g==="dur")?+v:v; draw(); });
-    document.getElementById("apply").onclick=()=>{ const changed=p.days!==S.profile.days||p.focus!==S.profile.focus; S.profile=p; if(changed) S.swaps={}; S.setup=false; S.tab="plan"; save(); render(); window.scrollTo(0,0); };
+    document.getElementById("apply").onclick=()=>{ const changed=p.days!==S.profile.days||p.focus!==S.profile.focus||p.equip!==(S.profile.equip||"mix")||p.level!==S.profile.level; S.profile=p; if(changed) S.swaps={}; S.setup=false; S.tab="plan"; save(); render(); window.scrollTo(0,0); };
     document.getElementById("exp").onclick=()=>{ const data=JSON.stringify({profile:S.profile,sessions:S.sessions,last:S.last,weights:S.weights,swaps:S.swaps});
       document.getElementById("bk").innerHTML=`<textarea id="bkt" readonly>${esc(data)}</textarea><div class="row"><button class="btn teal" id="cp">Скопировать</button><span id="cpm" class="muted"></span></div>`;
       document.getElementById("cp").onclick=()=>{ const t=document.getElementById("bkt"); navigator.clipboard.writeText(t.value).then(()=>{document.getElementById("cpm").textContent="Скопировано";}).catch(()=>{ t.focus(); t.select(); document.getElementById("cpm").textContent="Выделено — скопируй вручную"; }); }; };
@@ -373,10 +433,10 @@ function workView(){
    <div id="cw"></div>
    <div class="note"><b>Разминка 5–7 минут:</b> эллипс или дорожка, затем вращения в суставах. Перед первым упражнением сделай 1 разминочный подход с лёгким весом.</div>
    ${a.ex.map((e,i)=>{ const x=E[e.id], sc=scheme(e.id), sug=suggestion(e.id), done=e.sets.every(s=>s.done), unit=x.u==="sec"?"с":"повт.";
-     return `<div class="exc ${done?"done":""}" data-i="${i}"><div class="top"><div><h3>${i+1}. ${x.n}</h3><div class="meta">${x.g} · ${sc.sets} × ${sc.reps} · отдых ${sc.rest} с</div>${sug?`<div class="sug">${sug}</div>`:""}</div>
+     return `<div class="exc ${done?"done":""}" data-i="${i}"><div class="top"><div><h3>${i+1}. ${x.n}</h3><div class="meta">${x.g} · ${EQN[EQ[e.id]]} · ${sc.sets} × ${sc.reps} · отдых ${sc.rest} с</div>${sug?`<div class="sug">${sug}</div>`:""}</div>
        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="small" data-tech="${i}">Техника</button><button class="small" data-swap="${i}">Заменить</button></div></div>
        ${a.open===`t${i}`?`<div class="tech"><ul>${x.cues.map(c=>`<li>${c}</li>`).join("")}</ul><div class="err">Ошибка: ${x.err}</div></div>`:""}
-       ${a.open===`s${i}`?`<div class="alts">${SLOTS[e.slot].filter(c=>c!==e.id&&allowed(c)&&!a.ex.some(y=>y.id===c)).map(c=>`<button class="small" data-alt="${i}:${c}">${E[c].n}</button>`).join("")||'<span class="muted" style="font-size:14px">Подходящих замен нет</span>'}</div>`:""}
+       ${a.open===`s${i}`?`<div class="alts">${byPref(SLOTS[e.slot].filter(c=>c!==e.id&&allowed(c)&&!a.ex.some(y=>y.id===c))).map(c=>`<button class="small" data-alt="${i}:${c}">${E[c].n} · ${EQN[EQ[c]]}</button>`).join("")||'<span class="muted" style="font-size:14px">Подходящих замен нет</span>'}</div>`:""}
        <div class="sets">${e.sets.map((s,j)=>`<div class="set"><span class="n">${j+1}</span>
          ${x.u==="kg"?`<label>кг<input inputmode="decimal" data-w="${i}:${j}" value="${esc(s.w)}" placeholder="0" aria-label="Вес, подход ${j+1}"></label>`:`<label><span>${x.u==="sec"?"без веса":"свой вес"}</span></label>`}
          <label>${unit}<input inputmode="numeric" data-r="${i}:${j}" value="${esc(s.r)}" placeholder="${topReps(sc.reps)}" aria-label="Повторы, подход ${j+1}"></label>
@@ -483,7 +543,7 @@ function progView(){
 function libView(){
   const groups={}; Object.entries(E).forEach(([id,x])=>{ (groups[x.g]=groups[x.g]||[]).push([id,x]); });
   $app.innerHTML=`<div class="head"><div class="logo">Упражнения</div></div><p class="muted" style="margin-top:0">Техника выполнения и частые ошибки. Упражнения с пометкой «осторожно» тренер не ставит в программу, если в параметрах выбрано беречь эту зону.</p>
-   <div class="lib">${Object.entries(groups).map(([g,list])=>`<div class="sec"><h2>${g}</h2></div>${list.map(([id,x])=>`<details><summary>${x.n} ${x.lim.length?`<span>· осторожно: ${x.lim.map(l=>LIMITS[l].toLowerCase()).join(", ")}</span>`:""}</summary><ul>${x.cues.map(c=>`<li>${c}</li>`).join("")}</ul><div style="font-size:14px;color:var(--accent);font-weight:700">Ошибка: ${x.err}</div></details>`).join("")}`).join("")}</div>`;
+   <div class="lib">${Object.entries(groups).map(([g,list])=>`<div class="sec"><h2>${g}</h2></div>${list.map(([id,x])=>`<details><summary>${x.n} <span>· ${EQN[EQ[id]]}${x.adv?" · не для новичков":""}</span> ${x.lim.length?`<span>· осторожно: ${x.lim.map(l=>LIMITS[l].toLowerCase()).join(", ")}</span>`:""}</summary><ul>${x.cues.map(c=>`<li>${c}</li>`).join("")}</ul><div style="font-size:14px;color:var(--accent);font-weight:700">Ошибка: ${x.err}</div></details>`).join("")}`).join("")}</div>`;
 }
 
 render();
