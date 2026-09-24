@@ -190,6 +190,21 @@ button:focus-visible,.stop:focus-visible{outline:3px solid var(--sky);outline-of
   .qbig{font-size:60px}
   .opt.pic{font-size:44px;min-height:96px}
 }
+.listen.slow{width:76px;height:76px;font-size:34px;background:var(--lime)}
+.modal{position:fixed;inset:0;background:rgba(16,23,35,.55);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet{background:var(--surface);color:var(--ink);border-radius:24px;padding:18px;width:100%;max-width:520px;max-height:88vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sheet h2{font-size:24px}
+.vh{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--body);font-weight:800;margin:16px 0 8px}
+.vnote{color:var(--muted);font-weight:600;font-size:14px;margin:8px 0}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.segb,.vopt{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:10px 8px;font-weight:800}
+.segb.on,.vopt.on{border-color:var(--lime);background:var(--lime-soft)}
+.chk{display:flex;gap:10px;align-items:center;font-weight:700;margin:14px 0 10px}
+.chk input{width:22px;height:22px;accent-color:var(--lime)}
+.vlist{display:grid;gap:8px}
+.vopt{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:10px 14px}
+.vopt small{display:block;color:var(--muted);font-weight:700;font-size:13px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -278,20 +293,81 @@ const totalStars = () => MODULES.reduce((a,m)=>a+modStars(m.id),0);
 function rankOf(n){ let r=RANKS[0], nx=null; for (let i=0;i<RANKS.length;i++){ if(n>=RANKS[i][0]){r=RANKS[i]; nx=RANKS[i+1]||null;} } return {r,nx}; }
 
 /* ===== Звук и озвучка ===== */
-function voice(){
-  const vs = speechSynthesis.getVoices();
-  return vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
+const RATES = [[.6,"🐢 Медленно"],[.78,"🙂 Обычно"],[.92,"🐇 Быстрее"]];
+if (S.rate==null) S.rate = .78;
+if (S.repeat==null) S.repeat = false;
+const hasTTS = "speechSynthesis" in window;
+function engVoices(){
+  if (!hasTTS) return [];
+  try { return speechSynthesis.getVoices().filter(v=>/^en([-_]|$)/i.test(v.lang)); } catch(e){ return []; }
 }
-function say(text){
-  if (!("speechSynthesis" in window)) return;
+/* Чем выше балл, тем чище и естественнее голос */
+function voiceScore(v){
+  const n = v.name; let sc = 0;
+  if (/natural|neural|online|premium|enhanced/i.test(n)) sc += 60;
+  if (/google/i.test(n)) sc += 35;
+  if (/sonia|libby|ryan|maisie|thomas|daniel|kate|serena|arthur|martha|stephanie|oliver|jamie|aria|jenny|guy|samantha|ava|allison|susan|karen|moira/i.test(n)) sc += 20;
+  if (/en[-_]GB/i.test(v.lang)) sc += 15; else if (/en[-_]US/i.test(v.lang)) sc += 8;
+  if (/espeak|compact|novelty|bad news|bells|boing|bubbles|cellos|whisper|zarvox|trinoids|albert|fred|junior|ralph|jester|organ|superstar|wobble|grandma|grandpa|rocko|shelley|flo|eddy|reed|sandy/i.test(n)) sc -= 80;
+  return sc;
+}
+function rankedVoices(){ return engVoices().sort((a,b)=>voiceScore(b)-voiceScore(a)); }
+function voice(){
+  const vs = rankedVoices();
+  return (S.voice && vs.find(v=>v.name===S.voice)) || vs[0] || null;
+}
+function say(text, opt){
+  if (!hasTTS) return;
+  opt = opt || {};
+  const clean = text.replace(/[⬆️⬇️📦]/gu,"").trim();
   try {
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text.replace(/[⬆️⬇️📦]/gu,""));
-    u.lang = "en-GB"; u.rate = .82; const v = voice(); if (v) u.voice = v;
-    speechSynthesis.speak(u);
+    const v = voice();
+    const mk = (t, rate) => { const u = new SpeechSynthesisUtterance(t); u.lang = v ? v.lang : "en-GB"; if (v) u.voice = v; u.rate = rate; u.pitch = 1; u.volume = 1; return u; };
+    const short = clean.split(/\s+/).length <= 3;
+    /* Короткие слова читаем чуть медленнее: так чётче слышны звуки */
+    const rate = short ? Math.max(.5, S.rate - .08) : S.rate;
+    /* Небольшая пауза после cancel(): иначе Chrome иногда «съедает» начало слова */
+    setTimeout(()=>{
+      try {
+        speechSynthesis.resume();
+        speechSynthesis.speak(mk(clean, rate));
+        if ((S.repeat && short && !opt.once) || opt.twice) speechSynthesis.speak(mk(clean, Math.max(.5, rate - .12)));
+      } catch(e){}
+    }, 80);
   } catch(e){}
 }
-if ("speechSynthesis" in window) { try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = ()=>{}; } catch(e){} }
+if (hasTTS) { try { speechSynthesis.getVoices(); speechSynthesis.addEventListener("voiceschanged", ()=>{ const p=document.getElementById("vlist"); if (p) fillVoices(); }); } catch(e){} }
+
+/* ===== Настройки голоса ===== */
+function fillVoices(){
+  const box = document.getElementById("vlist"); if (!box) return;
+  const vs = rankedVoices(), cur = voice();
+  if (!vs.length){ box.innerHTML = `<p class="vnote">На этом устройстве не нашлось английского голоса. На iPhone/iPad: Настройки → Универсальный доступ → Устный контент → Голоса → English — скачайте голос с пометкой «улучшенный». На Android: Настройки → Синтез речи → Google → установите английский язык.</p>`; return; }
+  box.innerHTML = vs.slice(0,12).map((v,i)=>`<button class="vopt${cur&&v.name===cur.name?" on":""}" data-n="${esc(v.name)}"><span><b>${esc(v.name.replace(/^Microsoft |^Google /,""))}</b><small>${esc(v.lang)}${i===0?" · лучший на этом устройстве":""}</small></span><span aria-hidden="true">▶</span></button>`).join("");
+  box.querySelectorAll(".vopt").forEach(b=>b.onclick=()=>{ S.voice=b.dataset.n; save(); fillVoices(); say("Hello! I'm your English teacher. Apple, pencil, Monday.", {once:true}); });
+}
+function openVoice(){
+  const d = document.createElement("div"); d.className="modal"; d.id="modal";
+  d.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="vt">
+    <div class="sheet-h"><h2 id="vt">Голос учителя</h2><button class="sound" id="vclose" aria-label="Закрыть">✕</button></div>
+    <p class="vnote">Нажми на голос, чтобы послушать. Выбери тот, который звучит понятнее всего.</p>
+    <h3 class="vh">Скорость</h3>
+    <div class="seg">${RATES.map(r=>`<button class="segb${Math.abs(S.rate-r[0])<.01?" on":""}" data-r="${r[0]}">${r[1]}</button>`).join("")}</div>
+    <label class="chk"><input type="checkbox" id="rep" ${S.repeat?"checked":""}> Повторять слово два раза (второй раз медленнее)</label>
+    <button class="btn main" id="vtest" style="width:100%;margin-top:4px">🔊 Проверить: «Good morning! My name is Larry.»</button>
+    <h3 class="vh">Голоса</h3><div id="vlist" class="vlist"></div>
+    <p class="vnote">Совет: самые чистые голоса — с пометками «Natural», «Online» или «Google». Они есть в Chrome и Edge. На iPhone и iPad можно скачать улучшенный голос в настройках устройства.</p>
+  </div>`;
+  document.body.appendChild(d);
+  const close=()=>{ d.remove(); };
+  d.onclick=e=>{ if(e.target===d) close(); };
+  document.getElementById("vclose").onclick=close;
+  d.querySelectorAll(".segb").forEach(b=>b.onclick=()=>{ S.rate=+b.dataset.r; save(); d.querySelectorAll(".segb").forEach(x=>x.classList.toggle("on",x===b)); say("apple", {once:true}); });
+  document.getElementById("rep").onchange=e=>{ S.repeat=e.target.checked; save(); };
+  document.getElementById("vtest").onclick=()=>say("Good morning! My name is Larry.");
+  fillVoices(); setTimeout(fillVoices, 400);
+}
 let AC=null;
 function beep(ok){
   if (!S.sound) return;
@@ -319,9 +395,11 @@ function topBar(extra){
   return `<div class="top">
     <div class="brand">${extra||`<div class="logo" aria-label="Spotlight 3"><span>S</span><span>p</span><span>o</span><span>t</span><b>light 3</b></div>`}</div>
     <div class="score"><span class="chip"><span class="st">★</span>${t}</span>
+    <button class="sound" id="vbtn" aria-label="Голос учителя">🗣️</button>
     <button class="sound" id="snd" aria-label="Звуки ${S.sound?"включены":"выключены"}">${S.sound?"🔔":"🔕"}</button></div></div>`;
 }
 function bindTop(){
+  const vb=document.getElementById("vbtn"); if (vb) vb.onclick=openVoice;
   const b=document.getElementById("snd");
   if (b) b.onclick=()=>{ S.sound=!S.sound; save(); b.textContent=S.sound?"🔔":"🔕"; b.setAttribute("aria-label","Звуки "+(S.sound?"включены":"выключены")); };
 }
@@ -419,7 +497,7 @@ function renderQ(){
   const q = G.qs[G.i], game = GAMES.find(g=>g.id===G.gid);
   let area = "";
   if (q.type==="listen"){
-    area = `<p class="task">Послушай и выбери картинку</p><button class="listen" id="play" aria-label="Послушать ещё раз">🔊</button>
+    area = `<p class="task">Послушай и выбери картинку</p><div class="row" style="margin-top:0;align-items:center"><button class="listen" id="play" aria-label="Послушать ещё раз">🔊</button><button class="listen slow" id="slow" aria-label="Послушать медленно">🐢</button></div>
       <div class="opts">${q.opts.map((o,i)=>`<button class="opt pic" data-i="${i}" aria-label="${esc(o[1])}">${o[2]}</button>`).join("")}</div>`;
   } else if (q.type==="pick"){
     area = `<p class="task">Как это по-английски?</p><div class="qbig">${q.w[2]}</div><div class="qru">${esc(q.w[1])}</div>
@@ -428,17 +506,18 @@ function renderQ(){
     area = `<p class="task">Собери слово по буквам</p><div class="qbig">${q.w[2]}</div><div class="qru">${esc(q.w[1])}</div>
       <div class="slots" id="slots">${q.w[0].split("").map((_,i)=>`<span class="slot" data-s="${i}"></span>`).join("")}</div>
       <div class="letters">${q.letters.map((l,i)=>`<button class="let" data-k="${i}">${esc(l.c.toLowerCase()===l.c?l.c:l.c)}</button>`).join("")}</div>
-      <div class="row"><button class="btn alt" id="hear">🔊 Подсказка</button><button class="btn alt" id="undo">⌫ Стереть</button></div>`;
+      <div class="row"><button class="btn alt" id="hear">🔊 Подсказка</button><button class="btn alt" id="hslow">🐢 Медленно</button><button class="btn alt" id="undo">⌫ Стереть</button></div>`;
   } else {
     area = `<p class="task">Выбери слово, которое подходит</p><div class="qsent">${esc(q.q).replace("___",`<span class="gap" id="gap">?</span>`)}</div>
       <div class="qru" style="font-size:16px;color:var(--muted)">${esc(q.ru)}</div>
       <div class="opts three">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
   }
-  $app.innerHTML = `<div class="top"><div class="brand"><button class="back" id="quit">✕ Выйти</button></div><div class="score"><span class="chip">${G.i+1} / ${G.qs.length}</span></div></div>
+  $app.innerHTML = `<div class="top"><div class="brand"><button class="back" id="quit">✕ Выйти</button></div><div class="score"><span class="chip">${G.i+1} / ${G.qs.length}</span><button class="sound" id="vbtn" aria-label="Голос учителя">🗣️</button></div></div>
     <div class="gtop"><span style="font-size:26px">${game.ic}</span><div class="prog"><i style="width:${G.i/G.qs.length*100}%"></i></div><span class="chip"><span class="st">✓</span>${G.right}</span></div>
     <div class="qbox" id="qbox">${area}</div><div id="fb"></div>`;
   document.getElementById("quit").onclick=()=>moduleView(G.m.id,"games");
-  if (q.type==="listen"){ document.getElementById("play").onclick=()=>say(q.w[0]); setTimeout(()=>say(q.w[0]),250); }
+  document.getElementById("vbtn").onclick=openVoice;
+  if (q.type==="listen"){ document.getElementById("play").onclick=()=>say(q.w[0]); document.getElementById("slow").onclick=()=>{ const r=S.rate; S.rate=.5; say(q.w[0],{once:true}); S.rate=r; }; setTimeout(()=>say(q.w[0]),250); }
   if (q.type==="spell") bindSpell(q);
   else $app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(b));
 }
@@ -474,6 +553,7 @@ function bindSpell(q){
   });
   document.getElementById("undo").onclick=()=>{ if(!G.locked){ placed.pop(); draw(); } };
   document.getElementById("hear").onclick=()=>say(word);
+  document.getElementById("hslow").onclick=()=>{ const r=S.rate; S.rate=.5; say(word,{once:true}); S.rate=r; };
 }
 function feedback(ok, en, ru){
   if (ok) G.right++;
