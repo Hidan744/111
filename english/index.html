@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Spotlight 3 Тренажёр</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --bg:#F2F7E8; --surface:#FFFFFF; --surface-2:#E6F0D4; --ink:#1D2A44; --muted:#5A687C; --line:#D5E2C0;
+  --lime:#6FAE12; --lime-deep:#3F6B06; --lime-soft:#DDF0BC;
+  --red:#DE3A2E; --red-soft:#FBE0DC; --yellow:#FFC43D; --sky:#2E93C8; --sky-soft:#D9EEF9;
+  --ok:#2E9D4E; --ok-soft:#D8F2DF; --bad:#D6453A; --bad-soft:#FBE1DE;
+  --shadow:0 3px 0 rgba(29,42,68,.14);
+  --display:"Rubik","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#101723; --surface:#1A2332; --surface-2:#223047; --ink:#EEF3E6; --muted:#A3B0C2; --line:#2C3A50;
+    --lime:#95D13A; --lime-deep:#C4EE85; --lime-soft:#2A3B1E;
+    --red:#FF6B5E; --red-soft:#43231F; --yellow:#FFCF5C; --sky:#63B9E6; --sky-soft:#1C3345;
+    --ok:#5CD17C; --ok-soft:#1E3A28; --bad:#FF7A6E; --bad-soft:#442320;
+    --shadow:0 3px 0 rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#101723; --surface:#1A2332; --surface-2:#223047; --ink:#EEF3E6; --muted:#A3B0C2; --line:#2C3A50;
+  --lime:#95D13A; --lime-deep:#C4EE85; --lime-soft:#2A3B1E;
+  --red:#FF6B5E; --red-soft:#43231F; --yellow:#FFCF5C; --sky:#63B9E6; --sky-soft:#1C3345;
+  --ok:#5CD17C; --ok-soft:#1E3A28; --bad:#FF7A6E; --bad-soft:#442320;
+  --shadow:0 3px 0 rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;padding-inline:16px;padding-block:0 40px}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.stop:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.5px;white-space:nowrap}
+.logo span:nth-child(1){color:var(--red)}.logo span:nth-child(2){color:#F08A1C}.logo span:nth-child(3){color:var(--lime)}.logo span:nth-child(4){color:var(--sky)}
+.logo b{color:var(--ink);font-weight:800}
+.score{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip .st{color:var(--yellow);font-size:18px;line-height:1}
+.back{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:6px 14px;font-weight:800}
+
+/* hero */
+.hello{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;background:var(--lime);color:#fff;border-radius:22px;padding:20px;margin-top:4px;box-shadow:var(--shadow)}
+.hello h1{font-size:clamp(24px,5.5vw,34px);font-weight:800}
+.hello p{margin:6px 0 0;font-weight:700;opacity:.95}
+.rank{background:rgba(255,255,255,.2);border-radius:16px;padding:10px 14px;text-align:center;font-weight:800;min-width:110px}
+.rank .big{font-size:34px;line-height:1}
+.rank small{display:block;font-size:13px;opacity:.9;font-weight:700}
+.lvlbar{grid-column:1/-1;height:12px;background:rgba(255,255,255,.28);border-radius:99px;overflow:hidden}
+.lvlbar i{display:block;height:100%;background:var(--yellow);border-radius:99px;transition:width .5s}
+.lvlnote{grid-column:1/-1;margin-top:-8px;font-size:14px;font-weight:700;opacity:.95}
+
+/* route */
+.sec-title{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--body);font-weight:800;margin:26px 0 10px}
+.route{position:relative;display:grid;gap:12px;padding-left:34px}
+.route::before{content:"";position:absolute;left:13px;top:18px;bottom:18px;border-left:4px dashed var(--line)}
+.part{font-family:var(--display);font-weight:700;font-size:14px;color:var(--muted);margin:8px 0 -2px -34px;display:flex;align-items:center;gap:8px}
+.part::before{content:"";width:30px;height:4px;background:var(--line);border-radius:4px}
+.stop{position:relative;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);width:100%;transition:transform .12s}
+.stop:hover{transform:translateY(-2px)}
+.stop:active{transform:translateY(1px)}
+.dot{position:absolute;left:-30px;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:var(--surface);border:4px solid var(--line)}
+.stop.done .dot{background:var(--lime);border-color:var(--lime)}
+.stop.started .dot{border-color:var(--lime)}
+.bus{position:absolute;left:-42px;top:50%;margin-top:-22px;font-size:30px;line-height:1;filter:drop-shadow(0 2px 0 rgba(0,0,0,.15))}
+.num{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:22px;color:#fff}
+.stop h3{font-size:19px;font-weight:700}
+.eyebrow{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stop .ru{color:var(--muted);font-size:15px;font-weight:700}
+.mini{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mini .bar{width:64px;height:8px;background:var(--surface-2);border-radius:9px;overflow:hidden}
+.mini .bar i{display:block;height:100%;background:var(--yellow)}
+
+/* module */
+.mhead{display:flex;gap:14px;align-items:center;margin-top:4px}
+.mhead .num{width:60px;height:60px;font-size:28px;border-radius:18px;flex-shrink:0}
+.mhead h1{font-size:clamp(24px,5vw,32px);font-weight:800}
+.mhead p{margin:2px 0 0;color:var(--muted);font-weight:700}
+.tabs{display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap}
+.tab{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:800}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.game{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);min-height:150px}
+.game .ic{font-size:34px;line-height:1}
+.game h3{font-size:18px}
+.game p{margin:0;color:var(--muted);font-size:14px;font-weight:700;flex:1}
+.stars{font-size:20px;letter-spacing:2px;color:var(--line)}
+.stars .on{color:var(--yellow)}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{perspective:700px;background:none;border:0;padding:0;height:140px}
+.card .in{position:relative;width:100%;height:100%;transition:transform .4s;transform-style:preserve-3d}
+.card.flip .in{transform:rotateY(180deg)}
+.card .f,.card .b{position:absolute;inset:0;border-radius:18px;border:2px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;backface-visibility:hidden;box-shadow:var(--shadow)}
+.card .b{transform:rotateY(180deg);background:var(--lime-soft)}
+.card .em{font-size:42px;line-height:1.1;font-family:var(--display);font-weight:800}
+.card .w{font-family:var(--display);font-weight:700;font-size:19px;text-align:center}
+.card .t{font-weight:800;font-size:18px;text-align:center}
+.hint{color:var(--muted);font-weight:700;font-size:14px;margin:0 0 12px}
+.phr{display:grid;gap:10px}
+.line{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px 14px}
+.line .spk{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--sky-soft);font-size:20px}
+.line .en{font-family:var(--display);font-weight:700;font-size:18px}
+.line .ru{color:var(--muted);font-weight:700;font-size:15px}
+.rule{background:var(--sky-soft);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.rule h3{font-size:17px;margin-bottom:4px}
+.rule p{margin:0;font-weight:600}
+
+/* game screen */
+.gtop{display:flex;align-items:center;gap:12px;margin-top:4px}
+.prog{flex:1;height:14px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--lime);border-radius:99px;transition:width .3s}
+.qbox{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:22px 16px;margin-top:16px;text-align:center;box-shadow:var(--shadow)}
+.task{font-weight:800;color:var(--muted);font-size:15px;margin:0 0 10px}
+.qbig{font-size:72px;line-height:1.1;font-family:var(--display);font-weight:800}
+.qru{font-weight:800;font-size:20px;margin-top:6px}
+.qsent{font-family:var(--display);font-weight:700;font-size:clamp(20px,5vw,26px);line-height:1.35}
+.qsent .gap{display:inline-block;min-width:70px;border-bottom:4px solid var(--sky);color:var(--sky);margin:0 4px}
+.listen{width:110px;height:110px;border-radius:50%;border:0;background:var(--sky);color:#fff;font-size:48px;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.listen:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.opts.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.opt{min-height:84px;border-radius:18px;border:2px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:700;font-size:21px;padding:10px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.opt.pic{font-size:52px;min-height:110px}
+.opt.ok{background:var(--ok-soft);border-color:var(--ok)}
+.opt.bad{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.slots{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:16px;min-height:58px}
+.slot{width:46px;height:54px;border-radius:12px;border:2px dashed var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:26px;background:var(--surface)}
+.slot.full{border-style:solid;border-color:var(--sky);background:var(--sky-soft)}
+.slot.ok{border-color:var(--ok);background:var(--ok-soft)}
+.slot.bad{border-color:var(--bad);background:var(--bad-soft)}
+.letters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.let{width:52px;height:56px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:800;font-size:26px;box-shadow:var(--shadow)}
+.let:disabled{opacity:.25;box-shadow:none}
+.fb{margin-top:16px;border-radius:18px;padding:14px 16px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.bad{background:var(--bad-soft);color:var(--bad)}
+.fb .ans{color:var(--ink);font-family:var(--display)}
+.next{border:0;background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 22px;font-weight:800;font-size:18px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.btn{border:0;border-radius:16px;padding:14px 22px;font-weight:800;font-size:18px;box-shadow:var(--shadow)}
+.btn.main{background:var(--lime);color:#fff}
+.btn.alt{background:var(--surface);border:2px solid var(--line)}
+.result{text-align:center;padding-block:20px}
+.result .bigstars{font-size:64px;letter-spacing:6px;color:var(--line)}
+.result .bigstars .on{color:var(--yellow);display:inline-block;animation:pop .5s both}
+.result .bigstars .on:nth-child(2){animation-delay:.2s}.result .bigstars .on:nth-child(3){animation-delay:.4s}
+.result h1{font-size:32px;margin-top:8px}
+.result p{font-weight:700;color:var(--muted);font-size:18px}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.parents{margin-top:28px;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px 18px}
+.parents h2{font-size:18px;margin-bottom:6px}
+.parents p,.parents li{font-weight:600;color:var(--muted);font-size:15px}
+.parents ul{margin:6px 0;padding-left:20px}
+.link{background:none;border:0;padding:0;color:var(--red);font-weight:800;text-decoration:underline}
+.confirm{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-weight:700}
+.sound{border:2px solid var(--line);background:var(--surface);border-radius:12px;width:40px;height:40px;font-size:18px}
+
+@media (max-width:520px){
+  .games{grid-template-columns:1fr}
+  .opts.three{grid-template-columns:1fr}
+  .opts.three .opt{min-height:64px}
+  .mini .bar{width:48px}
+  .stop{gap:10px;padding:12px}
+  .num{width:42px;height:42px;font-size:20px}
+  .game{min-height:0}
+  .hello{grid-template-columns:1fr}
+  .rank{display:flex;align-items:center;gap:10px;text-align:left}
+  .rank .big{font-size:28px}
+  .logo{font-size:19px}
+  .qbig{font-size:60px}
+  .opt.pic{font-size:44px;min-height:96px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ===== Содержание курса Spotlight 3 (Student's Book, Part 1 и Part 2) ===== */
+const MODULES = [
+ {id:"s", n:"S", color:"#F08A1C", part:1, en:"Welcome back!", ru:"Снова в школу: цвета, числа 1–10, знакомство",
+  words:[["red","красный","🔴"],["blue","синий","🔵"],["green","зелёный","🟢"],["yellow","жёлтый","🟡"],["orange","оранжевый","🟠"],["purple","фиолетовый","🟣"],["brown","коричневый","🟤"],["black","чёрный","⚫"],["white","белый","⚪"],
+         ["one","один","1"],["two","два","2"],["three","три","3"],["four","четыре","4"],["five","пять","5"],["six","шесть","6"],["seven","семь","7"],["eight","восемь","8"],["nine","девять","9"],["ten","десять","10"]],
+  phrases:[["Hello! I'm Larry.","Привет! Я Ларри."],["What's your name?","Как тебя зовут?"],["My name is Tom.","Меня зовут Том."],["How old are you?","Сколько тебе лет?"],["I'm nine.","Мне девять."],["How are you? — I'm fine, thanks.","Как дела? — Хорошо, спасибо."],["Goodbye! See you!","До свидания! Увидимся!"]],
+  rule:["am / is / are","I am (I'm), he / she / it is, you / we / they are."],
+  grammar:[["My name ___ Tom.",["is","am","are"],"Меня зовут Том."],["How old ___ you?",["are","is","am"],"Сколько тебе лет?"],["I ___ nine.",["am","is","are"],"Мне девять."],["What colour ___ it?",["is","are","am"],"Какого это цвета?"],["I'm fine, thank ___.",["you","me","it"],"У меня всё хорошо, спасибо."],["___ are you? — I'm fine.",["How","What","Who"],"Как дела? — Хорошо."],["Four and five is ___.",["nine","seven","ten"],"Четыре плюс пять — это…"],["The sun is ___.",["yellow","blue","black"],"Солнце…"]]},
+
+ {id:"m1", n:"1", color:"#DE3A2E", part:1, en:"School days", ru:"Школьные вещи, предметы, числа 11–20",
+  words:[["pen","ручка","🖊️"],["pencil","карандаш","✏️"],["ruler","линейка","📏"],["rubber","ластик","🧽"],["book","книга","📕"],["schoolbag","портфель","🎒"],["pencil case","пенал","👝"],["scissors","ножницы","✂️"],["English","английский","🇬🇧"],["Maths","математика","➗"],["Art","рисование","🎨"],["PE","физкультура","🤸"],["Music","музыка","🎵"],["Science","естествознание","🔬"],
+         ["eleven","одиннадцать","11"],["twelve","двенадцать","12"],["thirteen","тринадцать","13"],["fifteen","пятнадцать","15"],["twenty","двадцать","20"]],
+  phrases:[["Open your book!","Открой книгу!"],["Close your book!","Закрой книгу!"],["Stand up! Sit down!","Встань! Сядь!"],["Put up your hand!","Подними руку!"],["Be quiet!","Тише!"],["What's your favourite subject?","Какой твой любимый предмет?"],["My favourite subject is Art.","Мой любимый предмет — рисование."]],
+  rule:["a / an","a pen, a book — перед согласным звуком. an apple, an orange — перед гласным звуком."],
+  grammar:[["Open ___ book!",["your","you","I"],"Открой свою книгу!"],["Sit ___!",["down","up","on"],"Сядь!"],["Put ___ your hand!",["up","down","in"],"Подними руку!"],["It's ___ pen.",["a","an","the"],"Это ручка."],["It's ___ orange ruler.",["an","a","is"],"Это оранжевая линейка."],["My favourite subject ___ Maths.",["is","am","are"],"Мой любимый предмет — математика."],["I've ___ a new schoolbag.",["got","get","has"],"У меня есть новый портфель."],["Ten and ten is ___.",["twenty","twelve","eleven"],"Десять плюс десять — это…"]]},
+
+ {id:"m2", n:"2", color:"#2E93C8", part:1, en:"Family moments", ru:"Семья: мама, папа, бабушка, дедушка",
+  words:[["mummy","мама","👩"],["daddy","папа","👨"],["grandma","бабушка","👵"],["grandpa","дедушка","👴"],["brother","брат","👦"],["sister","сестра","👧"],["baby","малыш","👶"],["family","семья","👨‍👩‍👧‍👦"],["friend","друг","🤝"],["happy","счастливый","😀"],["sad","грустный","😢"],["tall","высокий","🦒"]],
+  phrases:[["Who's this?","Кто это?"],["This is my brother.","Это мой брат."],["He's my grandpa.","Он мой дедушка."],["She's my sister.","Она моя сестра."],["I love my family!","Я люблю свою семью!"],["We're a happy family!","Мы счастливая семья!"]],
+  rule:["he / she, his / her","he — он, she — она. his — его, her — её. my — мой, your — твой."],
+  grammar:[["This is ___ brother.",["my","I","me"],"Это мой брат."],["___ is my sister.",["She","He","It"],"Она моя сестра."],["___ is my grandpa.",["He","She","They"],"Он мой дедушка."],["Who ___ this?",["is","are","am"],"Кто это?"],["This is Larry. ___ name is Larry.",["His","Her","My"],"Это Ларри. Его зовут Ларри."],["This is Lulu. ___ name is Lulu.",["Her","His","He"],"Это Лулу. Её зовут Лулу."],["Is this your mummy? — Yes, ___ is.",["she","he","it"],"Это твоя мама? — Да."],["Is this your daddy? — No, he ___.",["isn't","aren't","not"],"Это твой папа? — Нет."]]},
+
+ {id:"m3", n:"3", color:"#F08A1C", part:1, en:"All the things I like!", ru:"Еда, что я люблю, мой ланч-бокс",
+  words:[["jelly","желе","🍮"],["chips","картошка фри","🍟"],["burger","бургер","🍔"],["pizza","пицца","🍕"],["sandwich","бутерброд","🥪"],["milk","молоко","🥛"],["orange juice","апельсиновый сок","🧃"],["lemonade","лимонад","🍋"],["apple","яблоко","🍎"],["banana","банан","🍌"],["chocolate","шоколад","🍫"],["ice cream","мороженое","🍦"],["biscuit","печенье","🍪"],["water","вода","💧"],["lunchbox","ланч-бокс","🍱"]],
+  phrases:[["I like jelly!","Я люблю желе!"],["He likes chips.","Он любит картошку фри."],["Do you like pizza? — Yes, I do.","Ты любишь пиццу? — Да."],["She doesn't like milk.","Она не любит молоко."],["What's in your lunchbox?","Что у тебя в ланч-боксе?"],["Can I have a sandwich, please?","Можно мне бутерброд, пожалуйста?"],["Yummy!","Вкуснятина!"]],
+  rule:["like / likes","I, you, we, they like. He, she, it likes — с буквой -s! Нет: I don't like, he doesn't like."],
+  grammar:[["He ___ jelly.",["likes","like","liking"],"Он любит желе."],["I ___ chips.",["like","likes","is"],"Я люблю картошку фри."],["She ___ like milk.",["doesn't","don't","isn't"],"Она не любит молоко."],["___ you like pizza?",["Do","Does","Are"],"Ты любишь пиццу?"],["Do you like apples? — Yes, I ___.",["do","does","am"],"Ты любишь яблоки? — Да."],["Does he like burgers? — No, he ___.",["doesn't","don't","isn't"],"Он любит бургеры? — Нет."],["What's ___ your lunchbox?",["in","on","at"],"Что у тебя в ланч-боксе?"],["Can I have ___ apple, please?",["an","a","two"],"Можно мне яблоко, пожалуйста?"]]},
+
+ {id:"m4", n:"4", color:"#8B5CC7", part:1, en:"Come in and play!", ru:"Игрушки, где они? Лицо и внешность",
+  words:[["doll","кукла","🪆"],["teddy bear","плюшевый мишка","🧸"],["ball","мяч","⚽"],["train","поезд","🚂"],["car","машинка","🚗"],["plane","самолёт","✈️"],["robot","робот","🤖"],["kite","воздушный змей","🪁"],["balloon","шарик","🎈"],["box","коробка","📦"],["eyes","глаза","👀"],["ears","уши","👂"],["nose","нос","👃"],["mouth","рот","👄"],["hair","волосы","💇"]],
+  phrases:[["Where's the ball? — It's in the box.","Где мяч? — В коробке."],["It's on the bed.","Он на кровати."],["It's under the chair.","Он под стулом."],["I've got a teddy bear.","У меня есть плюшевый мишка."],["She's got blue eyes.","У неё голубые глаза."],["He's got big ears!","У него большие уши!"]],
+  rule:["in / on / under и have got / has got","in — в, on — на, under — под. I have got (I've got), he / she has got (she's got)."],
+  grammar:[["The ball is ___ the box. 📦",["in","on","under"],"Мяч в коробке."],["The cat is ___ the table. ⬆️",["on","in","under"],"Кот на столе."],["The car is ___ the bed. ⬇️",["under","on","in"],"Машинка под кроватью."],["She ___ got blue eyes.",["has","have","is"],"У неё голубые глаза."],["I ___ got a teddy bear.",["have","has","am"],"У меня есть плюшевый мишка."],["He hasn't ___ a train.",["got","get","has"],"У него нет поезда."],["___ the doll? — It's on the chair.",["Where's","What's","Who's"],"Где кукла? — На стуле."],["Has he got a kite? — Yes, he ___.",["has","have","is"],"У него есть змей? — Да."]]},
+
+ {id:"m5", n:"5", color:"#3B9E4A", part:2, en:"Furry friends!", ru:"Животные, что они умеют, числа 20–50",
+  words:[["frog","лягушка","🐸"],["horse","лошадь","🐴"],["chimp","шимпанзе","🐒"],["chick","цыплёнок","🐤"],["parrot","попугай","🦜"],["fish","рыба","🐟"],["mouse","мышь","🐭"],["rabbit","кролик","🐰"],["sheep","овца","🐑"],["jump","прыгать","🦘"],["swim","плавать","🏊"],["fly","летать","🕊️"],["run","бегать","🏃"],["climb","лазать","🧗"],["sing","петь","🎤"],["dance","танцевать","💃"],
+         ["thirty","тридцать","30"],["forty","сорок","40"],["fifty","пятьдесят","50"]],
+  phrases:[["I can jump!","Я умею прыгать!"],["A fish can swim.","Рыба умеет плавать."],["A frog can't fly.","Лягушка не умеет летать."],["Can you climb? — Yes, I can.","Ты умеешь лазать? — Да."],["One mouse, two mice!","Одна мышь, две мыши!"],["How old are you? — I'm nine.","Сколько тебе лет? — Девять."]],
+  rule:["can / can't и особые слова","can — умею, can't — не умею. Одна мышь — two mice, одна овца — two sheep, один зуб — two teeth, одна нога — two feet."],
+  grammar:[["A fish can ___.",["swim","fly","climb"],"Рыба умеет плавать."],["A parrot can ___.",["fly","swim","run"],"Попугай умеет летать."],["A frog can jump. It ___ fly.",["can't","can","is"],"Лягушка прыгает, но не летает."],["___ you run? — Yes, I can.",["Can","Do","Are"],"Ты умеешь бегать? — Да."],["One mouse, two ___.",["mice","mouses","mouse"],"Одна мышь, две мыши."],["One sheep, three ___.",["sheep","sheeps","shoop"],"Одна овца, три овцы."],["One tooth, many ___.",["teeth","tooths","tooth"],"Один зуб, много зубов."],["Twenty and twenty is ___.",["forty","thirty","fifty"],"Двадцать плюс двадцать — это…"]]},
+
+ {id:"m6", n:"6", color:"#C8567A", part:2, en:"Home, sweet home!", ru:"Дом, комнаты, мебель",
+  words:[["house","дом","🏠"],["bedroom","спальня","🛏️"],["bathroom","ванная","🛁"],["kitchen","кухня","🍳"],["living room","гостиная","🛋️"],["garden","сад","🌷"],["chair","стул","🪑"],["window","окно","🪟"],["door","дверь","🚪"],["mirror","зеркало","🪞"],["lamp","лампа","💡"],["TV","телевизор","📺"],["clock","часы","🕰️"]],
+  phrases:[["Where's Grandma? — She's in the kitchen.","Где бабушка? — Она на кухне."],["Where's Grandpa? — He's in the garden.","Где дедушка? — Он в саду."],["There's a bed in my room.","В моей комнате есть кровать."],["There are two chairs.","Там два стула."],["Is there a TV? — Yes, there is.","Там есть телевизор? — Да."],["Welcome to my house!","Добро пожаловать в мой дом!"]],
+  rule:["There is / There are","There is (there's) — один предмет: There's a lamp. There are — много: There are two windows."],
+  grammar:[["Where's Grandma? — She's ___ the kitchen.",["in","on","under"],"Бабушка на кухне."],["There ___ a bed in my room.",["is","are","am"],"В моей комнате есть кровать."],["There ___ two chairs.",["are","is","am"],"Там два стула."],["___ there a TV? — Yes, there is.",["Is","Are","Do"],"Там есть телевизор? — Да."],["Are there three windows? — No, there ___.",["aren't","isn't","not"],"Там три окна? — Нет."],["Where ___ Grandpa?",["is","are","am"],"Где дедушка?"],["The bath is in the ___.",["bathroom","kitchen","garden"],"Ванна находится в…"],["I sleep in my ___.",["bedroom","kitchen","garden"],"Я сплю в своей…"]]},
+
+ {id:"m7", n:"7", color:"#1F8C8C", part:2, en:"A day off!", ru:"Выходной: что ты сейчас делаешь?",
+  words:[["play football","играть в футбол","⚽"],["read a book","читать книгу","📖"],["watch TV","смотреть телевизор","📺"],["paint","рисовать красками","🎨"],["cook","готовить","🍳"],["sleep","спать","😴"],["ride a bike","кататься на велосипеде","🚲"],["play games","играть в игры","🎮"],["listen to music","слушать музыку","🎧"],["sing","петь","🎤"],["dance","танцевать","💃"],["swim","плавать","🏊"]],
+  phrases:[["What are you doing?","Что ты делаешь?"],["I'm reading a book.","Я читаю книгу."],["He's playing football.","Он играет в футбол."],["She's watching TV.","Она смотрит телевизор."],["They're dancing!","Они танцуют!"],["Are you sleeping? — No, I'm not!","Ты спишь? — Нет!"]],
+  rule:["Сейчас: am / is / are + -ing","I'm playing, he's reading, they're dancing. Делаю прямо сейчас — добавляем -ing."],
+  grammar:[["I ___ reading a book.",["am","is","are"],"Я читаю книгу."],["He ___ watching TV.",["is","am","are"],"Он смотрит телевизор."],["They ___ playing football.",["are","is","am"],"Они играют в футбол."],["What are you ___?",["doing","do","does"],"Что ты делаешь?"],["She is ___.",["dancing","dance","dances"],"Она танцует."],["I'm ___ to music.",["listening","listen","listens"],"Я слушаю музыку."],["Is Tom sleeping? — Yes, he ___.",["is","are","does"],"Том спит? — Да."],["Are you painting? — No, I'm ___.",["not","no","isn't"],"Ты рисуешь? — Нет."]]},
+
+ {id:"m8", n:"8", color:"#D18F00", part:2, en:"Day by day", ru:"Дни недели, распорядок дня, время",
+  words:[["Monday","понедельник","Пн"],["Tuesday","вторник","Вт"],["Wednesday","среда","Ср"],["Thursday","четверг","Чт"],["Friday","пятница","Пт"],["Saturday","суббота","Сб"],["Sunday","воскресенье","Вс"],["get up","вставать","⏰"],["have breakfast","завтракать","🥣"],["go to school","идти в школу","🏫"],["have lunch","обедать","🍽️"],["do homework","делать уроки","📝"],["go to bed","ложиться спать","🛌"],["o'clock","ровно (о времени)","🕖"]],
+  phrases:[["What time is it? — It's seven o'clock.","Который час? — Семь часов."],["I get up at seven o'clock.","Я встаю в семь часов."],["On Mondays I go to school.","По понедельникам я хожу в школу."],["He plays football on Saturdays.","Он играет в футбол по субботам."],["I go to bed at nine o'clock.","Я ложусь спать в девять."],["Sunday is my favourite day!","Воскресенье — мой любимый день!"]],
+  rule:["Каждый день: он делает — с -s","I play, he plays. I go, she goes. at seven o'clock — во время, on Monday — в день недели."],
+  grammar:[["I get ___ at seven o'clock.",["up","on","in"],"Я встаю в семь часов."],["He ___ to school on Monday.",["goes","go","going"],"Он идёт в школу в понедельник."],["What time ___ it?",["is","are","am"],"Который час?"],["It's eight ___.",["o'clock","clock","time"],"Восемь часов."],["I go to school ___ Monday.",["on","at","in"],"Я хожу в школу в понедельник."],["We have lunch ___ one o'clock.",["at","on","in"],"Мы обедаем в час."],["She ___ football on Saturdays.",["plays","play","playing"],"Она играет в футбол по субботам."],["After Monday comes ___.",["Tuesday","Sunday","Friday"],"После понедельника идёт…"]]}
+];
+
+const GAMES = [
+  {id:"listen", ic:"🔊", t:"Послушай и выбери", d:"Слушай слово и найди картинку"},
+  {id:"pick",   ic:"🖼️", t:"Что на картинке?",  d:"Выбери английское слово"},
+  {id:"spell",  ic:"🔤", t:"Собери слово",       d:"Составь слово из букв"},
+  {id:"gram",   ic:"🧩", t:"Вставь слово",       d:"Грамматика из модуля"}
+];
+const RANKS = [[0,"🐣","Новичок"],[10,"🐤","Ученик"],[30,"🦊","Умник"],[55,"🦁","Знаток"],[80,"🚀","Звезда"],[108,"🏆","Чемпион Spotlight"]];
+const PRAISE = ["Well done!","Great!","Super!","Excellent!","Good job!","Brilliant!","Fantastic!"];
+const MAXSTARS = MODULES.length * GAMES.length * 3;
+
+/* ===== Состояние ===== */
+const KEY = "spotlight3-tutor";
+let S = {stars:{}, last:null, sound:true};
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e){}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+const starOf = (m,g) => (S.stars[m] && S.stars[m][g]) || 0;
+const modStars = m => GAMES.reduce((a,g)=>a+starOf(m,g.id),0);
+const totalStars = () => MODULES.reduce((a,m)=>a+modStars(m.id),0);
+function rankOf(n){ let r=RANKS[0], nx=null; for (let i=0;i<RANKS.length;i++){ if(n>=RANKS[i][0]){r=RANKS[i]; nx=RANKS[i+1]||null;} } return {r,nx}; }
+
+/* ===== Звук и озвучка ===== */
+function voice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
+}
+function say(text){
+  if (!("speechSynthesis" in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/[⬆️⬇️📦]/gu,""));
+    u.lang = "en-GB"; u.rate = .82; const v = voice(); if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e){}
+}
+if ("speechSynthesis" in window) { try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = ()=>{}; } catch(e){} }
+let AC=null;
+function beep(ok){
+  if (!S.sound) return;
+  try {
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const notes = ok ? [660,880,1175] : [220,180];
+    notes.forEach((f,i)=>{
+      const o=AC.createOscillator(), g=AC.createGain(), t=AC.currentTime+i*.09;
+      o.type = ok ? "triangle" : "square"; o.frequency.value=f;
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(ok?.18:.07,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.18);
+      o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.2);
+    });
+  } catch(e){}
+}
+
+/* ===== Помощники ===== */
+const $app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const pickN = (a,n) => shuffle(a).slice(0,n);
+const starsHTML = n => `<span class="stars" aria-label="${n} из 3 звёзд">${[0,1,2].map(i=>`<span class="${i<n?"on":""}">★</span>`).join("")}</span>`;
+const modById = id => MODULES.find(m=>m.id===id);
+function topBar(extra){
+  const t = totalStars();
+  return `<div class="top">
+    <div class="brand">${extra||`<div class="logo" aria-label="Spotlight 3"><span>S</span><span>p</span><span>o</span><span>t</span><b>light 3</b></div>`}</div>
+    <div class="score"><span class="chip"><span class="st">★</span>${t}</span>
+    <button class="sound" id="snd" aria-label="Звуки ${S.sound?"включены":"выключены"}">${S.sound?"🔔":"🔕"}</button></div></div>`;
+}
+function bindTop(){
+  const b=document.getElementById("snd");
+  if (b) b.onclick=()=>{ S.sound=!S.sound; save(); b.textContent=S.sound?"🔔":"🔕"; b.setAttribute("aria-label","Звуки "+(S.sound?"включены":"выключены")); };
+}
+
+/* ===== Главный экран: маршрут по модулям ===== */
+function home(){
+  const t = totalStars(), {r,nx} = rankOf(t);
+  const pct = nx ? Math.round((t-r[0])/(nx[0]-r[0])*100) : 100;
+  let html = topBar() + `<section class="hello">
+     <div><h1>Hello! Let's learn English!</h1><p>Выбирай модуль, играй и собирай звёзды ★</p></div>
+     <div class="rank"><div class="big">${r[1]}</div><div>${r[2]}<small>твоё звание</small></div></div>
+     <div class="lvlbar"><i style="width:${pct}%"></i></div>
+     <div class="lvlnote">${nx ? `До звания «${nx[2]}» ${nx[1]} осталось ${nx[0]-t} ★` : "Ты прошёл весь учебник! Ты настоящий чемпион!"}</div>
+   </section>
+   <h2 class="sec-title">Маршрут по учебнику</h2><div class="route">`;
+  let part = 0;
+  MODULES.forEach(m=>{
+    if (m.part!==part){ part=m.part; html += `<div class="part">Часть ${part}</div>`; }
+    const s = modStars(m.id), max = GAMES.length*3;
+    const cls = s===max ? "done" : s>0 ? "started" : "";
+    html += `<button class="stop ${cls}" data-m="${m.id}">
+      <span class="dot"></span>${S.last===m.id?`<span class="bus" aria-hidden="true">🚌</span>`:""}
+      <span class="num" style="background:${m.color}">${m.n}</span>
+      <span><span class="eyebrow">${m.id==="s"?"Starter":"Module "+m.n}</span><h3>${esc(m.en)}</h3><span class="ru">${esc(m.ru)}</span></span>
+      <span class="mini"><span>★ ${s}/${max}</span><span class="bar"><i style="width:${s/max*100}%"></i></span></span>
+    </button>`;
+  });
+  html += `</div>
+  <section class="parents"><h2>Для родителей</h2>
+   <ul>
+    <li>Всё построено по учебнику Spotlight 3 (Быкова, Дули, Поспелова, Эванс), части 1 и 2: Starter и модули 1–8.</li>
+    <li>В каждом модуле есть карточки со словами, фразы и правило, а ещё четыре игры по 8 вопросов. Одна игра занимает 3–5 минут.</li>
+    <li>Лучше заниматься понемногу, но каждый день: 10–15 минут. Слова и фразы озвучиваются британским голосом браузера. Если нет звука, проверьте громкость устройства.</li>
+    <li>Звёзды сохраняются только на этом устройстве и в этом браузере.</li>
+   </ul>
+   <button class="link" id="reset">Сбросить прогресс</button><div id="rc"></div>
+  </section>`;
+  $app.innerHTML = html; bindTop(); window.scrollTo(0,0);
+  $app.querySelectorAll(".stop").forEach(b=>b.onclick=()=>moduleView(b.dataset.m,"games"));
+  document.getElementById("reset").onclick=()=>{
+    document.getElementById("rc").innerHTML = `<div class="confirm">Удалить все звёзды? <button class="btn alt" id="rn">Нет</button><button class="btn main" id="ry" style="background:var(--red)">Да, сбросить</button></div>`;
+    document.getElementById("rn").onclick=()=>document.getElementById("rc").innerHTML="";
+    document.getElementById("ry").onclick=()=>{ S.stars={}; S.last=null; save(); home(); };
+  };
+}
+
+/* ===== Экран модуля ===== */
+function moduleView(id, tab){
+  const m = modById(id); S.last=id; save();
+  const tabs = [["games","🎮 Игры"],["words","🃏 Слова"],["phrases","💬 Фразы и правило"]];
+  let body = "";
+  if (tab==="games"){
+    body = `<div class="games">` + GAMES.map(g=>`<button class="game" data-g="${g.id}"><span class="ic">${g.ic}</span><h3>${g.t}</h3><p>${g.d}</p>${starsHTML(starOf(id,g.id))}</button>`).join("") + `</div>`;
+  } else if (tab==="words"){
+    body = `<p class="hint">Нажми на карточку: услышишь слово и увидишь перевод.</p><div class="words">` +
+      m.words.map((w,i)=>`<button class="card" data-i="${i}" aria-label="${esc(w[0])}"><span class="in"><span class="f"><span class="em">${w[2]}</span><span class="w">${esc(w[0])}</span></span><span class="b"><span class="em">${w[2]}</span><span class="t">${esc(w[1])}</span></span></span></button>`).join("") + `</div>`;
+  } else {
+    body = `<div class="rule"><h3>Запомни: ${esc(m.rule[0])}</h3><p>${esc(m.rule[1])}</p></div><p class="hint">Нажимай на фразы, слушай и повторяй вслух.</p><div class="phr">` +
+      m.phrases.map((p,i)=>`<button class="line" data-i="${i}"><span class="spk">🔊</span><span><span class="en">${esc(p[0])}</span><br><span class="ru">${esc(p[1])}</span></span></button>`).join("") + `</div>`;
+  }
+  $app.innerHTML = topBar(`<button class="back" id="bk">← Маршрут</button>`) + `
+    <div class="mhead"><span class="num" style="background:${m.color}">${m.n}</span><div><h1>${esc(m.en)}</h1><p>${esc(m.ru)}</p></div></div>
+    <div class="tabs" role="tablist">${tabs.map(t=>`<button class="tab" role="tab" aria-selected="${t[0]===tab}" data-t="${t[0]}">${t[1]}</button>`).join("")}</div>
+    ${body}`;
+  bindTop(); window.scrollTo(0,0);
+  document.getElementById("bk").onclick=home;
+  $app.querySelectorAll(".tab").forEach(b=>b.onclick=()=>moduleView(id,b.dataset.t));
+  $app.querySelectorAll(".game").forEach(b=>b.onclick=()=>startGame(id,b.dataset.g));
+  $app.querySelectorAll(".card").forEach(b=>b.onclick=()=>{ const w=m.words[+b.dataset.i]; if(!b.classList.contains("flip")) say(w[0]); b.classList.toggle("flip"); });
+  $app.querySelectorAll(".line").forEach(b=>b.onclick=()=>say(m.phrases[+b.dataset.i][0]));
+}
+
+/* ===== Игры ===== */
+let G = null;
+function buildQuestions(m, gid){
+  const N = 8;
+  if (gid==="gram") return pickN(m.grammar, N).map(g=>({type:"gram", q:g[0], ans:g[1][0], opts:shuffle(g[1]), ru:g[2]}));
+  let pool = m.words;
+  if (gid==="spell") pool = pool.filter(w=>/^[A-Za-z]{3,9}$/.test(w[0]));
+  let qs = pickN(pool, Math.min(N,pool.length));
+  while (qs.length < N) qs = qs.concat(pickN(pool, N-qs.length));
+  return qs.map(w=>{
+    const others = pickN(m.words.filter(x=>x[0]!==w[0] && x[2]!==w[2]), 3);
+    const opts = shuffle([w, ...others]);
+    if (gid==="spell") return {type:"spell", w, letters:shuffle(w[0].split("").map((c,i)=>({c,i})))};
+    return {type:gid, w, opts};
+  });
+}
+function startGame(mid, gid){
+  const m = modById(mid);
+  G = {m, gid, qs:buildQuestions(m,gid), i:0, right:0, done:false};
+  renderQ();
+}
+function renderQ(){
+  const q = G.qs[G.i], game = GAMES.find(g=>g.id===G.gid);
+  let area = "";
+  if (q.type==="listen"){
+    area = `<p class="task">Послушай и выбери картинку</p><button class="listen" id="play" aria-label="Послушать ещё раз">🔊</button>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt pic" data-i="${i}" aria-label="${esc(o[1])}">${o[2]}</button>`).join("")}</div>`;
+  } else if (q.type==="pick"){
+    area = `<p class="task">Как это по-английски?</p><div class="qbig">${q.w[2]}</div><div class="qru">${esc(q.w[1])}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o[0])}</button>`).join("")}</div>`;
+  } else if (q.type==="spell"){
+    area = `<p class="task">Собери слово по буквам</p><div class="qbig">${q.w[2]}</div><div class="qru">${esc(q.w[1])}</div>
+      <div class="slots" id="slots">${q.w[0].split("").map((_,i)=>`<span class="slot" data-s="${i}"></span>`).join("")}</div>
+      <div class="letters">${q.letters.map((l,i)=>`<button class="let" data-k="${i}">${esc(l.c.toLowerCase()===l.c?l.c:l.c)}</button>`).join("")}</div>
+      <div class="row"><button class="btn alt" id="hear">🔊 Подсказка</button><button class="btn alt" id="undo">⌫ Стереть</button></div>`;
+  } else {
+    area = `<p class="task">Выбери слово, которое подходит</p><div class="qsent">${esc(q.q).replace("___",`<span class="gap" id="gap">?</span>`)}</div>
+      <div class="qru" style="font-size:16px;color:var(--muted)">${esc(q.ru)}</div>
+      <div class="opts three">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
+  }
+  $app.innerHTML = `<div class="top"><div class="brand"><button class="back" id="quit">✕ Выйти</button></div><div class="score"><span class="chip">${G.i+1} / ${G.qs.length}</span></div></div>
+    <div class="gtop"><span style="font-size:26px">${game.ic}</span><div class="prog"><i style="width:${G.i/G.qs.length*100}%"></i></div><span class="chip"><span class="st">✓</span>${G.right}</span></div>
+    <div class="qbox" id="qbox">${area}</div><div id="fb"></div>`;
+  document.getElementById("quit").onclick=()=>moduleView(G.m.id,"games");
+  if (q.type==="listen"){ document.getElementById("play").onclick=()=>say(q.w[0]); setTimeout(()=>say(q.w[0]),250); }
+  if (q.type==="spell") bindSpell(q);
+  else $app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(b));
+}
+function answer(b){
+  const q = G.qs[G.i], i=+b.dataset.i;
+  const chosen = q.type==="gram" ? q.opts[i] : q.opts[i][0];
+  const right = q.type==="gram" ? q.ans : q.w[0];
+  const ok = chosen===right;
+  $app.querySelectorAll(".opt").forEach((x,j)=>{ x.disabled=true; const v = q.type==="gram"?q.opts[j]:q.opts[j][0]; if (v===right) x.classList.add("ok"); });
+  if (!ok){ b.classList.add("bad","shake"); }
+  if (q.type==="gram"){ const g=document.getElementById("gap"); g.textContent=right; }
+  const full = q.type==="gram" ? q.q.replace("___", right) : right;
+  feedback(ok, full, q.type==="gram" ? "" : q.w[1]);
+}
+function bindSpell(q){
+  const word = q.w[0]; const placed = [];
+  const slots = [...$app.querySelectorAll(".slot")], keys=[...$app.querySelectorAll(".let")];
+  const draw = ()=>{ slots.forEach((s,i)=>{ const p=placed[i]; s.textContent = p!=null ? q.letters[p].c : ""; s.classList.toggle("full", p!=null); }); keys.forEach((k,i)=>k.disabled = placed.includes(i) || G.locked); };
+  G.locked=false;
+  keys.forEach(k=>k.onclick=()=>{
+    if (G.locked) return;
+    placed.push(+k.dataset.k); draw();
+    if (placed.length===word.length){
+      G.locked=true;
+      const got = placed.map(p=>q.letters[p].c).join("");
+      const ok = got.toLowerCase()===word.toLowerCase();
+      slots.forEach((s,i)=>{ s.textContent=word[i]; s.classList.add(ok?"ok":"bad"); });
+      if(!ok) document.getElementById("slots").classList.add("shake");
+      keys.forEach(k=>k.disabled=true);
+      document.getElementById("undo").disabled=true;
+      feedback(ok, word, q.w[1]);
+    }
+  });
+  document.getElementById("undo").onclick=()=>{ if(!G.locked){ placed.pop(); draw(); } };
+  document.getElementById("hear").onclick=()=>say(word);
+}
+function feedback(ok, en, ru){
+  if (ok) G.right++;
+  beep(ok);
+  setTimeout(()=>say(en), ok?300:450);
+  const last = G.i===G.qs.length-1;
+  document.getElementById("fb").innerHTML = `<div class="fb ${ok?"ok":"bad"}">
+    <span>${ok ? "✅ "+PRAISE[Math.floor(Math.random()*PRAISE.length)] : "Почти! Правильно:"} <span class="ans">${esc(en)}</span>${ru?` <span style="color:var(--muted)">— ${esc(ru)}</span>`:""}</span>
+    <button class="next" id="nx">${last?"Готово":"Дальше →"}</button></div>`;
+  const nx=document.getElementById("nx"); nx.focus();
+  nx.onclick=()=>{ if(last) finish(); else { G.i++; renderQ(); } };
+}
+function finish(){
+  const n = G.qs.length, r = G.right;
+  const st = r===n ? 3 : r>=n-2 ? 2 : r>=n/2 ? 1 : 0;
+  const before = totalStars(), rb = rankOf(before).r;
+  S.stars[G.m.id] = S.stars[G.m.id] || {};
+  const prev = S.stars[G.m.id][G.gid]||0;
+  if (st>prev) S.stars[G.m.id][G.gid]=st;
+  save();
+  const ra = rankOf(totalStars()).r, newRank = ra!==rb;
+  const title = st===3?"Excellent!":st===2?"Well done!":st===1?"Good try!":"Let's try again!";
+  const note = st===3?"Всё правильно! Ты молодец!":st===0?"Ничего страшного. Повтори слова на карточках и попробуй ещё раз!":"Сыграй ещё раз, чтобы получить 3 звезды!";
+  $app.innerHTML = topBar() + `<div class="result">
+    <div class="bigstars">${[0,1,2].map(i=>`<span class="${i<st?"on":""}">★</span>`).join("")}</div>
+    <h1>${title}</h1><p>Правильных ответов: ${r} из ${n}. ${note}</p>
+    ${st>prev&&prev>0?`<p>Новый рекорд: было ${prev} ★, стало ${st} ★</p>`:""}
+    ${newRank?`<p style="color:var(--ink);font-size:22px">Новое звание: ${ra[1]} ${ra[2]}!</p>`:""}
+    <div class="row"><button class="btn main" id="again">Ещё раз</button><button class="btn alt" id="tomod">К модулю</button><button class="btn alt" id="tohome">Маршрут</button></div></div>`;
+  bindTop(); say(title);
+  if (st===3 || newRank) beep(true);
+  document.getElementById("again").onclick=()=>startGame(G.m.id,G.gid);
+  document.getElementById("tomod").onclick=()=>moduleView(G.m.id,"games");
+  document.getElementById("tohome").onclick=home;
+}
+
+home();
+</script>
+</body>
+</html>
