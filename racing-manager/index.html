@@ -998,7 +998,7 @@ const carOverall=t=>(t.car.aero+t.car.engine+t.car.chassis)/3;
 function teamStandings(){return[...S.teams].sort((a,b)=>b.pts-a.pts||carOverall(b)-carOverall(a))}
 function driverStandings(){return Object.values(S.drivers).filter(d=>d.team).sort((a,b)=>b.pts-a.pts||b.wins-a.wins||b.pace-a.pace)}
 const myPos=()=>teamStandings().findIndex(t=>t.id===S.pid)+1;
-const maxProjects=()=>me().td.rating>=82?3:me().td.rating>=66?2:1;
+const maxProjects=()=>me().td.rating>=82?4:me().td.rating>=66?3:2;
 function costPerRace(){const t=me();return t.drivers.reduce((s,id)=>s+drv(id).salary,0)/NR()+staffSalary(t)/NR()+.9+acadUpkeep()+facUpkeep()}
 const incomePerRace=()=>1+S.sponsors.reduce((s,x)=>s+x.per,0);
 const UPG=[{k:'small',n:'Доработка',g:1.2,c:3,d:12},{k:'major',n:'Новый пакет',g:3,c:7,d:30},{k:'rev',n:'Концепция',g:5.5,c:12,d:55}];
@@ -2274,11 +2274,20 @@ function vCar(){
   ${facCard()}
   ${capCard}</div></div>`;
 }
+// почему доработку нельзя начать (пусто — можно)
+function upgBlock(k,c){const t=me(),pr=S.projects.find(p=>p.part===k);
+  if(k==='engine'&&S.rules.freeze)return'двигатели заморожены регламентом до конца сезона';
+  if(pr)return`уже идёт проект по этой части — готово ${etaText(pr.days)}`;
+  if(S.projects.length>=maxProjects())return`все слоты разработки заняты (${S.projects.length}/${maxProjects()}) — дождитесь окончания проекта или наймите техдиректора сильнее`;
+  if(t.car[k]>=99)return'достигнут максимум';
+  if(c>capLeft())return`не хватает потолка расходов: осталось ${capLeft()} млн`;
+  if(S.budget<c)return`не хватает бюджета: нужно ${c.toFixed(1).replace('.',',')} млн, есть ${fm(S.budget,1)}`;
+  return'';}
 function upgCards(){
   const t=me(),slots=maxProjects(),busy=S.projects.length;
   return`<div class="card" id="sec-upg"><h3>Доработка болида в сезоне</h3><div class="stack" style="gap:12px">${PARTS.map(([k,n])=>`<div class="stack" style="gap:6px"><b>${n}${k==='engine'&&S.rules.freeze?' <span class="pill bad">заморожен</span>':''}</b>${UPG.map(u=>{
-     const c=upgCost(k,u),g=u.g*(.7+t.td.rating/200)*partBoost(t,k);const dis=busy>=slots||S.budget<c||c>capLeft()||t.car[k]>=99||S.projects.some(p=>p.part===k)||(k==='engine'&&S.rules.freeze);
-     return`<button class="btn" style="justify-content:space-between" data-a="upg" data-v="${k}|${u.k}" ${dis?'disabled':''}><span>${u.n} <span class="muted">≈ +${g.toFixed(1).replace('.',',')} · ${u.d} дн.</span></span><span class="money">${c.toFixed(1).replace('.',',')}</span></button>`}).join('')}</div>`).join('')}</div></div>
+     const c=upgCost(k,u),g=u.g*(.7+t.td.rating/200)*partBoost(t,k);const dis=!!upgBlock(k,c);
+     return`<button class="btn" style="justify-content:space-between" data-a="upg" data-v="${k}|${u.k}" ${dis?'disabled':''}><span>${u.n} <span class="muted">≈ +${g.toFixed(1).replace('.',',')} · ${u.d} дн.</span></span><span class="money">${c.toFixed(1).replace('.',',')}</span></button>`}).join('')}${(()=>{const rs=UPG.map(u=>upgBlock(k,upgCost(k,u))),why=[...new Set(rs.filter(Boolean))];return rs.every(Boolean)?`<span style="color:var(--accent);font-size:12px">Недоступно: ${why[0]}</span>`:why.length?`<span class="muted" style="font-size:12px">Дороже варианты: ${why.join('; ')}</span>`:''})()}</div>`).join('')}</div></div>
   <div class="card" id="sec-spec"><h3>Новые версии узлов</h3>
    ${COMPS.map(([k,n])=>{const sp=teamSpec(t,k),why=specBlock(t,k),[g,w]=SPEC[k],fit=t.drivers.map(id=>ensureParts(id)[k].sp||1);
      return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><div class="row between"><b>${n}</b><span class="pill">спец. ${sp}${fit.some(x=>x<sp)?` · на машинах ${fit.join('/')}`:''}</span></div>
@@ -2719,7 +2728,7 @@ document.addEventListener('click',e=>{
    case'closevote':UI.lastVote=null;keepScroll(render);break;
    case'vote':S.vote.mine=v==='1';save();keepScroll(render);break;
    case'castvote':resolveVote();save();keepScroll(render);break;
-   case'upg':{const[part,k]=v.split('|');const u=UPG.find(x=>x.k===k),c=upgCost(part,u);if(S.budget<c||c>capLeft())return;S.spent=+(S.spent+c).toFixed(2);S.devCount=(S.devCount||0)+1;
+   case'upg':{const[part,k]=v.split('|');const u=UPG.find(x=>x.k===k),c=upgCost(part,u);{const why=upgBlock(part,c);if(why){toast('Нельзя: '+why);return}}S.spent=+(S.spent+c).toFixed(2);S.devCount=(S.devCount||0)+1;
      const g=+(u.g*(.7+me().td.rating/200)*partBoost(me(),part)*rnd(.8,1.2)).toFixed(1);
      S.budget=+(S.budget-c).toFixed(2);S.projects.push({part,gain:g,days:u.d});save();toast(`Проект запущен: готово ${etaText(u.d)}`);keepScroll(render);break}
    case'fire':{if(armed!=='fire'+v){UI.arm='fire'+v;keepScroll(render);return}
