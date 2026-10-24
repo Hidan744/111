@@ -135,6 +135,14 @@ canvas.track{width:100%;display:block;background:var(--panel);border-radius:10px
 .hud{position:absolute;left:8px;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none}
 .hud>*{pointer-events:auto}
 .zoomctl{position:absolute;left:8px;top:8px}
+.wxstrip{display:flex;gap:1px;height:16px;border-radius:4px;overflow:hidden}
+.wxstrip i{flex:1;background:#3b4652;display:block}
+.wxstrip i.w{background:var(--info)}
+.wxstrip i.f{opacity:.55}
+.wxstrip i.p{filter:brightness(.55)}
+.wxstrip i.c{box-shadow:inset 0 0 0 2px var(--accent)}
+.wearf{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted)}
+.wearf b{color:var(--fg)}
 .tcol{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:44px}
 .tcol small{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
 .tcol small.best{color:var(--good)}
@@ -305,10 +313,10 @@ function seasonTracks(){
 }
 const NR=()=>CALENDARS[calYear(year())].length;
 const TYRES={
- S:{n:'Мягкие',l:'М',col:'#ff4d4d',off:-.9,wear:5.2},
- M:{n:'Средние',l:'С',col:'#ffd23f',off:-.35,wear:3.5},
- H:{n:'Жёсткие',l:'Ж',col:'#f2f2f2',off:0,wear:2.4},
- I:{n:'Дождевые',l:'Д',col:'#3ccf6e',off:4.2,wear:3},
+ S:{n:'Мягкие',l:'М',col:'#ff4d4d',off:-.9,wear:11},
+ M:{n:'Средние',l:'С',col:'#ffd23f',off:-.35,wear:7.5},
+ H:{n:'Жёсткие',l:'Ж',col:'#f2f2f2',off:0,wear:5.2},
+ I:{n:'Дождевые',l:'Д',col:'#3ccf6e',off:4.2,wear:5},
 };
 const POINTS=[25,18,15,12,10,8,6,4,2,1];
 const SPONSORS=['Вектор Телеком','Медведь Энерджи','Кедр Финанс','Горизонт Авиа','Ладога Вода','Квант Софт','Арктика Логистик','Сапсан Тревел','Пульсар Гейминг','Янтарь Часы','Сокол Шины','Байкал Инвест','Магистраль Строй','Прибой Напитки','Орбита Связь'];
@@ -838,14 +846,14 @@ function lapModel(c,lap,wet){
 }
 function wearRate(c,wet){
   const d=drv(c.did);let w=TYRES[c.tyre].wear;
-  if(c.tyre==='I'&&!wet)w=7.5;
+  if(c.tyre==='I'&&!wet)w=12;
   return w*(1.25-d.tyre/200)*(c.mode==='push'?1.45:c.mode==='save'?.7:1)*(R?R.ls:1);
 }
 
 /* ---------- стратегия: оценка времени до финиша ---------- */
 function stintTable(c,n,d,wet,ls,h0){
   const T=TYRES[c];let off,w;
-  if(wet){off=c==='I'?0:8.5;w=T.wear}else{off=T.off;w=c==='I'?7.5:T.wear}
+  if(wet){off=c==='I'?0:8.5;w=T.wear}else{off=T.off;w=c==='I'?12:T.wear}
   w*=(1.25-d.tyre/200)*ls;
   const pre=[0];let h=h0;
   for(let i=0;i<n;i++){pre.push(pre[i]+off+(100-h)*.018+(h<35?(35-h)*.09:0)+(h<10?2.5:0));h=Math.max(0,h-w)}
@@ -893,10 +901,12 @@ const isFP=st=>st==='fp'||st==='fp1'||st==='fp2'||st==='fp3';
 function startWeekend(){
   const tr=seasonTracks()[S.round],real=SET.mode==='real',laps=real?tr.realLaps:Math.max(8,Math.round(tr.laps*SET.len));
   W={ti:S.round,tr,laps,ls:tr.laps/laps,real,weather:genWeather(tr,laps),risk:{},grid:null,qt:{},start:{},
-     setup:{wing:5,susp:5,gear:5,brake:5},runs:3,prac:[],fb:null,aiSq:{},
+     setups:{},runsBy:{},fbs:{},prac:[],aiSq:{},
      steps:real?['media','fp1','fp2','fp3','quali','race']:['fp','quali','race'],step:0,sheet:{},hype:null,
      dayWet:{fri:Math.random()<tr.rain*.6,sat:Math.random()<tr.rain*.6}};
   W.qwet=real?W.dayWet.sat:null;
+  me().drivers.forEach(id=>{W.setups[id]={wing:5,susp:5,gear:5,brake:5};W.fbs[id]=null});
+  UI.pd=me().drivers[0];
   W.ideal=idealSetup(tr,W.weather[0]);
   S.teams.forEach(t=>{W.aiSq[t.id]=clamp(rnd(48,80)+(t.td.rating-70)*.4+(SET.diff-1)*8,25,98)});
   me().drivers.forEach(id=>{W.risk[id]=false;W.start[id]=W.weather[0]?'I':'M'});
@@ -907,7 +917,7 @@ function sessWet(){const st=stepName();return st==='fp'?W.weather[0]:st==='fp3'|
 function enterStep(){
   const st=stepName();
   if(st==='media'){UI.screen='media'}
-  else if(isFP(st)){W.runs=st==='fp3'?2:3;
+  else if(isFP(st)){me().drivers.forEach(id=>W.runsBy[id]=st==='fp3'?2:3);
     // протокол сессии: соперники проезжают свои программы
     const wet=sessWet(),sh=[];
     S.teams.forEach(t=>{if(t.id===S.pid)return;t.drivers.forEach(id=>{const d=drv(id);
@@ -917,28 +927,27 @@ function enterStep(){
   render();
 }
 function nextStep(){W.step=Math.min(W.steps.length-1,W.step+1);enterStep()}
-const mySq=()=>setupQ(W.setup,W.ideal);
-function practiceRun(){
-  if(W.runs<=0)return;W.runs--;
-  const t=me(),tr=W.tr,ids=t.drivers,d=drv(ids[(3-W.runs-1)%ids.length]);
-  const sq=mySq();
+const mySq=id=>setupQ(W.setups[id]||{wing:5,susp:5,gear:5,brake:5},W.ideal);
+function practiceRun(id){
+  if(!(W.runsBy[id]>0))return;W.runsBy[id]--;
+  const t=me(),tr=W.tr,d=drv(id),setup=W.setups[id];
+  const sq=mySq(id);
   const lap=tr.base+(sessWet()?7:0)-(stepName()==='fp3'?.3:stepName()==='fp2'?.15:0)+(100-perf(t,tr))*.06+(100-d.pace)*.035-(sq-60)*.012+TYRES.M.off+gauss()*.2;
   const fb={};
   SETUP.forEach(([k,,,,lo,hi])=>{
-    const diff=W.setup[k]-W.ideal[k],right=Math.random()<.75+d.craft/400;
+    const diff=setup[k]-W.ideal[k],right=Math.random()<.75+d.craft/400;
     if(Math.abs(diff)<=1&&right){fb[k]={ok:true,t:'Ощущения хорошие, менять не нужно.'}}
     else{let dir=Math.sign(diff)||pick([-1,1]);if(!right)dir=-dir;
       fb[k]={ok:false,dir:-dir,t:(dir<0?lo:hi)+(Math.abs(diff)>=4?' Очень сильно.':'')}}
   });
-  W.fb=fb;W.prac.unshift({who:d.name,did:d.id,st:stepName(),lap,sq:clamp(Math.round(sq+rnd(-6,6)),0,100)});
-  keepScroll(render);
+  W.fbs[id]=fb;W.prac.unshift({who:d.name,did:d.id,st:stepName(),lap,sq:clamp(Math.round(sq+rnd(-6,6)),0,100)});
 }
 function runQuali(){
   const tr=W.tr,wet=W.real?W.qwet:W.weather[0],all=[],stg=W.qstage||0;
   S.teams.forEach(t=>t.drivers.forEach(id=>{
     if(stg&&!W.qin.includes(id))return;
     const d=drv(id);const risk=t.id===S.pid?W.risk[id]:Math.random()<.3;
-    const sq=t.id===S.pid?mySq():W.aiSq[t.id];
+    const sq=t.id===S.pid?mySq(id):W.aiSq[t.id];
     let q=tr.base-1.2+(100-perf(t,tr))*.06+(100-d.pace)*.035+TYRES.S.off-(sq-60)*.012+gauss()*(.12+(100-d.craft)/100*.25);
     if(wet)q+=7+(100-d.craft)*.03;
     let note='';
@@ -961,8 +970,9 @@ function startRace(){
        const isMe=g.tid===S.pid;
        let tyre=isMe?W.start[g.id]:(W.weather[0]?'I':(i<10?pick(['S','M','M']):pick(['M','H','S'])));
        return{did:g.id,tid:g.tid,me:isMe,grid:i+1,tyre,health:100,mode:'norm',pitReq:null,cum:[i*.32],out:false,used:[tyre],stops:0,pen:0,thr:rnd(22,38),last:0,best:1e9,
-              sq:isMe?mySq():W.aiSq[g.tid]};
+              sq:isMe?mySq(g.id):W.aiSq[g.tid]};
      })};
+  R.fshift=ri(-4,4);
   UI.follow=R.cars.find(c=>c.me).did;UI.cam=SET.cam;
   feed(`Прогрев шин. ${R.N} ${plural(R.N,'круг','круга','кругов')}, ${R.wet[0]?'трасса мокрая':'сухо'}.`);
   UI.screen='race';render();
@@ -1509,8 +1519,12 @@ function vRace(){
      <div class="row between"><div class="row"><span class="lapbox" id="p-${c.did}">–</span><div><b>${esc(drv(c.did).name)}</b><br><span class="muted mono" style="font-size:12px" id="g-${c.did}"></span></div></div><div class="row"><span class="tyre" id="ty-${c.did}"></span><div style="width:64px" class="bar"><i id="hb-${c.did}"></i></div></div></div>
      <div class="seg">${[['push','Атака'],['norm','Норма'],['save','Беречь']].map(([m,n])=>`<button data-a="mode" data-v="${c.did}|${m}" id="m-${c.did}-${m}">${n}</button>`).join('')}</div>
      <div class="pitrow"><span class="eyebrow" style="width:58px">В боксы</span>${Object.entries(TYRES).map(([k,ty])=>`<div class="tcol"><button class="tbtn" style="border-color:${ty.col}" data-a="pit" data-v="${c.did}|${k}" id="pit-${c.did}-${k}" aria-label="Пит-стоп: ${ty.n}">${ty.l}</button><small id="pd-${c.did}-${k}"></small></div>`).join('')}<button class="btn small" data-a="follow" data-v="${c.did}" style="margin-left:auto">Камера</button></div>
+     <div class="wearf" id="wf-${c.did}"></div>
      <div class="muted" style="font-size:12px" id="st-${c.did}"></div>
    </div>`).join('')}
+   <div class="card"><div class="row between"><h3>Прогноз погоды на гонку</h3><span class="muted mono" style="font-size:11px" id="wxacc"></span></div>
+     <div class="wxstrip" id="wxs"></div><div class="row between muted mono" style="font-size:10px"><span>1</span><span>${Math.round(R.N/2)}</span><span>${R.N}</span></div>
+     <p style="font-size:13px" id="wxt"></p></div>
    <div class="card" style="padding:8px 10px"><div class="tblwrap"><table id="tt"></table></div><p class="muted" style="font-size:11px">Нажмите на строку, чтобы камера следила за пилотом.</p></div>
    <div class="card"><h3>Радио</h3><div class="feed" id="feed"></div></div>
    </div>
@@ -1552,28 +1566,36 @@ function vQstage(){
   </div></div>`;
 }
 function vSetup(){
-  const tr=W.tr,fb=W.fb,st=stepName(),wet=sessWet(),nx=W.steps[W.step+1];
+  const ids=me().drivers;if(!ids.includes(UI.pd))UI.pd=ids[0];
+  if(!W.setups[UI.pd])W.setups[UI.pd]={wing:5,susp:5,gear:5,brake:5};
+  const pd=UI.pd,setup=W.setups[pd],fb=W.fbs[pd],tm=ids.find(x=>x!==pd);
+  const tr=W.tr,st=stepName(),wet=sessWet(),nx=W.steps[W.step+1];
   const mine=W.prac.filter(r=>r.st===st),sheet=[...(W.sheet[st]||[])];
   me().drivers.forEach(id=>{const b=mine.filter(r=>r.did===id).reduce((m,r)=>Math.min(m,r.lap),Infinity);sheet.push({id,tid:S.pid,t:b})});
   sheet.sort((a,b)=>a.t-b.t);const best=sheet[0].t;
-  const life=me().drivers.length?drv(me().drivers[0]):null;
+  const life=drv(pd);
   const lifeTxt=life?['S','M','H'].map(k=>`${TYRES[k].n.toLowerCase()} ~${Math.round(70/(TYRES[k].wear*(1.25-life.tyre/200)*W.ls))}`).join(', '):'';
   return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">Этап ${W.ti+1} · ${SESS[st][0]} · ${SESS[st][1]}</div><h2>${tr.gp}</h2></div><span class="flag ${wet?'wet':'dry'}">${wet?'ДОЖДЬ':'СУХО'}</span></div>
   ${daysBar()}
   <div class="scroll wrap" id="sc"><div class="cols">
    <div class="col">
    <div class="card"><h3>Настройка болида</h3>
-    <p class="muted" style="font-size:13px">Подберите настройки под трассу. Пилоты расскажут после тренировочного заезда, что не так. Хорошая настройка даёт до полсекунды на круге.</p>
-    ${SETUP.map(([k,n,lo,hi])=>`<div class="slider"><div class="row between"><b>${n}</b><span class="mono" id="sv-${k}">${W.setup[k]}</span></div>
-      <input type="range" min="1" max="10" step="1" id="set-${k}" data-k="${k}" value="${W.setup[k]}" aria-label="${n}">
+    <div class="seg">${ids.map(id=>`<button data-a="pdrv" data-v="${id}" class="${id===pd?'on':''}">${esc(nm(id))} · ${W.runsBy[id]||0}</button>`).join('')}</div>
+    <p class="muted" style="font-size:13px">У каждого пилота своя машина и свои настройки. После заезда пилот расскажет, что не так. Хорошая настройка даёт до полсекунды на круге.</p>
+    ${SETUP.map(([k,n,lo,hi])=>`<div class="slider"><div class="row between"><b>${n}</b><span class="mono" id="sv-${k}">${setup[k]}</span></div>
+      <input type="range" min="1" max="10" step="1" id="set-${k}" data-k="${k}" value="${setup[k]}" aria-label="${n}">
       <div class="row between muted" style="font-size:11px"><span>${lo}</span><span>${hi}</span></div>
       ${fb?`<div class="fb" style="color:${fb[k].ok?'var(--good)':'var(--accent)'}">${fb[k].ok?'✓':fb[k].dir>0?'↑ увеличить':'↓ уменьшить'} · ${esc(fb[k].t)}</div>`:''}</div>`).join('')}
+    ${tm?`<button class="btn small" data-a="copyset" data-v="${pd}">Скопировать настройки на ${esc(nm(tm))}</button>`:''}
    </div></div>
    <div class="col">
    <canvas class="track" data-track="${tr.seed}" data-r=".5"></canvas>
-   <div class="card"><div class="row between"><h3>Тренировочные заезды</h3><span class="pill">осталось ${W.runs}</span></div>
-    ${W.prac.length?W.prac.map(r=>`<div class="row between" style="border-top:1px solid var(--line);padding-top:8px"><span>${esc(r.who)}</span><span class="mono">${fsec(r.lap)}</span><span class="pill ${r.sq>=80?'good':r.sq>=55?'acc':'bad'}">настройка ~${r.sq}%</span></div>`).join(''):'<p class="muted">Заездов ещё не было. Оценка настройки появится после первого круга.</p>'}
-    <button class="btn block" data-a="prac" ${W.runs<=0?'disabled':''}>Тренировочный заезд</button>
+   <div class="card"><div class="row between"><h3>Заезды · ${SESS[st][1]}</h3><span class="pill">${ids.map(id=>`${esc(nm(id))}: ${W.runsBy[id]||0}`).join(' · ')}</span></div>
+    ${mine.length?mine.map(r=>`<div class="row between" style="border-top:1px solid var(--line);padding-top:8px"><span>${esc(r.who)}</span><span class="mono">${fsec(r.lap)}</span><span class="pill ${r.sq>=80?'good':r.sq>=55?'acc':'bad'}">настройка ~${r.sq}%</span></div>`).join(''):'<p class="muted">Заездов ещё не было. Оценка настройки появится после первого круга.</p>'}
+    <div class="row wrapflex">
+     <button class="btn grow" data-a="prac" data-v="${pd}" ${(W.runsBy[pd]||0)<=0?'disabled':''}>Заезд: ${esc(nm(pd))}</button>
+     ${ids.length>1?`<button class="btn grow" data-a="pracall" ${ids.every(id=>(W.runsBy[id]||0)<=0)?'disabled':''}>Заезд обоими</button>`:''}
+    </div>
     ${mine.length?`<p class="muted" style="font-size:12px">Долгий отрезок: шины держат до 30% износа примерно — ${lifeTxt} ${plural(5,'круг','круга','кругов')}.</p>`:''}
    </div>
    <div class="card" style="padding:8px 10px"><h3 style="padding:6px 4px">Протокол сессии</h3><div class="tblwrap"><table><tbody>${sheet.map((r,i)=>`<tr${r.tid===S.pid?' class="me"':''}><td class="pos">${isFinite(r.t)?i+1:'—'}</td><td><span class="chip" style="background:${team(r.tid).color}"></span> ${esc(nm(r.id))}</td><td class="num">${!isFinite(r.t)?'нет круга':i?fgap(r.t-best):fsec(r.t)}</td></tr>`).join('')}</tbody></table></div></div>
@@ -1633,6 +1655,17 @@ function updateRaceUi(){
     $('#st-'+id).textContent=c.out?'Машина сошла с дистанции.':st;
     $('#ctl-'+id).style.opacity=c.out?.5:1;
   });
+  // прогноз погоды: ближайшие 5 кругов точно, дальше со сдвигом ±4 круга
+  const cur=Math.min(R.N-1,R.lapDone),fc=i=>i<=cur+5?R.wet[i]:R.wet[clamp(i+R.fshift,0,R.N-1)];
+  $('#wxs').innerHTML=Array.from({length:R.N},(_,i)=>`<i class="${fc(i)?'w':''}${i<cur?' p':''}${i===cur?' c':''}${i>cur+5?' f':''}"></i>`).join('');
+  let nxt=-1;for(let i=cur+1;i<R.N;i++)if(fc(i)!==fc(cur)){nxt=i;break}
+  $('#wxt').textContent=nxt<0?(fc(cur)?'Дождь, вероятно, до конца гонки.':'Сухо до финиша по прогнозу.'):`${fc(nxt)?'Дождь':'Прекращение дождя'} ожидается ${nxt<=cur+5?'через '+(nxt-cur)+' '+plural(nxt-cur,'круг','круга','кругов')+' (радар)':'около '+(nxt+1)+'-го круга (±4 кр.)'}.`;
+  $('#wxacc').textContent='точно: 5 кр. вперёд';
+  // прогноз износа шин моих пилотов
+  R.cars.filter(c=>c.me).forEach(c=>{const el=$('#wf-'+c.did);if(!el)return;if(c.out){el.textContent='';return}
+    const w=wearRate(c,R.wet[cur]),l30=w>0?Math.max(0,Math.floor((c.health-30)/w)):99,l0=w>0?Math.floor(c.health/w):99,left=R.N-R.lapDone;
+    const pct=Math.round(c.health),end=Math.max(0,Math.round(c.health-w*left));
+    el.innerHTML=`<span>Шины <b>${pct}%</b>, износ ${w.toFixed(1).replace('.',',')}%/кр.</span><span>${l30>=left?`<span style="color:var(--good)">до финиша хватит (на финише ~${end}%)</span>`:`до 30% — <b>${l30}</b> кр. (к ${R.lapDone+l30+1}-му), полный износ через ${l0} кр.`}</span>`});
   $('#feed').innerHTML=R.feed.slice(0,7).map(f=>`<div style="${f.mine?'border-color:var(--team)':''}"><span class="muted mono" style="font-size:11px">КР ${f.l}</span> ${esc(f.t)}</div>`).join('');
 }
 
@@ -1673,7 +1706,7 @@ const keepScroll=fn=>{const sc=$('#sc');const y=sc?sc.scrollTop:0;fn();const s2=
 
 document.addEventListener('input',e=>{
   if(e.target.id==='tname')UI.teamName=e.target.value;
-  const k=e.target.dataset&&e.target.dataset.k;if(k&&W){W.setup[k]=+e.target.value;const o=$('#sv-'+k);if(o)o.textContent=e.target.value}
+  const k=e.target.dataset&&e.target.dataset.k;if(k&&W&&W.setups[UI.pd]){W.setups[UI.pd][k]=+e.target.value;const o=$('#sv-'+k);if(o)o.textContent=e.target.value}
 });
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;
@@ -1692,7 +1725,10 @@ document.addEventListener('click',e=>{
    case'stand':UI.stand=v;keepScroll(render);break;
    case'hub':UI.screen='hub';UI.tab='hq';render();break;
    case'weekend':startWeekend();break;
-   case'prac':practiceRun();break;
+   case'prac':practiceRun(v);keepScroll(render);break;
+   case'pracall':me().drivers.forEach(id=>practiceRun(id));keepScroll(render);break;
+   case'pdrv':UI.pd=v;keepScroll(render);break;
+   case'copyset':{const o=me().drivers.find(x=>x!==v);if(o){W.setups[o]={...W.setups[v]};toast(`Настройки скопированы на ${nm(o)}`)}keepScroll(render);break}
    case'nextstep':nextStep();break;
    case'hype':W.hype=v==='1';keepScroll(render);break;
    case'qnext':W.qstage++;UI.screen='quali';render();break;
