@@ -728,6 +728,7 @@ const COMPS=[['ice','ДВС',4,1.2,15,12],['ers','ERS',3,.9,18,10],['gb','КПП
 const prodCost=k=>+(COMPS.find(c=>c[0]===k)[3]*(1.2-.08*(S.fac?S.fac.fac:2))).toFixed(2);
 const prodDays=k=>Math.max(1,Math.round(COMPS.find(c=>c[0]===k)[5]*(1.15-.07*(S.fac?S.fac.fac:2))));
 const FATAL=new Set(['ice','ers','gb']);
+const pqty=k=>(UI.pq&&UI.pq[k])||1;
 function ensureParts(id){if(!S.parts)S.parts={};if(!S.parts[id]){S.parts[id]={};COMPS.forEach(([k])=>S.parts[id][k]={h:100,used:1})}return S.parts[id]}
 // износ за круг: манера вождения, мастерство пилота, надёжность машины, характер трассы
 function compWear(k,d,t,mode,tr){
@@ -740,7 +741,10 @@ function compWear(k,d,t,mode,tr){
 function compPen(P){if(!P)return 0;const h=k=>P[k].h;
   return Math.max(0,60-h('ice'))*.012+Math.max(0,60-h('ers'))*.01+Math.max(0,40-h('gb'))*.01+Math.max(0,70-h('floor'))*.015+Math.max(0,70-h('fw'))*.012+(h('floor')<=0?1.5:0)+(h('fw')<=0?1.2:0)}
 const compLimit=k=>COMPS.find(c=>c[0]===k)[2];
-// установка нового узла: из склада (наша команда) или сразу (соперники); сверх лимита — штраф 5 мест
+// штраф за узел сверх лимита на сезон (спортивный регламент Ф-1): первый лишний элемент данного типа — 10 мест,
+// каждый следующий того же типа — 5 мест; КПП сверх лимита — 5 мест. Больше 15 мест в сумме — старт с последнего ряда.
+function partPen(id,k){const lim=compLimit(k),u=ensureParts(id)[k].used;if(!lim||u<lim)return 0;return k==='gb'?5:u===lim?10:5}
+// установка нового узла: из склада (наша команда) или сразу (соперники)
 // автозаказ: узел у пилота < 40%, на складе и в производстве пусто — заводу ставится заказ
 function autoOrder(){
   if(!S.autoOrder)return;
@@ -749,8 +753,9 @@ function autoOrder(){
 }
 function fitPart(id,k,own){
   const P=ensureParts(id);if(own){if(!(S.stock[k]>0))return false;S.stock[k]--}
-  P[k].h=100;P[k].used++;const lim=compLimit(k);
-  if(lim&&P[k].used>lim){S.gpen=S.gpen||{};S.gpen[id]=Math.min(15,(S.gpen[id]||0)+5);if(own)news(`${drv(id).name}: ${COMPS.find(c=>c[0]===k)[1]} сверх лимита (${P[k].used}/${lim}) — штраф 5 мест на старте.`)}
+  const pen=partPen(id,k);P[k].h=100;P[k].used++;const lim=compLimit(k);
+  if(pen){S.gpen=S.gpen||{};S.gpen[id]=(S.gpen[id]||0)+pen;const tot=S.gpen[id];
+    if(own||drv(id).team===S.pid)news(`${drv(id).name}: ${COMPS.find(c=>c[0]===k)[1]} сверх лимита (${P[k].used}/${lim}) — штраф ${pen} мест на старте${tot>15?'; сумма больше 15 — старт с последнего ряда':tot>pen?`, всего ${tot}`:''}.`)}
   return true;
 }
 /* ---------- контракты ---------- */
@@ -1417,14 +1422,24 @@ function draw3D(dt){
       if(pr!==G.renderer.getPixelRatio()){G.renderer.setPixelRatio(pr);G.w=0}}}
   if(w!==G.w||h!==G.h){G.w=w;G.h=h;G.renderer.setSize(w,h,false);G.camera.aspect=w/h;G.camera.updateProjectionMatrix()}
   const wetNow=R.wet[Math.min(R.N-1,R.lapDone)];if(wetNow!==G.wet)setWeather3D(wetNow);
-  const T=R.T,list=R.cars.map(c=>({c,...carProg3D(c,T)})),run=list.filter(x=>!x.out).sort((a,b)=>b.prog-a.prog);
   const len=G.F.len;
+  // стартовая решётка: до старта машины стоят парами в шахматном порядке через 8 м;
+  // после старта — разгон с места (Te отстаёт от T и догоняет) и плавный переход к позициям симуляции
+  const T=R.T,TAU=10,u=Math.min(1,T/TAU),bl=R.count>0?1:1-u*u*(3-2*u),Te=T<TAU?T-T*(1-T/TAU)**2:T;
+  const slot=c=>-(6+(c.grid-1)*8)/len,slotLane=c=>(c.grid%2?-3:3);
+  const list=R.cars.map(c=>{
+    if(R.count>0&&!c.out)return{c,prog:slot(c),grid:true};
+    const x={c,...carProg3D(c,Te)};
+    if(bl>0&&!x.out&&!x.done){const s0=c.cum.length>1?-c.cum[0]/(c.cum[1]-c.cum[0]):-c.cum[0]/R.track.base;x.prog+=(slot(c)-s0)*bl;x.bl=bl}
+    return x;
+  }),run=list.filter(x=>!x.out).sort((a,b)=>b.prog-a.prog);
   run.forEach((x,i)=>{
     const o=G.cars[x.c.did];
     let target=0;
     if(i>0&&run[i-1].prog-x.prog<5/len*2.2)target=(i%2?2.6:-2.6);
     if(x.done)target=-4;
-    o.lane+=(target-o.lane)*Math.min(1,dt*2.5);
+    if(x.grid)o.lane=slotLane(x.c);else if(x.bl>0)o.lane=slotLane(x.c)*x.bl+target*(1-x.bl);
+    else o.lane+=(target-o.lane)*Math.min(1,dt*2.5);
     const s=w3(x.prog,o.lane);
     o.m.g.position.set(s.x,0,s.z);o.m.g.rotation.y=Math.atan2(s.tx,s.tz);o.m.g.visible=true;
     if(o.prev!==null){o.spin+=(x.prog-o.prev)*len/.56;o.m.wheels.forEach(wg=>wg.rotation.x=o.spin)}
@@ -1445,7 +1460,20 @@ function draw3D(dt){
   const pos=new THREE.Vector3(tp.x,0,tp.z),d=new THREE.Vector3(tp.tx,0,tp.tz);
   G.dir.lerp(d,Math.min(1,dt*(UI.cam==='cockpit'?14:5))).normalize();
   const cam=G.camera,dir=G.dir;let fov=55;
-  if(UI.cam==='chase'){cam.position.copy(pos).addScaledVector(dir,-26).setY(9.5);G.look.copy(pos).addScaledVector(dir,26).setY(.5);fov=62}
+  const fi=run.indexOf(tgt);
+  if(R.count>0&&UI.cam!=='over'){// перед стартом: кран над решёткой, видна вся стартовая решётка
+    const k=clamp((6.6-R.count)/6.6,0,1),gl=(6+(run.length-1)*8)/len,a=w3(28/len-k*10/len,-12),b=w3(-gl*.55,0);
+    cam.position.set(a.x,30+k*8,a.z);G.look.set(b.x,0,b.z);fov=clamp(2*Math.atan(gl*len*.36/(gl*len*.55+30))*180/Math.PI*1.25,40,62);G.chB=0;
+  }else if(UI.cam==='chase'){
+    // погоня: камера отъезжает так, чтобы в кадре было до 3 соперников впереди и 3 позади (если они не дальше 140 м)
+    let dA=0,dB=0;if(fi>=0)for(let j=1;j<=3;j++){
+      const f=run[fi-j],r=run[fi+j];
+      if(f){const d=(f.prog-tgt.prog)*len;if(d<=140)dA=Math.max(dA,d)}
+      if(r){const d=(tgt.prog-r.prog)*len;if(d<=140)dB=Math.max(dB,d)}}
+    const wb=clamp(dB+16,26,115),wa=clamp(dA*.65,26,100),kf=G.chB?Math.min(1,dt*1.2):1;
+    G.chB=(G.chB||wb)+(wb-(G.chB||wb))*kf;G.chA=(G.chA||wa)+(wa-(G.chA||wa))*kf;
+    const p=tgt.prog,cp=w3(p-G.chB/len,0),lp=w3(p+G.chA/len,0);
+    cam.position.set(cp.x,8+G.chB*.26,cp.z);G.look.set(lp.x,.5,lp.z);fov=62}
   else if(UI.cam==='cockpit'){cam.position.copy(pos).addScaledVector(dir,-.25).setY(1.32);G.look.copy(pos).addScaledVector(dir,30).setY(1);fov=70}
   else if(UI.cam==='heli'){cam.position.copy(pos).addScaledVector(dir,-55).setY(62);G.look.copy(pos).addScaledVector(dir,25)}
   else if(UI.cam==='over'){const ov=G.ov,P=G.path;fov=50;
@@ -1601,9 +1629,11 @@ function practiceRun(id){
   W.fbs[id]=fb;W.prac.unshift({who:d.name,did:d.id,st:stepName(),lap,sq:clamp(Math.round(sq+rnd(-6,6)),0,100)});
 }
 function applyGridPen(g){
-  const pen=S.gpen||{},out=[...g];
-  Object.entries(pen).forEach(([id,n])=>{const i=out.findIndex(x=>x.id===id);if(i<0||!n)return;const [x]=out.splice(i,1);x.note=(x.note?x.note+', ':'')+'штраф −'+n;out.splice(Math.min(out.length,i+n),0,x)});
-  S.gpen={};return out;
+  const pen=S.gpen||{},out=[...g],back=[];
+  // больше 15 мест — в конец решётки (в порядке квалификации); остальные штрафы — по порядку квалификации
+  g.forEach(x=>{const n=pen[x.id];if(n>15){out.splice(out.indexOf(x),1);x.note=(x.note?x.note+', ':'')+'штраф: последний ряд';back.push(x)}});
+  g.forEach(x=>{const n=pen[x.id];if(!n||n>15)return;const i=out.indexOf(x);out.splice(i,1);x.note=(x.note?x.note+', ':'')+'штраф −'+n;out.splice(Math.min(out.length,i+n),0,x)});
+  S.gpen={};return out.concat(back);
 }
 function runQuali(){
   const tr=W.tr,wet=W.real?W.qwet:W.weather[0],all=[],stg=W.qstage||0;
@@ -1628,7 +1658,7 @@ function runQuali(){
 /* ---------- гонка ---------- */
 function startRace(){
   const tr=W.tr;
-  R={track:tr,N:W.laps,ls:W.ls,tw:W.tw,temp:W.temp,abr:W.abr,T:0,speed:SET.speed,paused:false,count:3.6,wet:W.weather,sc:0,done:false,feed:[],lapDone:0,anyWet:W.weather.some(x=>x),path:trackPath(tr.seed),
+  R={track:tr,N:W.laps,ls:W.ls,tw:W.tw,temp:W.temp,abr:W.abr,T:0,speed:SET.speed,paused:false,count:6.6,wet:W.weather,sc:0,done:false,feed:[],lapDone:0,anyWet:W.weather.some(x=>x),path:trackPath(tr.seed),
      cars:W.grid.map((g,i)=>{
        const isMe=g.tid===S.pid;
        let tyre=isMe?W.start[g.id]:(W.weather[0]?'I':(i<10?pick(['S','M','M']):pick(['M','H','S'])));
@@ -2172,13 +2202,14 @@ function partsCard(compact){
   const stockCard=`<div class="card"><div class="row between"><h3>Склад и завод</h3><span class="pill">завод: уровень ${S.fac?S.fac.fac:2}</span></div>
    ${COMPS.map(([k,n,lim])=>{const q=S.prod.filter(x=>x.k===k);return`<div class="row between wrapflex" style="border-top:1px solid var(--line);padding-top:8px;gap:8px">
      <div class="grow"><b>${n}</b><br><span class="muted" style="font-size:12px">на складе: <b style="color:var(--fg)">${S.stock[k]||0}</b>${lim?` · лимит на пилота: ${lim}`:''}${q.length?` · в производстве: ${q.length} (готово ${etaText(Math.min(...q.map(x=>x.days)))})`:''}</span></div>
-     <button class="btn small" data-a="prod" data-v="${k}" ${S.budget<prodCost(k)?'disabled':''}>Произвести · ${String(prodCost(k)).replace('.',',')} млн · ${prodDays(k)} дн.</button></div>`}).join('')}
-   <p class="muted" style="font-size:12px">Новый узел появляется на складе в указанный день. Срок и цена зависят от уровня завода (вкладка «База команды» ниже).</p></div>`;
+     <div class="row" style="gap:6px"><div class="seg" style="width:auto"><button data-a="pq" data-v="${k}|-1" aria-label="Меньше">−</button><button class="on mono" style="min-width:34px" disabled>${pqty(k)}</button><button data-a="pq" data-v="${k}|1" aria-label="Больше">+</button></div>
+     <button class="btn small" data-a="prod" data-v="${k}" ${S.budget<prodCost(k)*pqty(k)?'disabled':''}>Произвести ${pqty(k)} шт. · ${String(+(prodCost(k)*pqty(k)).toFixed(2)).replace('.',',')} млн · ${prodDays(k)} дн.</button></div></div>`}).join('')}
+   <p class="muted" style="font-size:12px">Кнопками − и + выберите, сколько штук произвести (до 6 за заказ): все узлы заказа делаются параллельно и приходят на склад в указанный день. Срок и цена зависят от уровня завода (вкладка «База команды» ниже).</p></div>`;
   const drvBlock=id=>{const P=ensureParts(id);return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><b>${esc(drv(id).name)}</b>
-   ${COMPS.map(([k,n,lim])=>{const h=Math.round(P[k].h);return`<div class="row between" style="gap:8px"><span style="width:92px;font-size:13px" class="ell">${n}</span><div class="bar grow"><i style="width:${h}%;background:${col(h)}"></i></div><span class="mono" style="width:36px;text-align:right">${h}%</span>${lim?`<span class="muted mono" style="font-size:11px;width:28px">${P[k].used}/${lim}</span>`:'<span style="width:28px"></span>'}<button class="btn small" data-a="fit" data-v="${id}|${k}" ${S.stock[k]>0?'':'disabled'} title="Поставить новый узел со склада">Заменить</button></div>`}).join('')}</div>`};
+   ${COMPS.map(([k,n,lim])=>{const h=Math.round(P[k].h);return`<div class="row between" style="gap:8px"><span style="width:92px;font-size:13px" class="ell">${n}</span><div class="bar grow"><i style="width:${h}%;background:${col(h)}"></i></div><span class="mono" style="width:36px;text-align:right">${h}%</span>${lim?`<span class="muted mono" style="font-size:11px;width:28px">${P[k].used}/${lim}</span>`:'<span style="width:28px"></span>'}<button class="btn small${partPen(id,k)?' danger':''}" data-a="fit" data-v="${id}|${k}" ${S.stock[k]>0?'':'disabled'} title="${partPen(id,k)?`Сверх лимита: штраф ${partPen(id,k)} мест на старте`:'Поставить новый узел со склада'}">${partPen(id,k)?`Штраф −${partPen(id,k)}`:'Заменить'}</button></div>`}).join('')}</div>`};
   return`<div class="card"><div class="row between wrapflex"><h3>Узлы болидов</h3><span class="row wrapflex" style="gap:10px"><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autofit" ${S.autoFit?'checked':''}>автозамена &lt;20%</label><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autoorder" ${S.autoOrder?'checked':''}>автозаказ на заводе</label></span></div>
    ${ids.map(drvBlock).join('')}
-   <p class="muted" style="font-size:12px">Узлы изнашиваются от манеры вождения: «Атака» ×1,5, «Беречь» ×0,75. Влияют мастерство пилота, надёжность болида, трасса и уровень базы. Изношенный узел отнимает темп, выработанный ДВС, ERS или КПП — сход. Сверх лимита на сезон — штраф 5 мест на старте. «Заменить» ставит узел со склада.</p></div>
+   <p class="muted" style="font-size:12px">Узлы изнашиваются от манеры вождения: «Атака» ×1,5, «Беречь» ×0,75. Влияют мастерство пилота, надёжность болида, трасса и уровень базы. Изношенный узел отнимает темп, выработанный ДВС, ERS или КПП — сход. Лимит на сезон (по регламенту Ф-1): первый узел сверх лимита — штраф 10 мест на старте, каждый следующий того же типа — 5 мест, КПП — 5 мест; больше 15 мест — старт с последнего ряда. «Заменить» ставит узел со склада.</p></div>
    ${stockCard}`;
 }
 function vCar(){
@@ -2658,8 +2689,9 @@ document.addEventListener('click',e=>{
      news(`${d.name} покидает команду.`);save();toast(`Пилот уволен, компенсация ${fee.toFixed(1).replace('.',',')} млн`);keepScroll(render);break}
    case'facup':{const l=S.fac[v];if(l>=5||S.facBuild[v]||S.budget<FAC_COST[l])return;S.budget=+(S.budget-FAC_COST[l]).toFixed(2);S.facBuild[v]={days:FAC_DAYS[l]};save();toast(`Стройка начата: готово ${etaText(FAC_DAYS[l])}`);keepScroll(render);break}
    case'day':{const n=v==='wk'?Math.max(0,weekendDay()-S.day):+v;if(S.day+n>weekendDay())return;advanceDays(n);save();keepScroll(render);break}
-   case'fit':{const[id,k]=v.split('|');if(fitPart(id,k,true)){toast(`Установлен новый узел: ${COMPS.find(c=>c[0]===k)[1]} — ${nm(id)}`);save()}keepScroll(render);break}
-   case'prod':{const c=COMPS.find(x=>x[0]===v),pc=prodCost(v);if(S.budget<pc)return;S.budget=+(S.budget-pc).toFixed(2);S.prod.push({k:v,days:prodDays(v)});save();toast(`${c[1]}: готово ${etaText(prodDays(v))}`);keepScroll(render);break}
+   case'fit':{const[id,k]=v.split('|');const pp=partPen(id,k);if(pp&&S.stock[k]>0&&armed!=='fit'+v){UI.arm='fit'+v;toast(`Узел сверх лимита: штраф ${pp} мест на старте. Нажмите ещё раз, чтобы заменить`);return}if(fitPart(id,k,true)){toast(`Установлен новый узел: ${COMPS.find(c=>c[0]===k)[1]} — ${nm(id)}`);save()}keepScroll(render);break}
+   case'pq':{const[k,dv]=v.split('|');UI.pq=UI.pq||{};UI.pq[k]=clamp(pqty(k)+(+dv),1,6);keepScroll(render);break}
+   case'prod':{const c=COMPS.find(x=>x[0]===v),n=pqty(v),pc=+(prodCost(v)*n).toFixed(2);if(S.budget<pc)return;S.budget=+(S.budget-pc).toFixed(2);for(let i=0;i<n;i++)S.prod.push({k:v,days:prodDays(v)});save();toast(`${c[1]} × ${n}: готово ${etaText(prodDays(v))}`);keepScroll(render);break}
    case'snego':{const sf=me()[v];UI.snego={k:v,len:2,offer:staffAsk(sf)};keepScroll(render);break}
    case'snlen':UI.snego.len=+v;keepScroll(render);break;
    case'sncancel':UI.snego=null;keepScroll(render);break;
