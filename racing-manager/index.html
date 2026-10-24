@@ -138,7 +138,7 @@ canvas.track{width:100%;display:block;background:var(--panel);border-radius:10px
 .zoomctl{position:absolute;right:8px;bottom:8px}
 .spdtop{flex:none}
 .spdtop button{min-height:34px;padding:6px 10px}
-@media (max-width:600px){.spdtop button{padding:6px 7px;font-size:12px}.racehead .lapbox{font-size:17px}}
+@media (max-width:600px){.racehead{flex-wrap:wrap}.spdtop{width:100%;display:flex}.spdtop button{flex:1;padding:6px 2px;font-size:12px}.racehead .lapbox{font-size:17px}}
 .tower{position:absolute;left:8px;top:8px;background:rgba(8,11,15,.86);border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:12.5px;width:300px;max-width:52%;z-index:2}
 .tower .th{cursor:pointer}
 .tower .th{display:flex;justify-content:space-between;padding:4px 7px;background:var(--accent);color:var(--accent-ink);font-weight:600;letter-spacing:.06em}
@@ -545,7 +545,7 @@ function showIntro(){
 }
 const HAS3D=(()=>{try{if(typeof THREE==='undefined')return false;const c=document.createElement('canvas');return!!(c.getContext('webgl')||c.getContext('experimental-webgl'))}catch(e){return false}})();
 const CAMS=[['chase','Погоня'],['tv','ТВ'],['cockpit','Кокпит'],['heli','Вертолёт'],['over','Обзор']];
-const SPEEDS=[[0,'Пауза'],[1,'×1'],[4,'×4'],[16,'×16'],[32,'×32']];
+const SPEEDS=[[0,'Пауза'],[1,'×1'],[2,'×2'],[3,'×3'],[4,'×4'],[16,'×16'],[32,'×32']];
 const DIFF_DEV=[.6,1,1.4];
 
 /* ---------- настройка болида ---------- */
@@ -2536,7 +2536,7 @@ function vSettings(){
    ${card('Музыка и звук',opt('music',[[0,'Выкл'],[1,'Тихо'],[2,'Громко']])+'<div style="height:8px"></div><span class="eyebrow">Заставка при запуске</span>'+opt('intro',[[1,'Показывать'],[0,'Не показывать']])+'<div style="height:8px"></div><button class="btn block" data-a="replayintro">Посмотреть заставку</button>',AU_OK?'Собственная тема в стиле телетрансляций. В меню играет музыка, в гонке остаются только сигналы старта.':'<span style="color:var(--bad)">Звук недоступен в этом браузере.</span>')}
    ${card('Камера по умолчанию',opt('cam',CAMS),'В гонке камеру можно переключить в любой момент.')}
   </div><div class="col">
-   ${card('Скорость гонки по умолчанию',opt('speed',[[1,'×1'],[4,'×4'],[16,'×16']]))}
+   ${card('Скорость гонки по умолчанию',opt('speed',[[1,'×1'],[2,'×2'],[3,'×3'],[4,'×4'],[16,'×16']]))}
    ${card('Режим игры',opt('mode',[['real','Реализм'],['sim','Симуляция']]),SET.mode==='real'?'Реализм: реальное число кругов, уик-энд из четырёх дней — медиа-день, три практики, квалификация Q1/Q2/Q3 и гонка.':'Симуляция: короткие гонки, одна практика и одна квалификация. Быстрый темп карьеры.')}
    ${SET.mode==='sim'?card('Длина гонки',opt('len',[[0.6,'Короткая'],[1,'Стандарт'],[1.5,'Длинная']]),'Меняется со следующего уик-энда.'):''}
    ${card('Сложность',opt('diff',[[0,'Лёгкая'],[1,'Нормальная'],[2,'Сложная']]),'Влияет на скорость развития соперников и качество их настроек.')}
