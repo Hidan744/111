@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<style>:root{padding-top:env(safe-area-inset-top,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<title>Пит-Уолл</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#0b0f14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: экран пит-уолла — шапка команды, прокручиваемая панель, нижняя таб-панель как в мобильном приложении */
+:root{
+  --bg:#0b0f14; --panel:#121a23; --panel2:#18222e; --line:#243242;
+  --fg:#e8eef4; --muted:#8597ab; --accent:#ffb020; --accent-ink:#1a1100;
+  --good:#3fd27f; --bad:#ff5a4f; --info:#55b6ff;
+  --display:'Russo One','Arial Black',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --team:#ff8a1f;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#app{height:100%;display:flex;flex-direction:column;max-width:560px;margin:0 auto;position:relative}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-block:14px 24px;display:flex;flex-direction:column;gap:14px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:30px;line-height:1.05}
+h2{font-size:19px}
+h3{font-size:15px}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;gap:10px;align-items:center}
+.between{justify-content:space-between}
+.wrapflex{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.stack{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.card.flat{background:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);font-weight:600;min-height:44px;transition:transform .08s,background .15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-family:var(--display);font-weight:400;letter-spacing:.03em;font-size:16px}
+.btn.small{padding:7px 11px;min-height:34px;font-size:13px}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn[disabled]{opacity:.38;pointer-events:none}
+.btn.block{width:100%}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--line);white-space:nowrap}
+.pill.good{color:var(--good);border-color:color-mix(in srgb,var(--good) 45%,transparent)}
+.pill.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.pill.acc{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.pill.info{color:var(--info);border-color:color-mix(in srgb,var(--info) 45%,transparent)}
+.chip{width:12px;height:12px;border-radius:3px;flex:none;display:inline-block}
+.bar{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;position:relative}
+.bar>i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px}
+.bar>b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);opacity:.6}
+.stat{display:grid;grid-template-columns:110px 1fr 34px;gap:10px;align-items:center;font-size:13px}
+.kv{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kv>div{background:var(--panel2);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kv b{font-family:var(--mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:7px 4px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tr.me td{background:color-mix(in srgb,var(--team) 14%,transparent)}
+.tblwrap{overflow-x:auto}
+.seg{display:flex;background:var(--panel2);border-radius:8px;padding:3px;gap:3px}
+.seg button{flex:1;padding:8px 6px;border-radius:6px;font-size:13px;font-weight:600;color:var(--muted);min-height:36px}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+/* header */
+.top{padding-block:10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:var(--bg);position:relative}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--team) 0 35%,transparent 35%)}
+.badge{width:40px;height:40px;border-radius:8px;background:var(--team);display:grid;place-items:center;font-family:var(--display);color:#0b0f14;font-size:13px;flex:none}
+.money{font-family:var(--mono);font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+/* tabbar */
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--panel)}
+.tabs button{padding:9px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--muted);font-weight:600}
+.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+.tabs button.on{color:var(--accent)}
+/* title */
+.title{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;padding-block:24px}
+.logo{font-family:var(--display);font-size:52px;line-height:.95;letter-spacing:.01em}
+.logo span{color:var(--accent)}
+.stripes{height:10px;background:repeating-linear-gradient(90deg,var(--fg) 0 10px,var(--bg) 10px 20px);opacity:.9;border-radius:2px}
+.teampick{display:flex;flex-direction:column;gap:8px}
+.teampick button{display:flex;gap:12px;align-items:center;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.teampick button.on{border-color:var(--accent);background:var(--panel2)}
+input[type=text]{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--fg);padding:12px;font:inherit;min-height:44px}
+/* race */
+.racehead{padding-block:8px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+.lapbox{font-family:var(--display);font-size:20px}
+canvas.track{width:100%;display:block;background:var(--panel);border-radius:10px;border:1px solid var(--line)}
+.drvctl{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--team);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.tyre{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:3px solid;font-size:10px;font-weight:700;font-family:var(--mono);flex:none;background:#0b0f14;color:#e8eef4}
+.pitrow{display:flex;gap:6px;align-items:center}
+.pitrow button.tbtn{width:40px;height:40px;border-radius:50%;border:3px solid;font-family:var(--mono);font-weight:700;background:var(--bg)}
+.pitrow button.tbtn.on{box-shadow:0 0 0 3px var(--accent);background:var(--panel2)}
+.feed{font-size:12.5px;display:flex;flex-direction:column;gap:4px}
+.feed div{padding-left:10px;border-left:2px solid var(--line)}
+.flag{padding:3px 8px;border-radius:4px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em}
+.flag.sc{background:#ffd23f;color:#1a1400}
+.flag.wet{background:var(--info);color:#04131f}
+.flag.dry{background:var(--panel2);color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 14px;border-radius:8px;font-weight:600;font-size:14px;z-index:20;max-width:90%;text-align:center;animation:pop .2s ease-out}
+@keyframes pop{from{opacity:0;transform:translate(-50%,8px)}}
+.pos{font-family:var(--display);font-size:13px;width:22px;text-align:center}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end}
+.podium div{background:var(--panel2);border-radius:8px 8px 0 0;padding:8px;text-align:center;display:flex;flex-direction:column;gap:2px;font-size:12px;min-width:0}
+.podium div b{font-family:var(--display);font-size:22px}
+.podium .p1{min-height:110px;border-top:3px solid var(--accent)}
+.podium .p2{min-height:90px}
+.podium .p3{min-height:76px}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+(()=>{
+'use strict';
+/* ---------- утилиты ---------- */
+const $=(s,el=document)=>el.querySelector(s);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const ri=(a,b)=>Math.floor(rnd(a,b+1));
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fm=(m,d=1)=>(m<0?'−':'')+Math.abs(m).toFixed(d).replace('.',',')+' млн $';
+const fsec=s=>{const m=Math.floor(s/60);const r=(s-m*60).toFixed(3).padStart(6,'0');return m+':'+r.replace('.',',')};
+const fgap=s=>'+'+s.toFixed(1).replace('.',',');
+const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<10||h>=20)?b:c)};
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ---------- данные мира ---------- */
+const PARTS=[['aero','Аэродинамика'],['engine','Двигатель'],['chassis','Шасси'],['rel','Надёжность']];
+const TEAM_DEFS=[
+ ['aurora','Аврора Рейсинг','АВР','#e8443a',[86,84,85,80],60,90],
+ ['nord','Норд Моторспорт','НРД','#3d8bff',[84,86,82,82],58,88],
+ ['falcon','Фалькон ГП','ФЛК','#18c29c',[80,80,82,78],48,80],
+ ['volga','Волга Рейсинг','ВЛГ','#ff8a1f',[78,76,78,80],40,72],
+ ['stellar','Стеллар','СТЛ','#c86bff',[75,78,74,76],36,66],
+ ['baltic','Балтика Тим','БЛТ','#f2d13a',[72,74,73,74],32,60],
+ ['ural','Урал Стил','УРЛ','#a9b6c4',[70,72,70,72],28,55],
+ ['comet','Комета','КМТ','#ff5fa2',[68,69,70,68],25,50],
+ ['taiga','Тайга Рейсинг','ТГА','#5ccf4a',[65,67,66,70],22,45],
+ ['polar','Полярис','ПЛР','#6fd6ff',[62,64,64,66],20,40],
+];
+const DRIVER_DEFS=[
+ ['Максим Орлов',27,94,90,86],['Лукас Брандт',31,92,93,88],
+ ['Артём Соколов',24,91,85,82],['Энцо Мартелли',29,90,88,90],
+ ['Кай Нильсен',22,88,82,80],['Даниил Ветров',33,87,92,91],
+ ['Рафаэль Кошта',26,86,84,85],['Оскар Линд',25,85,83,79],
+ ['Илья Громов',28,84,86,84],['Жюль Перрен',30,83,87,83],
+ ['Тимур Каримов',23,83,78,80],['Ноа Фишер',21,82,76,78],
+ ['Сергей Бельский',34,80,88,87],['Мигель Ортега',27,80,80,81],
+ ['Глеб Ершов',22,79,77,76],['Хуго Вайс',29,78,82,82],
+ ['Павел Демидов',31,77,83,84],['Себастьян Коль',24,76,78,77],
+ ['Роман Лаптев',26,75,79,78],['Юки Танака',23,75,76,80],
+ ['Егор Мельник',20,81,74,75],['Марк Дюбуа',35,82,90,88],
+ ['Влад Ковалёв',25,78,80,77],['Финн Мёрфи',22,77,75,79],
+ ['Андрей Зимин',19,76,70,72],['Лео Сантос',28,79,81,80],
+];
+const FIRST=['Алексей','Никита','Дмитрий','Матвей','Иван','Кирилл','Томас','Феликс','Луис','Марио','Ален','Ян','Эмиль','Арсений','Фёдор','Пьер'];
+const LAST=['Беляев','Чернов','Руднев','Кравец','Шустов','Ланге','Моро','Петтерсон','Гарсия','Бьянки','Новак','Ридель','Ласт','Волков','Тихонов','Жданов'];
+const STAFF_NAMES=['Виктор Лебедев','Анна Крылова','Джеймс Холт','Олег Сафронов','Марта Кляйн','Игорь Рябов','Лючия Ферри','Борис Седов','Пол Вэнс','Елена Гусева','Ренато Кальди','Стас Пименов'];
+// name, laps, base, aero, engine, overtake difficulty, rain, pit loss
+const TRACKS=[
+ ['Сахир','Бахрейн',24,92,.9,1.1,.3,.03,21],
+ ['Мельбурн','Австралия',22,80,1,1,.5,.18,19],
+ ['Сочи','Россия',22,96,.9,1.2,.45,.15,22],
+ ['Монте-Карло','Монако',26,72,1.3,.6,.9,.2,18],
+ ['Барселона','Испания',22,78,1.2,.9,.6,.15,21],
+ ['Монреаль','Канада',23,74,.8,1.3,.3,.25,18],
+ ['Сильверстоун','Великобритания',20,88,1.3,1,.45,.35,20],
+ ['Спа','Бельгия',18,105,1,1.2,.3,.45,19],
+ ['Монца','Италия',22,81,.6,1.5,.3,.2,24],
+ ['Марина-Бэй','Сингапур',22,98,1.3,.8,.7,.25,28],
+ ['Сузука','Япония',20,90,1.2,1,.55,.3,22],
+ ['Яс-Марина','Абу-Даби',22,86,1,1.1,.4,.02,21],
+].map((t,i)=>({name:t[0],country:t[1],laps:t[2],base:t[3],aero:t[4],engine:t[5],over:t[6],rain:t[7],pit:t[8],seed:i+3}));
+const TYRES={
+ S:{n:'Мягкие',l:'М',col:'#ff4d4d',off:-.9,wear:5.2},
+ M:{n:'Средние',l:'С',col:'#ffd23f',off:-.35,wear:3.5},
+ H:{n:'Жёсткие',l:'Ж',col:'#f2f2f2',off:0,wear:2.4},
+ I:{n:'Дождевые',l:'Д',col:'#3ccf6e',off:4.2,wear:3},
+};
+const POINTS=[25,18,15,12,10,8,6,4,2,1];
+const SPONSORS=['Вектор Телеком','Медведь Энерджи','Кедр Финанс','Горизонт Авиа','Ладога Вода','Квант Софт','Арктика Логистик','Сапсан Тревел','Пульсар Гейминг','Янтарь Часы','Сокол Шины','Байкал Инвест','Магистраль Строй','Прибой Напитки','Орбита Связь'];
+const GOALS={
+ finish:{t:'Оба пилота финишируют',b:[.3,.5]},
+ points:{t:'Хотя бы один пилот в очках',b:[.4,.9]},
+ both:{t:'Оба пилота в очках',b:[.8,1.4]},
+ podium:{t:'Подиум',b:[1.6,3]},
+ win:{t:'Победа в гонке',b:[3,5]},
+};
+
+/* ---------- состояние ---------- */
+const SAVE='pitwall_save_v1';
+let S=null;            // игра
+let W=null;            // уик-энд
+let R=null;            // гонка
+const UI={screen:'title',tab:'hq',stand:'drivers',arm:null,pickTeam:3,teamName:''};
+
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(S))}catch(e){}}
+function load(){try{const s=localStorage.getItem(SAVE);return s?JSON.parse(s):null}catch(e){return null}}
+function wipe(){try{localStorage.removeItem(SAVE)}catch(e){}}
+
+const team=id=>S.teams.find(t=>t.id===id);
+const drv=id=>S.drivers[id];
+const me=()=>team(S.pid);
+const salaryFor=p=>+(0.6+Math.pow(Math.max(0,p-70)/25,2)*9).toFixed(2);
+let uid=1000;
+function mkDriver(name,age,pace,craft,tyre){const id='d'+(uid++);return{id,name,age,pace,craft,tyre,salary:salaryFor(pace),contract:ri(1,3),team:null,pts:0,wins:0,pods:0,career:0}}
+function rookie(){return mkDriver(pick(FIRST)+' '+pick(LAST),ri(18,22),ri(72,82),ri(68,78),ri(70,80))}
+function mkStaff(kind,rating){rating=Math.round(clamp(rating,40,95));return{name:pick(STAFF_NAMES),rating,salary:+(0.4+Math.pow((rating-40)/55,2)*(kind==='td'?3.2:1.6)).toFixed(2)}}
+function staffMarket(){const m={td:[],crew:[]};for(let i=0;i<3;i++){m.td.push(mkStaff('td',ri(55,92)));m.crew.push(mkStaff('crew',ri(55,94)))}return m}
+const hireCost=(kind,st)=>+(st.salary*(kind==='td'?1.5:1.2)).toFixed(1);
+
+function mkOffer(){
+  const rep=S.rep;
+  const keys=rep>75?['both','podium','win','points']:rep>55?['points','both','podium','finish']:['finish','points','both'];
+  const g=pick(keys);
+  return{name:pick(SPONSORS),per:+(rnd(.5,1.4)*(.5+rep/100)).toFixed(2),goal:g,bonus:+rnd(...GOALS[g].b).toFixed(2),sign:+rnd(.5,2.5).toFixed(1)};
+}
+
+function newGame(ti,customName){
+  uid=1000;
+  const drivers={};
+  const dl=DRIVER_DEFS.map(d=>mkDriver(...d));
+  dl.forEach(d=>drivers[d.id]=d);
+  const teams=TEAM_DEFS.map((t,i)=>{
+    const dd=[dl[i*2],dl[i*2+1]];dd.forEach(d=>d.team=t[0]);
+    return{id:t[0],name:t[1],short:t[2],color:t[3],car:{aero:t[4][0],engine:t[4][1],chassis:t[4][2],rel:t[4][3]},budget:t[5],rep:t[6],drivers:dd.map(d=>d.id),td:mkStaff('td',85-i*3),crew:mkStaff('crew',84-i*2.5),pts:0};
+  });
+  const p=teams[ti];
+  if(customName&&customName.trim()){p.name=customName.trim().slice(0,24);p.short=p.name.replace(/[^А-ЯЁA-Zа-яёa-z]/g,'').slice(0,3).toUpperCase()||p.short}
+  S={v:1,season:1,round:0,pid:p.id,rep:p.rep,budget:Math.round(TEAM_DEFS[ti][5]*.5+10),teams,drivers,
+     sponsors:[],offers:[],projects:[],news:[],results:[],warnings:0,history:[],market:null,goal:Math.min(9,ti+2),lastRace:null};
+  S.market=staffMarket();
+  const first=mkOffer();first.name='Титульный: '+first.name;first.per=+(first.per*1.6).toFixed(2);S.sponsors.push(first);
+  for(let i=0;i<4;i++)S.offers.push(mkOffer());
+  news(`Вы — новый руководитель команды «${p.name}». Совет директоров ждёт ${S.goal}-е место или выше в Кубке конструкторов.`);
+  save();
+}
+function news(t){S.news.unshift({r:S.round,s:S.season,t});S.news=S.news.slice(0,30)}
+
+/* ---------- производные ---------- */
+function perf(t,tr){const w=tr.aero+tr.engine+1;return(t.car.aero*tr.aero+t.car.engine*tr.engine+t.car.chassis)/w}
+const carOverall=t=>(t.car.aero+t.car.engine+t.car.chassis)/3;
+function teamStandings(){return[...S.teams].sort((a,b)=>b.pts-a.pts||carOverall(b)-carOverall(a))}
+function driverStandings(){return Object.values(S.drivers).filter(d=>d.team).sort((a,b)=>b.pts-a.pts||b.wins-a.wins||b.pace-a.pace)}
+const myPos=()=>teamStandings().findIndex(t=>t.id===S.pid)+1;
+const maxProjects=()=>me().td.rating>=82?3:me().td.rating>=66?2:1;
+function costPerRace(){const t=me();return t.drivers.reduce((s,id)=>s+drv(id).salary,0)/12+(t.td.salary+t.crew.salary)/12+.6}
+const incomePerRace=()=>S.sponsors.reduce((s,x)=>s+x.per,0);
+const UPG=[{k:'small',n:'Доработка',g:2,c:3,r:1},{k:'major',n:'Новый пакет',g:5,c:7,r:3},{k:'rev',n:'Концепция',g:9,c:12,r:5}];
+const upgCost=(part,u)=>+(u.c*(1+Math.max(0,me().car[part]-70)/40)).toFixed(1);
+
+/* ---------- трасса ---------- */
+const pathCache={};
+function trackPath(seed){
+  if(pathCache[seed])return pathCache[seed];
+  // контрольные точки по кругу со случайным радиусом → сглаживание Catmull-Rom
+  const r=mulberry(seed*9973+7),n=9+Math.floor(r()*5),ctl=[];
+  for(let i=0;i<n;i++){const th=(i+(r()-.5)*.5)/n*Math.PI*2;const rad=r()<.3?.38+r()*.2:.75+r()*.25;ctl.push([Math.cos(th)*rad*1.45,Math.sin(th)*rad])}
+  const N=420,pts=[],per=N/n;
+  for(let i=0;i<N;i++){const s=Math.floor(i/per),t=i/per-s,p0=ctl[(s-1+n)%n],p1=ctl[s%n],p2=ctl[(s+1)%n],p3=ctl[(s+2)%n];
+    const cr=(a,b,c,d)=>.5*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t);
+    pts.push([cr(p0[0],p1[0],p2[0],p3[0]),cr(p0[1],p1[1],p2[1],p3[1])])}
+  let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;pts.forEach(([x,y])=>{mnx=Math.min(mnx,x);mxx=Math.max(mxx,x);mny=Math.min(mny,y);mxy=Math.max(mxy,y)});
+  const norm=pts.map(([x,y])=>[(x-mnx)/(mxx-mnx),(y-mny)/(mxy-mny)]);
+  const cum=[0];for(let i=1;i<=N;i++){const a=norm[i-1],b=norm[i%N];cum.push(cum[i-1]+Math.hypot(b[0]-a[0],b[1]-a[1]))}
+  return pathCache[seed]={pts:norm,cum,len:cum[N],ar:(mxx-mnx)/(mxy-mny)};
+}
+function pointAt(p,f){
+  f=((f%1)+1)%1;const d=f*p.len;let lo=0,hi=p.pts.length;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(p.cum[m]<=d)lo=m;else hi=m}
+  const a=p.pts[lo],b=p.pts[(lo+1)%p.pts.length],t=(d-p.cum[lo])/((p.cum[lo+1]-p.cum[lo])||1);
+  return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
+}
+function fitCanvas(cv,ratio){
+  const dpr=Math.min(2,window.devicePixelRatio||1),w=cv.clientWidth,h=Math.round(w*ratio);
+  cv.style.height=h+'px';if(cv.width!==Math.round(w*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
+  const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return{ctx,w,h};
+}
+function drawTrack(ctx,w,h,p,thick,wet){
+  const pad=thick*1.6+6,sx=w-pad*2,sy=h-pad*2,s=Math.min(sx/p.ar,sy),ox=(w-s*p.ar)/2,oy=(h-s)/2;
+  const tf=([x,y])=>[ox+x*s*p.ar,oy+y*s];
+  ctx.clearRect(0,0,w,h);
+  ctx.lineJoin='round';ctx.lineCap='round';
+  ctx.beginPath();p.pts.forEach((pt,i)=>{const[x,y]=tf(pt);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();
+  ctx.strokeStyle='#2c3a4b';ctx.lineWidth=thick+6;ctx.stroke();
+  ctx.strokeStyle=wet?'#1d3550':'#1a232e';ctx.lineWidth=thick;ctx.stroke();
+  ctx.setLineDash([2,10]);ctx.strokeStyle='rgba(232,238,244,.18)';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+  const a=tf(pointAt(p,0)),b=tf(pointAt(p,.004)),ang=Math.atan2(b[1]-a[1],b[0]-a[0])+Math.PI/2;
+  ctx.save();ctx.translate(a[0],a[1]);ctx.rotate(ang);
+  for(let i=-2;i<2;i++)for(let j=0;j<2;j++){ctx.fillStyle=(i+j)%2?'#e8eef4':'#0b0f14';ctx.fillRect(i*thick/4,j*3-3,thick/4,3)}
+  ctx.restore();
+  return tf;
+}
+
+/* ---------- модель круга ---------- */
+function lapModel(c,lap,wet){
+  const tr=R.track,t=team(c.tid),d=drv(c.did);
+  let lt=tr.base+(100-perf(t,tr))*.06+(100-d.pace)*.035-lap*.03;
+  if(wet){lt+=7+(100-d.craft)*.025+(c.tyre==='I'?0:8.5)}else lt+=TYRES[c.tyre].off;
+  const h=c.health;lt+=(100-h)*.018+(h<35?(35-h)*.09:0);
+  lt+=c.mode==='push'?-.35:c.mode==='save'?.45:0;
+  lt+=gauss()*(.15+(100-d.craft)/100*.35)*(lap===1?2.2:1);
+  return lt;
+}
+function wearRate(c,wet){
+  const d=drv(c.did);let w=TYRES[c.tyre].wear;
+  if(c.tyre==='I'&&!wet)w=7.5;
+  return w*(1.25-d.tyre/200)*(c.mode==='push'?1.45:c.mode==='save'?.7:1);
+}
+
+/* ---------- уик-энд ---------- */
+function genWeather(tr){
+  let wet=Math.random()<tr.rain*.55;const arr=[];let seg=0;
+  for(let i=0;i<tr.laps;i++){arr.push(wet);seg++;if(seg>=4&&Math.random()<(wet?.16:tr.rain*.2)){wet=!wet;seg=0}}
+  return arr;
+}
+function startWeekend(){
+  const tr=TRACKS[S.round];
+  W={ti:S.round,tr,weather:genWeather(tr),risk:{},grid:null,qt:{},start:{}};
+  me().drivers.forEach(id=>{W.risk[id]=false;W.start[id]=W.weather[0]?'I':'M'});
+  UI.screen='quali';render();
+}
+function runQuali(){
+  const tr=W.tr,wet=W.weather[0],all=[];
+  S.teams.forEach(t=>t.drivers.forEach(id=>{
+    const d=drv(id);const risk=t.id===S.pid?W.risk[id]:Math.random()<.3;
+    let q=tr.base-1.2+(100-perf(t,tr))*.06+(100-d.pace)*.035+TYRES.S.off+gauss()*(.12+(100-d.craft)/100*.25);
+    if(wet)q+=7+(100-d.craft)*.03;
+    let note='';
+    if(risk){q-=.28;if(Math.random()<(wet?.2:.12)){q+=rnd(1.2,3);note='ошибка'}}
+    all.push({id,tid:t.id,q,note});
+  }));
+  all.sort((a,b)=>a.q-b.q);
+  W.grid=all;UI.screen='qres';render();
+}
+
+/* ---------- гонка ---------- */
+function startRace(){
+  const tr=W.tr;
+  R={track:tr,N:tr.laps,T:0,speed:2,paused:false,wet:W.weather,sc:0,done:false,feed:[],lapDone:0,anyWet:W.weather.some(x=>x),path:trackPath(tr.seed),
+     cars:W.grid.map((g,i)=>{
+       const isMe=g.tid===S.pid;
+       let tyre=isMe?W.start[g.id]:(W.weather[0]?'I':(i<10?pick(['S','M','M']):pick(['M','H','S'])));
+       return{did:g.id,tid:g.tid,me:isMe,grid:i+1,tyre,health:100,mode:'norm',pitReq:null,cum:[i*.32],out:false,used:[tyre],stops:0,pen:0,thr:rnd(22,38),last:0,best:1e9};
+     })};
+  feed(`Старт! ${R.N} ${plural(R.N,'круг','круга','кругов')}, ${R.wet[0]?'трасса мокрая':'сухо'}.`);
+  UI.screen='race';render();
+  lastTs=0;requestAnimationFrame(loop);
+}
+function feed(t,mine){R.feed.unshift({t,mine,l:R.lapDone});R.feed=R.feed.slice(0,40)}
+const nm=id=>drv(id).name.split(' ').slice(-1)[0];
+
+function aiDecide(c,k,wet,sc){
+  if(c.me||c.pitReq)return;
+  const left=R.N-k+1;
+  if(wet&&c.tyre!=='I'){if(Math.random()<.65)c.pitReq='I';return}
+  if(!wet&&c.tyre==='I'){if(Math.random()<.65)c.pitReq=left>14?'H':left>8?'M':'S';return}
+  if(left<=1)return;
+  const dry=c.used.filter(x=>x!=='I');
+  const needSecond=!R.anyWet&&new Set(dry).size<2;
+  if(c.health<c.thr||(sc&&c.health<62&&left>4)||(needSecond&&left<=3)){
+    let ch=left>15?'H':left>8?'M':'S';
+    if(needSecond&&ch===c.tyre)ch=ch==='H'?'M':ch==='M'?(left>10?'H':'S'):'M';
+    if(left<=3&&c.health>45&&!needSecond)return;
+    c.pitReq=ch;
+  }
+}
+function simLap(k){
+  const wet=R.wet[k-1];
+  if(wet)R.anyWet=true;
+  if(R.sc===0&&k>2&&k<R.N-1&&Math.random()<.028){R.sc=3;feed('Машина безопасности на трассе!')}
+  const sc=R.sc>0;
+  const run=R.cars.filter(c=>!c.out).sort((a,b)=>a.cum[k-1]-b.cum[k-1]);
+  let prevEnd=null,prev=null;
+  const pitted=new Set();
+  for(const c of run){
+    aiDecide(c,k,wet,sc);
+    const d=drv(c.did),t=team(c.tid);
+    let lt=sc?R.track.base*1.38+rnd(0,.4):lapModel(c,k,wet);
+    // надёжность
+    const pDnf=(100-t.car.rel)*.00007*(c.mode==='push'?1.4:1)+(wet?.0015:0)*(1.2-d.craft/100);
+    if(Math.random()<pDnf){c.out=true;c.outLap=k;c.cum.push(Infinity);feed(`${nm(c.did)} сходит: ${pick(wet?['вылет в гравий','авария в мокром повороте']:['отказ двигателя','поломка коробки передач','отказ гидравлики','сломана подвеска'])}.`,c.me);continue}
+    // ошибка
+    if(!sc&&Math.random()<(c.mode==='push'?.012:c.mode==='save'?.002:.004)*(1.3-d.craft/100)*(wet?2.2:1)){const loss=rnd(1.5,5);lt+=loss;feed(`${nm(c.did)} ошибается и теряет ${loss.toFixed(1).replace('.',',')} с.`,c.me)}
+    // прокол
+    if(c.health<10&&Math.random()<.18){lt+=rnd(18,28);c.health=0;if(!c.pitReq)c.pitReq=R.N-k>8?'M':'S';feed(`Прокол у ${nm(c.did)}! Ползёт в боксы.`,c.me)}
+    // пит-стоп
+    if(c.pitReq&&k<R.N){
+      const crew=t.crew.rating;let st=2.1+(100-crew)*.03;let slow=false;
+      if(Math.random()<.05+(100-crew)*.0015){st+=rnd(2,6);slow=true}
+      lt+=(sc?R.track.pit*.45:R.track.pit)+st;
+      c.tyre=c.pitReq;c.health=100;c.stops++;c.used.push(c.tyre);c.pitReq=null;pitted.add(c);
+      if(c.me||slow)feed(`${nm(c.did)} в боксах: ${TYRES[c.tyre].n.toLowerCase()}, стоянка ${st.toFixed(1).replace('.',',')} с${slow?' — проблема с колесом':''}.`,c.me);
+    }else c.pitReq=null;
+    c.health=Math.max(0,c.health-wearRate(c,wet)*(sc?.35:1));
+    let end=c.cum[k-1]+lt;
+    if(prev&&!sc&&!pitted.has(c)&&!pitted.has(prev)&&c.cum[k-1]-prev.cum[k-1]<2.5){
+      if(end<prevEnd+.25){
+        if(end<prevEnd){
+          const pd=drv(prev.did);
+          const p=clamp(.22+(prevEnd-end)*.35-R.track.over*.38+(d.craft-pd.craft)/150-(wet?.05:0),.05,.92);
+          if(Math.random()<p){if(c.me||prev.me)feed(`${nm(c.did)} обгоняет ${nm(prev.did)}!`,true)}
+          else end=prevEnd+rnd(.25,.6);
+        }else end=prevEnd+.25+rnd(0,.2);
+      }
+    }
+    c.last=lt;if(!sc&&!pitted.has(c)&&k>1)c.best=Math.min(c.best,lt);
+    c.cum.push(end);
+    if(!pitted.has(c)){if(prevEnd===null||end>prevEnd){prevEnd=end;prev=c}}
+  }
+  if(sc){
+    const ord=R.cars.filter(c=>!c.out).sort((a,b)=>a.cum[k]-b.cum[k]);
+    for(let i=1;i<ord.length;i++){const g=ord[i].cum[k]-ord[i-1].cum[k];ord[i].cum[k]=ord[i-1].cum[k]+Math.min(g,.9)}
+    R.sc--;if(R.sc===0)feed('Машина безопасности уходит. Рестарт!');
+  }
+  if(k<R.N&&R.wet[k]!==wet)feed(R.wet[k]?'Начинается дождь!':'Дождь прекращается, трасса подсыхает.');
+  R.lapDone=k;
+}
+function carProgress(c,T){
+  const cum=c.cum;let i=0;
+  while(i<cum.length-1&&cum[i+1]<=T)i++;
+  if(i>=cum.length-1){return{laps:i,f:0,done:i>=R.N}}
+  const a=cum[i],b=cum[i+1];
+  if(!isFinite(b))return{laps:i,f:0,out:true};
+  return{laps:i,f:clamp((T-a)/(b-a),-.5,1),done:false};
+}
+function liveOrder(){
+  const T=R.T;
+  const arr=R.cars.map(c=>{const p=carProgress(c,T);return{c,p,prog:c.out?-1e6+c.cum.length:p.laps+p.f}});
+  arr.sort((a,b)=>b.prog-a.prog);
+  const lead=arr[0];
+  arr.forEach(x=>{
+    if(x.c.out){x.gap='Сход';return}
+    if(x===lead){x.gap='Лидер';return}
+    const L=Math.min(x.p.laps,R.N);
+    const g=x.c.cum[L]-lead.c.cum[L];
+    const lapsDown=lead.p.laps-x.p.laps-(x.p.f>lead.p.f?0:0);
+    x.gap=lapsDown>=1&&g>R.track.base?`+${lapsDown} кр.`:fgap(Math.max(0,g));
+  });
+  return arr;
+}
+let lastTs=0,lastUi=0;
+function loop(ts){
+  if(UI.screen!=='race'||!R)return;
+  const dt=lastTs?Math.min(.1,(ts-lastTs)/1000):0;lastTs=ts;
+  if(!R.paused&&!R.done){
+    R.T+=dt*26*R.speed;
+    // досчитать круги
+    for(;;){
+      const k=R.lapDone;if(k>=R.N)break;
+      const run=R.cars.filter(c=>!c.out);if(!run.length)break;
+      const lead=Math.min(...run.map(c=>c.cum[k]));
+      if(R.T>=lead)simLap(k+1);else break;
+    }
+    if(R.lapDone>=R.N){
+      const run=R.cars.filter(c=>!c.out);
+      if(run.every(c=>R.T>=c.cum[R.N])){R.done=true;finishRace();return}
+    }
+  }
+  drawRace();
+  if(ts-lastUi>300){lastUi=ts;updateRaceUi()}
+  requestAnimationFrame(loop);
+}
+function drawRace(){
+  const cv=$('#trk');if(!cv)return;
+  const{ctx,w,h}=fitCanvas(cv,.62);
+  const wetNow=R.wet[Math.min(R.N-1,R.lapDone)];
+  const tf=drawTrack(ctx,w,h,R.path,Math.max(10,w*.035),wetNow);
+  const ord=liveOrder();
+  for(let i=ord.length-1;i>=0;i--){
+    const x=ord[i];if(x.c.out||x.p.done)continue;
+    const[px,py]=tf(pointAt(R.path,x.p.f));
+    const t=team(x.c.tid);
+    ctx.beginPath();ctx.arc(px,py,x.c.me?7:5,0,Math.PI*2);ctx.fillStyle=t.color;ctx.fill();
+    if(x.c.me){ctx.lineWidth=2.5;ctx.strokeStyle='#ffffff';ctx.stroke();
+      ctx.font='600 11px JetBrains Mono, monospace';ctx.fillStyle='#ffffff';ctx.textAlign='center';ctx.fillText(String(i+1),px,py-11)}
+    else{ctx.lineWidth=1;ctx.strokeStyle='#0b0f14';ctx.stroke()}
+  }
+  if(R.sc>0){ctx.fillStyle='#ffd23f';ctx.font='600 12px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText('SC',10,18)}
+}
+function finishRace(){
+  const N=R.N;
+  const fin=R.cars.filter(c=>!c.out).map(c=>{
+    const dry=new Set(c.used.filter(x=>x!=='I'));
+    if(!R.anyWet&&dry.size<2){c.pen=10}
+    return{c,t:c.cum[N]+c.pen};
+  }).sort((a,b)=>a.t-b.t);
+  const dnf=R.cars.filter(c=>c.out).sort((a,b)=>b.cum.length-a.cum.length).map(c=>({c,t:Infinity}));
+  const res=[...fin,...dnf];
+  const win=fin[0]?fin[0].t:0;
+  const rows=res.map((x,i)=>{
+    const pts=x.c.out?0:(POINTS[i]||0);
+    const d=drv(x.c.did);d.pts+=pts;team(x.c.tid).pts+=pts;
+    if(i===0&&!x.c.out)d.wins++;if(i<3&&!x.c.out)d.pods++;
+    return{did:x.c.did,tid:x.c.tid,pos:i+1,grid:x.c.grid,out:x.c.out,time:x.t,gap:x.c.out?null:x.t-win,pts,pen:x.c.pen,stops:x.c.stops,me:x.c.me,best:x.c.best};
+  });
+  // экономика
+  const mine=rows.filter(r=>r.me);
+  const ptsMine=mine.reduce((s,r)=>s+r.pts,0);
+  const best=Math.min(...mine.map(r=>r.out?99:r.pos));
+  const goalOk={finish:mine.every(r=>!r.out),points:mine.some(r=>!r.out&&r.pos<=10),both:mine.every(r=>!r.out&&r.pos<=10),podium:best<=3,win:best===1};
+  const inc=[];
+  S.sponsors.forEach(s=>{inc.push([s.name,s.per]);if(goalOk[s.goal])inc.push([`Бонус: ${s.name}`,s.bonus])});
+  if(ptsMine)inc.push(['Призовые за очки',+(ptsMine*.12).toFixed(2)]);
+  const t=me();
+  const exp=[['Зарплаты пилотов',t.drivers.reduce((s,id)=>s+drv(id).salary,0)/12],['Персонал',(t.td.salary+t.crew.salary)/12],['Логистика и операции',.6]];
+  const net=inc.reduce((s,x)=>s+x[1],0)-exp.reduce((s,x)=>s+x[1],0);
+  S.budget=+(S.budget+net).toFixed(2);
+  // репутация
+  const exp_pos=S.goal*2;
+  S.rep=clamp(S.rep+(exp_pos-best)*.25+(best<=3?1:0),10,100);
+  // проекты
+  const done=[];
+  S.projects.forEach(p=>{p.left--;if(p.left<=0){t.car[p.part]=clamp(+(t.car[p.part]+p.gain).toFixed(1),0,100);done.push(p)}});
+  S.projects=S.projects.filter(p=>p.left>0);
+  done.forEach(p=>news(`Обновление готово: ${PARTS.find(x=>x[0]===p.part)[1].toLowerCase()} +${p.gain.toFixed(1).replace('.',',')}.`));
+  // развитие соперников
+  S.teams.forEach(o=>{if(o.id===S.pid)return;const part=pick(['aero','engine','chassis','aero','engine','chassis','rel']);o.car[part]=clamp(+(o.car[part]+o.budget/60*rnd(.2,1.3)).toFixed(1),0,100)});
+  // новые предложения
+  if(S.round%3===2){S.offers.push(mkOffer());S.offers=S.offers.slice(-5)}
+  const winner=rows[0];
+  S.results.push({round:S.round,winner:winner.did,wtid:winner.tid,my:mine.map(r=>r.out?'сход':r.pos)});
+  const mtxt=mine.map(r=>`${nm(r.did)} — ${r.out?'сход':r.pos+'-й'}`).join(', ');
+  news(`${W.tr.name}: победа ${drv(winner.did).name} («${team(winner.tid).name}»). У нас: ${mtxt}.`);
+  S.lastRace={rows,inc,exp,net,ptsMine,track:W.tr.name};
+  S.round++;
+  save();
+  UI.screen='result';render();
+}
+
+/* ---------- конец сезона ---------- */
+function endSeason(){
+  const st=teamStandings();const pos=st.findIndex(t=>t.id===S.pid)+1;
+  const prize=+((11-pos)*4+6).toFixed(1);
+  S.budget=+(S.budget+prize).toFixed(2);
+  let verdict;
+  if(pos<=S.goal){verdict={ok:true,t:`Цель выполнена: ${pos}-е место при задаче ${S.goal}-е. Совет доволен.`};S.rep=clamp(S.rep+6,10,100);S.warnings=0}
+  else if(pos<=S.goal+1){verdict={ok:null,t:`Почти: ${pos}-е место при задаче ${S.goal}-е. Совет ждёт прогресса.`}}
+  else{S.warnings++;verdict={ok:false,t:`Провал: ${pos}-е место при задаче ${S.goal}-е. Предупреждение ${S.warnings} из 2.`}}
+  const champ=driverStandings()[0];
+  S.history.push({season:S.season,pos,champ:champ.name,ctid:st[0].id,cname:st[0].name});
+  UI.season={pos,prize,verdict,champ:champ.name,cteam:st[0].name,gameover:S.warnings>=2};
+  // межсезонье
+  if(!UI.season.gameover){
+    S.season++;S.round=0;S.results=[];
+    S.teams.forEach(t=>{t.pts=0;PARTS.forEach(([k])=>t.car[k]=+(72+(t.car[k]-72)*.85).toFixed(1))});
+    const pool=[];
+    Object.values(S.drivers).forEach(d=>{d.pts=0;d.age++;
+      if(d.age<=26)d.pace=clamp(d.pace+ri(0,2),50,99);else if(d.age>=33)d.pace=clamp(d.pace-ri(0,2),50,99);
+      d.salary=salaryFor(d.pace);
+      if(d.team&&d.team!==S.pid){d.contract--;if(d.contract<=0)d.contract=ri(1,3)}
+      if(d.team===S.pid)d.contract--;
+    });
+    // уход ветеранов у соперников
+    S.teams.forEach(t=>{if(t.id===S.pid)return;t.drivers=t.drivers.map(id=>{const d=drv(id);if(d.age>=37){d.team=null;d.retired=true;
+      let fa=Object.values(S.drivers).filter(x=>!x.team&&!x.retired).sort((a,b)=>b.pace-a.pace)[0];
+      if(!fa||Math.random()<.4){fa=rookie();S.drivers[fa.id]=fa}fa.team=t.id;fa.contract=ri(1,3);
+      news(`${d.name} завершает карьеру. В «${t.name}» приходит ${fa.name}.`);return fa.id}return id})});
+    for(let i=0;i<2;i++){const r=rookie();S.drivers[r.id]=r}
+    S.sponsors=S.sponsors.filter(()=>Math.random()<.5);
+    S.offers=[];for(let i=0;i<4;i++)S.offers.push(mkOffer());
+    S.market=staffMarket();
+    S.goal=clamp(Math.min(S.goal,pos+1)-(verdict.ok?1:0),1,9);
+    news(`Сезон ${S.season} начинается. Новая цель совета: ${S.goal}-е место или выше.`);
+  }
+  save();UI.screen='season';render();
+}
+
+/* ---------- экраны ---------- */
+const ICONS={
+ hq:'<svg viewBox="0 0 24 24"><path d="M4 21V10l8-6 8 6v11"/><path d="M9 21v-6h6v6"/></svg>',
+ car:'<svg viewBox="0 0 24 24"><path d="M3 15h18l-2-5H8l-3 5"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M12 10V7h4"/></svg>',
+ staff:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg>',
+ money:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v.01M18 15v.01"/></svg>',
+ table:'<svg viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></svg>',
+};
+const TABS=[['hq','Штаб'],['car','Болид'],['staff','Команда'],['money','Спонсоры'],['table','Таблица']];
+
+function header(){
+  const t=me();
+  return`<div class="top wrap"><div class="badge">${esc(t.short)}</div><div class="grow"><div style="font-weight:700" class="ell">${esc(t.name)}</div><div class="eyebrow">Сезон ${S.season} · Этап ${Math.min(S.round+1,12)}/12 · ${myPos()}-е место</div></div><div class="money">${fm(S.budget)}</div></div>`;
+}
+function tabbar(){return`<nav class="tabs">${TABS.map(([k,n])=>`<button data-a="tab" data-v="${k}" class="${UI.tab===k?'on':''}" aria-label="${n}">${ICONS[k]}<span>${n}</span></button>`).join('')}</nav>`}
+
+function render(){
+  const app=$('#app');
+  document.documentElement.style.setProperty('--team',S?me().color:'#ff8a1f');
+  const fn={title:vTitle,new:vNew,hub:vHub,quali:vQuali,qres:vQres,race:vRace,result:vResult,season:vSeason}[UI.screen];
+  app.innerHTML=fn();
+  after();
+}
+function after(){
+  document.querySelectorAll('canvas[data-track]').forEach(cv=>{
+    const p=trackPath(+cv.dataset.track);const{ctx,w,h}=fitCanvas(cv,+cv.dataset.r||.55);drawTrack(ctx,w,h,p,Math.max(6,w*.03),false);
+  });
+}
+
+function vTitle(){
+  const has=!!load();
+  return`<div class="title wrap">
+   <div class="stripes"></div>
+   <div><div class="eyebrow">Гоночный менеджер</div><div class="logo">ПИТ<span>-</span>УОЛЛ</div></div>
+   <p class="muted" style="max-width:34ch">Вы руководитель команды. Пилоты, болид, спонсоры и стратегия на гонке — решения принимаете вы.</p>
+   <div class="stack">
+     ${has?`<button class="btn primary block" data-a="continue">Продолжить карьеру</button>`:''}
+     <button class="btn ${has?'':'primary'} block" data-a="new">${has?'Новая карьера':'Начать карьеру'}</button>
+   </div>
+   <div class="stripes"></div>
+  </div>`;
+}
+function vNew(){
+  const sel=UI.pickTeam;
+  return`<div class="scroll wrap">
+   <div><div class="eyebrow">Новая карьера</div><h1>Выберите команду</h1></div>
+   <p class="muted">Чем ниже команда в списке, тем слабее болид и скромнее бюджет, но и ожидания совета ниже.</p>
+   <div class="teampick">${TEAM_DEFS.map((t,i)=>{const ov=Math.round((t[4][0]+t[4][1]+t[4][2])/3);
+     return`<button data-a="pick" data-v="${i}" class="${i===sel?'on':''}"><span class="chip" style="background:${t[3]};width:14px;height:34px"></span>
+       <span class="grow"><b>${t[1]}</b><br><span class="muted mono" style="font-size:12px">Болид ${ov} · бюджет ${Math.round(t[5]*.5+10)} млн · цель: ${Math.min(9,i+2)}-е</span></span>
+       ${i<2?'<span class="pill bad">сложно: ожидания</span>':i>7?'<span class="pill acc">аутсайдер</span>':''}</button>`}).join('')}</div>
+   <label class="stack"><span class="eyebrow">Своё название команды (необязательно)</span><input type="text" id="tname" maxlength="24" placeholder="${TEAM_DEFS[sel][1]}" value="${esc(UI.teamName)}"></label>
+   <button class="btn primary block" data-a="create">Подписать контракт</button>
+   <button class="btn block" data-a="home">Назад</button>
+  </div>`;
+}
+function vHub(){
+  const body={hq:vHQ,car:vCar,staff:vStaff,money:vMoney,table:vTable}[UI.tab]();
+  return header()+`<div class="scroll wrap" id="sc">${body}</div>`+tabbar();
+}
+function vHQ(){
+  if(S.round>=12)return`<div class="card"><div class="eyebrow">Сезон ${S.season} завершён</div><h2>Все 12 этапов позади</h2><p class="muted">Пора подвести итоги и узнать решение совета директоров.</p><button class="btn primary block" data-a="endseason">Итоги сезона</button></div>`;
+  const tr=TRACKS[S.round],t=me();
+  const need=t.drivers.length<2;
+  const feat=tr.aero>=1.2?'Важна аэродинамика':tr.engine>=1.2?'Важен двигатель':'Сбалансированная трасса';
+  const pos=myPos();
+  return`<div class="card">
+    <div class="row between"><div><div class="eyebrow">Этап ${S.round+1} · ${tr.country}</div><h2>Гран-при: ${tr.name}</h2></div><span class="pill acc">${tr.laps} кр.</span></div>
+    <canvas class="track" data-track="${tr.seed}" data-r=".5"></canvas>
+    <div class="row wrapflex"><span class="pill">${feat}</span><span class="pill ${tr.over>.6?'bad':tr.over<.4?'good':''}">Обгоны: ${tr.over>.6?'трудно':tr.over<.4?'легко':'средне'}</span><span class="pill info">Дождь ${Math.round(tr.rain*100)}%</span></div>
+    ${need?`<p style="color:var(--bad)">Нужно два пилота. Подпишите пилота во вкладке «Команда».</p>`:''}
+    <button class="btn primary block" data-a="weekend" ${need?'disabled':''}>Начать гоночный уик-энд</button>
+  </div>
+  <div class="card">
+    <div class="row between"><h3>Совет директоров</h3><span class="pill ${pos<=S.goal?'good':pos<=S.goal+1?'acc':'bad'}">${pos<=S.goal?'по плану':pos<=S.goal+1?'на грани':'ниже цели'}</span></div>
+    <p>Цель: <b>${S.goal}-е</b> место в Кубке конструкторов. Сейчас: <b>${pos}-е</b>, ${t.pts} ${plural(t.pts,'очко','очка','очков')}.${S.warnings?` <span style="color:var(--bad)">Предупреждений: ${S.warnings}/2.</span>`:''}</p>
+  </div>
+  <div class="kv">
+    <div><span class="eyebrow">Доход за этап</span><b style="color:var(--good)">+${incomePerRace().toFixed(1).replace('.',',')}</b><span class="muted" style="font-size:12px">+ бонусы спонсоров</span></div>
+    <div><span class="eyebrow">Расходы за этап</span><b style="color:var(--bad)">−${costPerRace().toFixed(1).replace('.',',')}</b><span class="muted" style="font-size:12px">зарплаты и логистика</span></div>
+    <div><span class="eyebrow">Репутация</span><b>${Math.round(S.rep)}</b><span class="muted" style="font-size:12px">влияет на спонсоров</span></div>
+    <div><span class="eyebrow">Разработки</span><b>${S.projects.length}/${maxProjects()}</b><span class="muted" style="font-size:12px">проекты в работе</span></div>
+  </div>
+  <div class="card"><h3>Новости паддока</h3><div class="feed">${S.news.slice(0,6).map(n=>`<div><span class="muted mono" style="font-size:11px">С${n.s} · Э${n.r+1}</span><br>${esc(n.t)}</div>`).join('')}</div></div>
+  <div class="card"><h3>Календарь</h3><div class="tblwrap"><table><tbody>${TRACKS.map((tr,i)=>{const r=S.results.find(x=>x.round===i);
+    return`<tr${i===S.round?' class="me"':''}><td class="num muted">${i+1}</td><td>${tr.name}<br><span class="muted" style="font-size:11px">${tr.country}</span></td><td>${r?`<span class="chip" style="background:${team(r.wtid).color}"></span> ${esc(nm(r.winner))}`:i===S.round?'<span class="pill acc">далее</span>':''}</td><td class="num">${r?r.my.join(' / '):''}</td></tr>`}).join('')}</tbody></table></div></div>
+  <button class="btn block small" data-a="home">В главное меню</button>`;
+}
+function vCar(){
+  const t=me();
+  const best={};PARTS.forEach(([k])=>best[k]=Math.max(...S.teams.map(x=>x.car[k])));
+  const rank=[...S.teams].sort((a,b)=>carOverall(b)-carOverall(a)).findIndex(x=>x.id===S.pid)+1;
+  const slots=maxProjects(),busy=S.projects.length;
+  return`<div class="card">
+    <div class="row between"><h2>Болид</h2><span class="pill acc">${rank}-й по скорости</span></div>
+    ${PARTS.map(([k,n])=>`<div class="stat"><span>${n}</span><div class="bar"><i style="width:${t.car[k]}%"></i><b style="left:${best[k]}%"></b></div><span class="mono">${t.car[k].toFixed(0)}</span></div>`).join('')}
+    <p class="muted" style="font-size:12px">Белая риска — лучший показатель в чемпионате. Надёжность снижает шанс схода.</p>
+  </div>
+  <div class="card">
+    <div class="row between"><h3>Разработка</h3><span class="pill">${busy}/${slots} слотов</span></div>
+    ${S.projects.length?S.projects.map(p=>`<div class="row between"><span>${PARTS.find(x=>x[0]===p.part)[1]} <span class="muted">+${p.gain.toFixed(1).replace('.',',')}</span></span><span class="pill info">ещё ${p.left} ${plural(p.left,'этап','этапа','этапов')}</span></div>`).join(''):'<p class="muted">Нет активных проектов. Обновления приходят после гонок.</p>'}
+    <p class="muted" style="font-size:12px">Число слотов зависит от техдиректора (${t.td.rating}). Чем выше рейтинг, тем больше прирост.</p>
+  </div>
+  ${PARTS.map(([k,n])=>`<div class="card flat"><h3>${n}</h3><div class="stack">${UPG.map(u=>{
+     const c=upgCost(k,u),g=u.g*(.7+t.td.rating/200);const dis=busy>=slots||S.budget<c||t.car[k]>=99||S.projects.some(p=>p.part===k);
+     return`<button class="btn" style="justify-content:space-between" data-a="upg" data-v="${k}|${u.k}" ${dis?'disabled':''}><span>${u.n} <span class="muted">≈ +${g.toFixed(1).replace('.',',')} · ${u.r} ${plural(u.r,'этап','этапа','этапов')}</span></span><span class="money">${c.toFixed(1).replace('.',',')}</span></button>`}).join('')}</div></div>`).join('')}`;
+}
+function drvCard(d,mine){
+  const fire=UI.arm==='fire'+d.id;
+  return`<div class="card"><div class="row between"><div><h3>${esc(d.name)}</h3><span class="muted" style="font-size:12px">${d.age} лет · ${d.pts} очк. · побед ${d.wins}</span></div>${mine?`<span class="pill ${d.contract<=0?'bad':''}">контракт: ${d.contract<=0?'истёк':d.contract+' г.'}</span>`:''}</div>
+   ${[['Скорость',d.pace],['Гоночное мастерство',d.craft],['Работа с шинами',d.tyre]].map(([n,v])=>`<div class="stat"><span>${n}</span><div class="bar"><i style="width:${v}%"></i></div><span class="mono">${v}</span></div>`).join('')}
+   <div class="row between"><span class="muted">Зарплата: <span class="mono">${fm(d.salary,2)}</span>/сезон</span>
+   ${mine?`<div class="row">${d.contract<=1?`<button class="btn small" data-a="extend" data-v="${d.id}">Продлить</button>`:''}<button class="btn small danger" data-a="fire" data-v="${d.id}">${fire?'Точно уволить?':'Уволить'}</button></div>`:''}</div></div>`;
+}
+function vStaff(){
+  const t=me();
+  const pool=Object.values(S.drivers).filter(d=>!d.team&&!d.retired).sort((a,b)=>b.pace-a.pace);
+  const free=t.drivers.length<2;
+  return`<div class="eyebrow">Пилоты</div>${t.drivers.map(id=>drvCard(drv(id),true)).join('')}
+   <div class="card"><div class="row between"><h3>Свободные пилоты</h3>${free?'<span class="pill bad">есть место</span>':'<span class="pill">мест нет</span>'}</div>
+   ${pool.length?pool.map(d=>{const req=Math.round((d.pace-60)*2);const ok=S.rep>=req;const fee=+(d.salary*.5).toFixed(1);
+     return`<div class="row between" style="border-top:1px solid var(--line);padding-top:10px"><div class="grow"><b>${esc(d.name)}</b> <span class="muted">${d.age} л.</span><br><span class="mono muted" style="font-size:12px">СКР ${d.pace} · МАС ${d.craft} · ШИН ${d.tyre} · ${fm(d.salary,1)}/с</span>${ok?'':`<br><span style="color:var(--bad);font-size:12px">нужна репутация ${req}</span>`}</div>
+     <button class="btn small" data-a="hire" data-v="${d.id}" ${!free||!ok||S.budget<fee?'disabled':''}>Подписать · ${fee.toFixed(1).replace('.',',')}</button></div>`}).join(''):'<p class="muted">Рынок пуст.</p>'}
+   <p class="muted" style="font-size:12px">Чтобы подписать нового пилота, сначала освободите место. Увольнение стоит половину годовой зарплаты.</p></div>
+   <div class="eyebrow">Персонал</div>
+   ${[['td','Технический директор','скорость и число разработок'],['crew','Шеф механиков','время пит-стопа и ошибки']].map(([k,n,h])=>`<div class="card">
+     <div class="row between"><div><h3>${n}</h3><span class="muted" style="font-size:12px">${h}</span></div><span class="pill acc mono">${t[k].rating}</span></div>
+     <p>${esc(t[k].name)} <span class="muted">· ${fm(t[k].salary,2)}/сезон</span></p>
+     ${S.market[k].map((c,i)=>{const cost=hireCost(k,c);return`<div class="row between" style="border-top:1px solid var(--line);padding-top:8px"><span>${esc(c.name)} <span class="mono">${c.rating}</span><br><span class="muted" style="font-size:12px">${fm(c.salary,2)}/сезон</span></span><button class="btn small" data-a="staff" data-v="${k}|${i}" ${S.budget<cost?'disabled':''}>Нанять · ${cost.toFixed(1).replace('.',',')}</button></div>`}).join('')}
+   </div>`).join('')}`;
+}
+function vMoney(){
+  return`<div class="card"><div class="row between"><h2>Спонсоры</h2><span class="pill">${S.sponsors.length}/3</span></div>
+   ${S.sponsors.length?S.sponsors.map((s,i)=>`<div class="stack" style="border-top:1px solid var(--line);padding-top:10px"><div class="row between"><b>${esc(s.name)}</b><span class="money">+${s.per.toFixed(2).replace('.',',')}/этап</span></div><span class="muted" style="font-size:13px">Бонус ${s.bonus.toFixed(2).replace('.',',')} млн: ${GOALS[s.goal].t.toLowerCase()}</span><button class="btn small danger" data-a="drop" data-v="${i}">${UI.arm==='drop'+i?'Точно разорвать?':'Разорвать'}</button></div>`).join(''):'<p class="muted">Нет спонсоров — подпишите предложения ниже.</p>'}
+  </div>
+  <div class="card"><h3>Предложения</h3>
+   ${S.offers.length?S.offers.map((s,i)=>`<div class="stack" style="border-top:1px solid var(--line);padding-top:10px"><div class="row between"><b>${esc(s.name)}</b><span class="money">+${s.per.toFixed(2).replace('.',',')}/этап</span></div><span class="muted" style="font-size:13px">Бонус за подпись ${s.sign.toFixed(1).replace('.',',')} млн · за цель «${GOALS[s.goal].t.toLowerCase()}» +${s.bonus.toFixed(2).replace('.',',')}</span><button class="btn small" data-a="sign" data-v="${i}" ${S.sponsors.length>=3?'disabled':''}>Подписать</button></div>`).join(''):'<p class="muted">Новые предложения появляются каждые три этапа.</p>'}
+  </div>
+  <div class="card flat"><p class="muted" style="font-size:13px">Чем выше репутация (${Math.round(S.rep)}), тем щедрее предложения. Контракты действуют до конца сезона, часть спонсоров продлевает их.</p></div>`;
+}
+function vTable(){
+  const ds=driverStandings(),ts=teamStandings();
+  return`<div class="seg"><button data-a="stand" data-v="drivers" class="${UI.stand==='drivers'?'on':''}">Пилоты</button><button data-a="stand" data-v="teams" class="${UI.stand==='teams'?'on':''}">Конструкторы</button><button data-a="stand" data-v="hist" class="${UI.stand==='hist'?'on':''}">История</button></div>
+  <div class="card"><div class="tblwrap"><table>
+  ${UI.stand==='drivers'?`<thead><tr><th>#</th><th>Пилот</th><th class="num">Поб</th><th class="num">Очки</th></tr></thead><tbody>${ds.map((d,i)=>`<tr${d.team===S.pid?' class="me"':''}><td class="num">${i+1}</td><td><span class="chip" style="background:${team(d.team).color}"></span> ${esc(d.name)}</td><td class="num">${d.wins}</td><td class="num">${d.pts}</td></tr>`).join('')}</tbody>`
+  :UI.stand==='teams'?`<thead><tr><th>#</th><th>Команда</th><th class="num">Болид</th><th class="num">Очки</th></tr></thead><tbody>${ts.map((t,i)=>`<tr${t.id===S.pid?' class="me"':''}><td class="num">${i+1}</td><td><span class="chip" style="background:${t.color}"></span> ${esc(t.name)}</td><td class="num">${carOverall(t).toFixed(0)}</td><td class="num">${t.pts}</td></tr>`).join('')}</tbody>`
+  :`<thead><tr><th>Сезон</th><th>Чемпион</th><th class="num">Мы</th></tr></thead><tbody>${S.history.length?S.history.map(h=>`<tr><td class="num">${h.season}</td><td>${esc(h.champ)}<br><span class="muted" style="font-size:11px">${esc(h.cname)}</span></td><td class="num">${h.pos}-е</td></tr>`).join(''):'<tr><td colspan="3" class="muted">Первый сезон ещё идёт.</td></tr>'}</tbody>`}
+  </table></div></div>`;
+}
+
+/* --- квалификация --- */
+function vQuali(){
+  const t=me(),tr=W.tr,wet=W.weather[0];
+  const later=W.weather.some(x=>x!==wet);
+  return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">Этап ${W.ti+1} · Квалификация</div><h2>${tr.name}</h2></div><span class="flag ${wet?'wet':'dry'}">${wet?'ДОЖДЬ':'СУХО'}</span></div>
+  <div class="scroll wrap">
+   <canvas class="track" data-track="${tr.seed}" data-r=".5"></canvas>
+   <div class="card"><h3>Прогноз инженеров</h3><p>${wet?'Трасса мокрая.':'Трасса сухая.'} ${later?'По ходу гонки погода изменится — радар покажет за несколько кругов.':'Погода, вероятно, устойчивая.'}</p></div>
+   <div class="card"><h3>Тактика на круг</h3><p class="muted" style="font-size:13px">Риск даёт около трёх десятых, но пилот может ошибиться.</p>
+   ${t.drivers.map(id=>`<div class="stack"><b>${esc(drv(id).name)}</b><div class="seg"><button data-a="qrisk" data-v="${id}|0" class="${!W.risk[id]?'on':''}">Надёжно</button><button data-a="qrisk" data-v="${id}|1" class="${W.risk[id]?'on':''}">На пределе</button></div></div>`).join('')}
+   </div>
+   <button class="btn primary block" data-a="runq">Провести квалификацию</button>
+   <button class="btn block small" data-a="hub">Вернуться в штаб</button>
+  </div>`;
+}
+function vQres(){
+  const t=me(),pole=W.grid[0].q;
+  return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">Стартовая решётка</div><h2>${W.tr.name}</h2></div><span class="flag ${W.weather[0]?'wet':'dry'}">${W.weather[0]?'ДОЖДЬ':'СУХО'}</span></div>
+  <div class="scroll wrap">
+   <div class="card"><div class="tblwrap"><table><tbody>${W.grid.map((g,i)=>`<tr${g.tid===S.pid?' class="me"':''}><td class="pos">${i+1}</td><td><span class="chip" style="background:${team(g.tid).color}"></span> ${esc(drv(g.id).name)}${g.note?` <span class="pill bad">${g.note}</span>`:''}</td><td class="num">${i?fgap(g.q-pole):fsec(g.q)}</td></tr>`).join('')}</tbody></table></div></div>
+   <div class="card"><h3>Стартовые шины</h3><p class="muted" style="font-size:13px">В сухой гонке нужно использовать два разных типа сухих шин, иначе штраф 10 с.</p>
+    ${t.drivers.map(id=>`<div class="stack"><b>${esc(drv(id).name)} · ${W.grid.findIndex(g=>g.id===id)+1}-й</b><div class="pitrow">${Object.entries(TYRES).map(([k,ty])=>`<button class="tbtn ${W.start[id]===k?'on':''}" style="border-color:${ty.col}" data-a="stire" data-v="${id}|${k}" aria-label="${ty.n}">${ty.l}</button>`).join('')}<span class="muted" style="font-size:12px">${TYRES[W.start[id]].n}</span></div></div>`).join('')}
+   </div>
+   <button class="btn primary block" data-a="race">На старт</button>
+  </div>`;
+}
+
+/* --- гонка --- */
+function vRace(){
+  const mine=R.cars.filter(c=>c.me);
+  return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">${R.track.name}</div><div class="lapbox" id="lap">Круг 1/${R.N}</div></div><span id="flags"></span></div>
+  <div class="scroll wrap" style="gap:10px">
+   <canvas class="track" id="trk"></canvas>
+   <div class="seg" id="spd">${[[0,'Пауза'],[1,'×1'],[2,'×2'],[4,'×4'],[8,'×8']].map(([v,n])=>`<button data-a="spd" data-v="${v}">${n}</button>`).join('')}</div>
+   ${mine.map(c=>`<div class="drvctl" id="ctl-${c.did}">
+     <div class="row between"><div class="row"><span class="lapbox" id="p-${c.did}">–</span><div><b>${esc(drv(c.did).name)}</b><br><span class="muted mono" style="font-size:12px" id="g-${c.did}"></span></div></div><div class="row"><span class="tyre" id="ty-${c.did}"></span><div style="width:64px" class="bar"><i id="hb-${c.did}"></i></div></div></div>
+     <div class="seg">${[['push','Атака'],['norm','Норма'],['save','Беречь']].map(([m,n])=>`<button data-a="mode" data-v="${c.did}|${m}" id="m-${c.did}-${m}">${n}</button>`).join('')}</div>
+     <div class="pitrow"><span class="eyebrow" style="width:58px">В боксы</span>${Object.entries(TYRES).map(([k,ty])=>`<button class="tbtn" style="border-color:${ty.col}" data-a="pit" data-v="${c.did}|${k}" id="pit-${c.did}-${k}" aria-label="Пит-стоп: ${ty.n}">${ty.l}</button>`).join('')}</div>
+     <div class="muted" style="font-size:12px" id="st-${c.did}"></div>
+   </div>`).join('')}
+   <div class="card" style="padding:8px 10px"><div class="tblwrap"><table id="tt"></table></div></div>
+   <div class="card"><h3>Радио</h3><div class="feed" id="feed"></div></div>
+  </div>`;
+}
+function updateRaceUi(){
+  if(!$('#tt'))return;
+  const ord=liveOrder();
+  const lap=Math.min(R.N,Math.max(1,(ord[0]&&ord[0].p.laps)+1));
+  $('#lap').textContent=R.done?'Финиш':`Круг ${lap}/${R.N}`;
+  const k=Math.min(R.N-1,Math.max(0,lap-1)),wet=R.wet[k];
+  let radar='';for(let i=k+1;i<Math.min(R.N,k+4);i++)if(R.wet[i]!==wet){radar=`<span class="flag ${R.wet[i]?'wet':'dry'}">${R.wet[i]?'Дождь':'Сухо'} через ${i-k}</span>`;break}
+  $('#flags').innerHTML=`<div class="row">${R.sc>0?'<span class="flag sc">SC</span>':''}${radar}<span class="flag ${wet?'wet':'dry'}">${wet?'ДОЖДЬ':'СУХО'}</span></div>`;
+  [...$('#spd').children].forEach(b=>b.classList.toggle('on',(R.paused?0:R.speed)===+b.dataset.v));
+  $('#tt').innerHTML='<tbody>'+ord.map((x,i)=>{const t=team(x.c.tid),ty=TYRES[x.c.tyre];
+    return`<tr${x.c.me?' class="me"':''}><td class="pos">${x.c.out?'—':i+1}</td><td><span class="chip" style="background:${t.color}"></span> ${esc(nm(x.c.did))}</td><td class="num">${x.gap}</td><td><span class="tyre" style="border-color:${ty.col};width:18px;height:18px;border-width:2px;font-size:9px">${ty.l}</span></td><td class="num muted">${Math.round(x.c.health)}%</td></tr>`}).join('')+'</tbody>';
+  ord.forEach((x,i)=>{if(!x.c.me)return;const c=x.c,id=c.did;
+    $('#p-'+id).textContent=c.out?'—':(i+1);
+    $('#g-'+id).textContent=c.out?'Сход':`${x.gap} · пит-стопов ${c.stops}`;
+    const ty=TYRES[c.tyre],te=$('#ty-'+id);te.textContent=ty.l;te.style.borderColor=ty.col;
+    const hb=$('#hb-'+id);hb.style.width=c.health+'%';hb.style.background=c.health<30?'var(--bad)':c.health<55?'var(--accent)':'var(--good)';
+    ['push','norm','save'].forEach(m=>$(`#m-${id}-${m}`).classList.toggle('on',c.mode===m));
+    Object.keys(TYRES).forEach(t=>$(`#pit-${id}-${t}`).classList.toggle('on',c.pitReq===t));
+    const dry=new Set(c.used.filter(x=>x!=='I'));
+    let st=c.pitReq?`Заезд в боксы на ${TYRES[c.pitReq].n.toLowerCase()} шины — на ближайшем круге.`:c.health<30?'Шины изношены — пора в боксы!':'';
+    if(!c.out&&!R.anyWet&&dry.size<2&&lap>R.N*.5)st+=(st?' ':'')+'Нужен второй тип сухих шин!';
+    $('#st-'+id).textContent=c.out?'Машина сошла с дистанции.':st;
+    $('#ctl-'+id).style.opacity=c.out?.5:1;
+  });
+  $('#feed').innerHTML=R.feed.slice(0,7).map(f=>`<div style="${f.mine?'border-color:var(--team)':''}"><span class="muted mono" style="font-size:11px">КР ${f.l}</span> ${esc(f.t)}</div>`).join('');
+}
+
+/* --- итоги --- */
+function vResult(){
+  const L=S.lastRace,rows=L.rows;
+  const p=[rows[1],rows[0],rows[2]];
+  return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">Итоги гонки</div><h2>${L.track}</h2></div></div>
+  <div class="scroll wrap">
+   <div class="podium">${p.map((r,i)=>r?`<div class="p${[2,1,3][i]}"><b>${[2,1,3][i]}</b><span class="ell" style="font-weight:700">${esc(nm(r.did))}</span><span class="chip" style="background:${team(r.tid).color};margin:0 auto;width:28px;height:4px"></span><span class="muted ell">${esc(team(r.tid).short)}</span></div>`:'<div></div>').join('')}</div>
+   <div class="card" style="padding:8px 10px"><div class="tblwrap"><table><thead><tr><th>#</th><th>Пилот</th><th class="num">Старт</th><th class="num">Время</th><th class="num">Очки</th></tr></thead><tbody>
+   ${rows.map(r=>`<tr${r.me?' class="me"':''}><td class="pos">${r.out?'—':r.pos}</td><td><span class="chip" style="background:${team(r.tid).color}"></span> ${esc(drv(r.did).name)}${r.pen?' <span class="pill bad">+10 с</span>':''}</td><td class="num muted">${r.grid}</td><td class="num">${r.out?'сход':r.pos===1?fsec(r.time):fgap(r.gap)}</td><td class="num">${r.pts||''}</td></tr>`).join('')}
+   </tbody></table></div></div>
+   <div class="card"><div class="row between"><h3>Финансы этапа</h3><span class="money" style="color:${L.net>=0?'var(--good)':'var(--bad)'}">${L.net>=0?'+':''}${fm(L.net,2)}</span></div>
+    ${L.inc.map(x=>`<div class="row between"><span>${esc(x[0])}</span><span class="mono" style="color:var(--good)">+${x[1].toFixed(2).replace('.',',')}</span></div>`).join('')}
+    ${L.exp.map(x=>`<div class="row between"><span>${esc(x[0])}</span><span class="mono" style="color:var(--bad)">−${x[1].toFixed(2).replace('.',',')}</span></div>`).join('')}
+   </div>
+   <button class="btn primary block" data-a="hub">В штаб</button>
+  </div>`;
+}
+function vSeason(){
+  const s=UI.season;
+  if(s.gameover)return`<div class="title wrap"><div class="stripes"></div><div class="eyebrow">Решение совета директоров</div><h1>Вы уволены</h1><p>${esc(s.verdict.t)}</p><p class="muted">Чемпион: ${esc(s.champ)}. Кубок конструкторов: ${esc(s.cteam)}.</p><button class="btn primary block" data-a="restart">Новая карьера</button><div class="stripes"></div></div>`;
+  return`<div class="scroll wrap">
+   <div><div class="eyebrow">Сезон ${S.season-1} завершён</div><h1>${s.pos}-е место</h1></div>
+   <div class="card"><h3>Совет директоров</h3><p style="color:${s.verdict.ok?'var(--good)':s.verdict.ok===false?'var(--bad)':'var(--accent)'}">${esc(s.verdict.t)}</p></div>
+   <div class="kv"><div><span class="eyebrow">Призовые</span><b style="color:var(--good)">+${s.prize}</b></div><div><span class="eyebrow">Новая цель</span><b>${S.goal}-е</b></div></div>
+   <div class="card"><p>Чемпион мира: <b>${esc(s.champ)}</b><br>Кубок конструкторов: <b>${esc(s.cteam)}</b></p>
+   <p class="muted" style="font-size:13px">Новый регламент сблизил болиды. Контракты пилотов уменьшились на год — проверьте вкладку «Команда».</p></div>
+   <button class="btn primary block" data-a="hub">Начать сезон ${S.season}</button>
+  </div>`;
+}
+
+/* ---------- действия ---------- */
+let toastT;
+function toast(t){let el=$('.toast');if(el)el.remove();el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);clearTimeout(toastT);toastT=setTimeout(()=>el.remove(),2200)}
+const keepScroll=fn=>{const sc=$('#sc');const y=sc?sc.scrollTop:0;fn();const s2=$('#sc');if(s2)s2.scrollTop=y};
+
+document.addEventListener('input',e=>{if(e.target.id==='tname')UI.teamName=e.target.value});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a,v=b.dataset.v||'';
+  const armed=UI.arm;UI.arm=null;
+  switch(a){
+   case'continue':S=load();if(!S){toast('Сохранение не найдено');return}UI.screen='hub';UI.tab='hq';render();break;
+   case'new':UI.screen='new';render();break;
+   case'home':UI.screen='title';render();break;
+   case'pick':UI.pickTeam=+v;render();break;
+   case'create':newGame(UI.pickTeam,UI.teamName);UI.screen='hub';UI.tab='hq';render();break;
+   case'restart':wipe();S=null;UI.screen='new';render();break;
+   case'tab':UI.tab=v;render();$('#sc').scrollTop=0;break;
+   case'stand':UI.stand=v;keepScroll(render);break;
+   case'hub':UI.screen='hub';UI.tab='hq';render();break;
+   case'weekend':startWeekend();break;
+   case'qrisk':{const[id,r]=v.split('|');W.risk[id]=r==='1';render();break}
+   case'runq':runQuali();break;
+   case'stire':{const[id,t]=v.split('|');W.start[id]=t;render();break}
+   case'race':startRace();break;
+   case'spd':{const n=+v;if(n===0)R.paused=!R.paused;else{R.paused=false;R.speed=n}updateRaceUi();break}
+   case'mode':{const[id,m]=v.split('|');const c=R.cars.find(x=>x.did===id);if(c&&!c.out){c.mode=m;updateRaceUi()}break}
+   case'pit':{const[id,t]=v.split('|');const c=R.cars.find(x=>x.did===id);if(c&&!c.out){c.pitReq=c.pitReq===t?null:t;updateRaceUi()}break}
+   case'endseason':endSeason();break;
+   case'upg':{const[part,k]=v.split('|');const u=UPG.find(x=>x.k===k),c=upgCost(part,u);if(S.budget<c)return;
+     const g=+(u.g*(.7+me().td.rating/200)*rnd(.8,1.2)).toFixed(1);
+     S.budget=+(S.budget-c).toFixed(2);S.projects.push({part,gain:g,left:u.r});save();toast('Проект запущен');keepScroll(render);break}
+   case'fire':{if(armed!=='fire'+v){UI.arm='fire'+v;keepScroll(render);return}
+     const d=drv(v),fee=+(d.salary*.5).toFixed(2);S.budget=+(S.budget-fee).toFixed(2);d.team=null;d.contract=0;me().drivers=me().drivers.filter(x=>x!==v);
+     news(`${d.name} покидает команду.`);save();toast(`Пилот уволен, компенсация ${fee.toFixed(1).replace('.',',')} млн`);keepScroll(render);break}
+   case'extend':{const d=drv(v);d.contract=2;d.salary=+(d.salary*1.1).toFixed(2);save();toast(`Контракт продлён на 2 года`);keepScroll(render);break}
+   case'hire':{const d=drv(v),fee=+(d.salary*.5).toFixed(2);if(me().drivers.length>=2||S.budget<fee)return;
+     S.budget=+(S.budget-fee).toFixed(2);d.team=S.pid;d.contract=2;me().drivers.push(d.id);news(`${d.name} подписывает контракт с командой.`);save();toast(`${d.name} в команде`);keepScroll(render);break}
+   case'staff':{const[k,i]=v.split('|');const c=S.market[k][+i],cost=hireCost(k,c);if(S.budget<cost)return;
+     S.budget=+(S.budget-cost).toFixed(2);me()[k]=c;S.market[k].splice(+i,1);news(`Новый ${k==='td'?'технический директор':'шеф механиков'}: ${c.name}.`);save();toast('Сотрудник нанят');keepScroll(render);break}
+   case'sign':{if(S.sponsors.length>=3)return;const o=S.offers.splice(+v,1)[0];S.sponsors.push(o);S.budget=+(S.budget+o.sign).toFixed(2);save();toast(`Контракт с «${o.name}» подписан`);keepScroll(render);break}
+   case'drop':{if(armed!=='drop'+v){UI.arm='drop'+v;keepScroll(render);return}S.sponsors.splice(+v,1);save();keepScroll(render);break}
+  }
+});
+window.addEventListener('resize',()=>{if(UI.screen!=='race')after()});
+
+render();
+window.__pitwall={get S(){return S},get R(){return R}};
+})();
+</script>
+</body>
+</html>
