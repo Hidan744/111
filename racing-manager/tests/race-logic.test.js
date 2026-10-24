@@ -84,15 +84,17 @@ const check = (name, ok, info) => { results.push({ name, ok, info }); console.lo
 
   // 4. Износ шин пересчитывается при смене погоды внутри симуляции
   const tw = await page.evaluate(() => {
-    const R = __pitwall.R, D = __dbg; for (let i = 11; i < R.N; i++) R.wet[i] = true;
-    const dry = R.tw; D.simLap(12); return { dry, wet: R.tw, expectWet: D.trackWear(R.abr, R.temp, true) };
+    // круг 12 сухой, дальше дождь: коэффициент должен смениться внутри simLap
+    const R = __pitwall.R, D = __dbg; R.wet[11] = false; for (let i = 12; i < R.N; i++) R.wet[i] = true;
+    D.simLap(12); const dry = R.tw, expectDry = D.trackWear(R.abr, R.temp, false);
+    D.simLap(13); return { dry, expectDry, wet: R.tw, expectWet: D.trackWear(R.abr, R.temp, true) };
   });
-  check('износ шин учитывает дождь без участия интерфейса', Math.abs(tw.wet - tw.expectWet) < 1e-9 && tw.wet !== tw.dry, `${tw.dry.toFixed(3)} → ${tw.wet.toFixed(3)}`);
+  check('износ шин учитывает дождь без участия интерфейса', Math.abs(tw.dry - tw.expectDry) < 1e-9 && Math.abs(tw.wet - tw.expectWet) < 1e-9 && tw.wet !== tw.dry, `${tw.dry.toFixed(3)} → ${tw.wet.toFixed(3)}`);
 
   // 5. Соперники реагируют на дождь сменой шин
   const rain = await page.evaluate(() => {
     const R = __pitwall.R, D = __dbg; let switched = 0, slick = 0;
-    for (let k = 13; k <= Math.min(R.N, 17); k++) D.simLap(k);
+    for (let k = 14; k <= Math.min(R.N, 18); k++) D.simLap(k);
     R.cars.filter(c => !c.out && !c.me).forEach(c => { c.tyre === 'I' ? switched++ : slick++; });
     return { switched, slick };
   });

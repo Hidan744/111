@@ -207,6 +207,8 @@ tr[data-a]{cursor:pointer}
   .racebody .side{overflow-y:auto;min-height:0;padding-right:4px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.subnav{display:flex;flex:none;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.subnav::-webkit-scrollbar{display:none}.subnav .btn{flex:none;white-space:nowrap}
+[id^=sec-]{scroll-margin-top:8px}
 .intro{position:fixed;inset:0;z-index:60;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;background:radial-gradient(120% 80% at 50% 42%,#17222e 0%,#07090c 68%);transition:opacity .55s}
 .intro.bye{opacity:0;pointer-events:none}
 .intro::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(255,255,255,.018) 22px 24px)}
@@ -596,10 +598,10 @@ function advanceDays(n){for(let i=0;i<n;i++){S.day++;tickDay()}}
 function tickDay(){
   const t=me();
   // разработки
-  const done=[];S.projects.forEach(p=>{p.days--;if(p.days<=0){t.car[p.part]=clamp(+(t.car[p.part]+p.gain).toFixed(1),0,100);done.push(p)}});
-  S.projects=S.projects.filter(p=>p.days>0);done.forEach(p=>news(`Обновление готово: ${PARTS.find(x=>x[0]===p.part)[1].toLowerCase()} +${p.gain.toFixed(1).replace('.',',')}.`));
+  const done=[];S.projects.forEach(p=>{p.days--;if(p.days<=0){if(p.comp){t.spec=t.spec||{};t.spec[p.comp]=teamSpec(t,p.comp)+1;S.stockNew=S.stockNew||{};S.stockNew[p.comp]=0}else t.car[p.part]=clamp(+(t.car[p.part]+p.gain).toFixed(1),0,100);done.push(p)}});
+  S.projects=S.projects.filter(p=>p.days>0);done.forEach(p=>p.comp?news(`Готова новая версия: ${COMPS.find(c=>c[0]===p.comp)[1]}, спец. ${teamSpec(t,p.comp)}. Закажите узлы на заводе и поставьте их на машины.`):news(`Обновление готово: ${PARTS.find(x=>x[0]===p.part)[1].toLowerCase()} +${p.gain.toFixed(1).replace('.',',')}.`));
   // завод
-  S.prod=S.prod.filter(q=>{q.days--;if(q.days<=0){S.stock[q.k]=(S.stock[q.k]||0)+1;news(`Завод: готов новый узел — ${COMPS.find(c=>c[0]===q.k)[1]}.`);return false}return true});
+  S.prod=S.prod.filter(q=>{q.days--;if(q.days<=0){S.stock[q.k]=(S.stock[q.k]||0)+1;S.stockNew=S.stockNew||{};if((q.sp||1)>=teamSpec(me(),q.k))S.stockNew[q.k]=(S.stockNew[q.k]||0)+1;news(`Завод: готов новый узел — ${COMPS.find(c=>c[0]===q.k)[1]}.`);return false}return true});
   // стройка базы
   Object.entries(S.facBuild).forEach(([k,b])=>{b.days--;if(b.days<=0){S.fac[k]++;delete S.facBuild[k];news(`База: «${FACS.find(f=>f[0]===k)[1]}» — уровень ${S.fac[k]}.`)}});
   // скауты
@@ -728,8 +730,29 @@ const COMPS=[['ice','ДВС',4,1.2,15,12],['ers','ERS',3,.9,18,10],['gb','КПП
 const prodCost=k=>+(COMPS.find(c=>c[0]===k)[3]*(1.2-.08*(S.fac?S.fac.fac:2))).toFixed(2);
 const prodDays=k=>Math.max(1,Math.round(COMPS.find(c=>c[0]===k)[5]*(1.15-.07*(S.fac?S.fac.fac:2))));
 const FATAL=new Set(['ice','ers','gb']);
+// спецификации узлов: новая версия разрабатывается в сезоне, затем её нужно произвести и поставить на машину.
+// ключ: [выигрыш с/круг за версию, снижение износа за версию, цена разработки млн, дней, что нужно для разработки]
+const SPEC={ice:[.08,0,5,35],ers:[.05,0,4,28],gb:[0,.12,2.5,18],floor:[.10,0,3.5,20],fw:[.06,0,2,12]};
+const SPEC_MAX=4;
+// клиентская команда получает версии ДВС и ERS от поставщика
+const teamSpec=(t,k)=>{if(t.engineSup&&(k==='ice'||k==='ers')){const sup=S.teams.find(x=>x.id===t.engineSup);if(sup&&sup!==t)return teamSpec(sup,k)}return((t.spec||{})[k])||1};
+const specCost=(t,k)=>+(SPEC[k][2]*(1+.3*(teamSpec(t,k)-1))).toFixed(1);
+const specDays=(t,k)=>Math.round(SPEC[k][3]*(1.1-.05*facL(t,k==='ice'||k==='ers'?'eng':k==='gb'?'rig':'comp')));
+// почему нельзя начать разработку версии (пусто — можно)
+function specBlock(t,k){
+  if(teamSpec(t,k)>=SPEC_MAX)return'максимальная версия в этом сезоне';
+  if((k==='ice'||k==='ers')&&t.engineSup)return'мотор клиентский — новые версии приходят от поставщика, их нужно только заказать на заводе';
+  if((k==='ice'||k==='ers')&&S.rules.freeze)return'двигатели заморожены регламентом';
+  if(S.projects.some(p=>p.comp===k))return'уже в разработке';
+  if(S.projects.length>=maxProjects())return'все слоты разработки заняты';
+  if(specCost(t,k)>capLeft())return'не хватает потолка расходов';
+  if(S.budget<specCost(t,k))return'не хватает бюджета';
+  return'';
+}
+// выигрыш от версий поставленных узлов, с/круг
+function specBonus(P){if(!P)return 0;let b=0;COMPS.forEach(([k])=>{b+=SPEC[k][0]*(((P[k]&&P[k].sp)||1)-1)});return b}
 const pqty=k=>(UI.pq&&UI.pq[k])||1;
-function ensureParts(id){if(!S.parts)S.parts={};if(!S.parts[id]){S.parts[id]={};COMPS.forEach(([k])=>S.parts[id][k]={h:100,used:1})}return S.parts[id]}
+function ensureParts(id){if(!S.parts)S.parts={};if(!S.parts[id]){S.parts[id]={};COMPS.forEach(([k])=>S.parts[id][k]={h:100,used:1,sp:1})}return S.parts[id]}
 // износ за круг: манера вождения, мастерство пилота, надёжность машины, характер трассы
 function compWear(k,d,t,mode,tr){
   const base=COMPS.find(c=>c[0]===k)[4],m=mode==='push'?1.5:mode==='save'?.75:1,sm=1.25-d.craft/200,rl=1.4-t.car.rel/150;
@@ -749,10 +772,12 @@ function partPen(id,k){const lim=compLimit(k),u=ensureParts(id)[k].used;if(!lim|
 function autoOrder(){
   if(!S.autoOrder)return;
   COMPS.forEach(([k,n])=>{const need=me().drivers.some(id=>ensureParts(id)[k].h<40),have=(S.stock[k]||0)+S.prod.filter(q=>q.k===k).length;
-    if(need&&have===0&&S.budget>=prodCost(k)){S.budget=+(S.budget-prodCost(k)).toFixed(2);S.prod.push({k,days:prodDays(k)});news(`Автозаказ на заводе: ${n}, готово ${etaText(prodDays(k))}.`)}});
+    if(need&&have===0&&S.budget>=prodCost(k)){S.budget=+(S.budget-prodCost(k)).toFixed(2);S.prod.push({k,days:prodDays(k),sp:teamSpec(me(),k)});news(`Автозаказ на заводе: ${n}, готово ${etaText(prodDays(k))}.`)}});
 }
 function fitPart(id,k,own){
-  const P=ensureParts(id);if(own){if(!(S.stock[k]>0))return false;S.stock[k]--}
+  const P=ensureParts(id),t=team(drv(id).team)||me();let sp=teamSpec(t,k);
+  if(own){if(!(S.stock[k]>0))return false;S.stock[k]--;S.stockNew=S.stockNew||{};if(S.stockNew[k]>0)S.stockNew[k]--;else sp=Math.max(1,sp-1)}
+  P[k].sp=sp;
   const pen=partPen(id,k);P[k].h=100;P[k].used++;const lim=compLimit(k);
   if(pen){S.gpen=S.gpen||{};S.gpen[id]=(S.gpen[id]||0)+pen;const tot=S.gpen[id];
     if(own||drv(id).team===S.pid)news(`${drv(id).name}: ${COMPS.find(c=>c[0]===k)[1]} сверх лимита (${P[k].used}/${lim}) — штраф ${pen} мест на старте${tot>15?'; сумма больше 15 — старт с последнего ряда':tot>pen?`, всего ${tot}`:''}.`)}
@@ -1526,7 +1551,7 @@ function lapModel(c,lap,wet){
   const h=c.health;lt+=(100-h)*.018+(h<35?(35-h)*.09:0);
   lt+=c.mode==='push'?-.35:c.mode==='save'?.45:0;
   lt-=(c.sq-60)*.012;
-  lt+=compPen(S.parts[c.did]);
+  lt+=compPen(S.parts[c.did])-specBonus(S.parts[c.did]);
   lt+=gauss()*(.15+(100-(d.cons||d.craft))/100*.35)*(lap===1?2.2:1);
   if(lap===1)lt-=((d.start||80)-80)*.02;
   return lt;
@@ -1641,7 +1666,7 @@ function runQuali(){
     if(stg&&!W.qin.includes(id))return;
     const d=drv(id);const risk=t.id===S.pid?W.risk[id]:Math.random()<.3;
     const sq=t.id===S.pid?mySq(id):W.aiSq[t.id];
-    let q=tr.base-1.2+(100-perf(t,tr))*.06+(100-d.pace)*.035+TYRES.S.off-(sq-60)*.012+gauss()*(.12+(100-(d.cons||d.craft))/100*.25);
+    let q=tr.base-1.2+(100-perf(t,tr))*.06+(100-d.pace)*.035+TYRES.S.off-(sq-60)*.012-specBonus(S.parts&&S.parts[id])+gauss()*(.12+(100-(d.cons||d.craft))/100*.25);
     if(wet)q+=7+(100-(d.wet||d.craft))*.035;
     let note='';
     if(risk){q-=.28;if(Math.random()<(wet?.2:.12)){q+=rnd(1.2,3);note='ошибка'}}
@@ -1719,7 +1744,7 @@ function simLap(k){
     // надёжность
     // износ узлов: без случайных отказов — узел ломается, когда выработан
     const P=ensureParts(c.did);let broke=null;
-    COMPS.forEach(([pk])=>{P[pk].h=Math.max(0,P[pk].h-compWear(pk,d,t,c.mode,R.track)/R.N*(sc?.4:1));if(FATAL.has(pk)&&P[pk].h<=0&&!broke)broke=pk});
+    COMPS.forEach(([pk])=>{P[pk].h=Math.max(0,P[pk].h-compWear(pk,d,t,c.mode,R.track)*(1-SPEC[pk][1]*((P[pk].sp||1)-1))/R.N*(sc?.4:1));if(FATAL.has(pk)&&P[pk].h<=0&&!broke)broke=pk});
     if(c.me)COMPS.forEach(([pk,pn])=>{if(FATAL.has(pk)&&P[pk].h<20&&!(c.warn||{})[pk]){c.warn=c.warn||{};c.warn[pk]=1;feed(`Радио ${nm(c.did)}: «${pn} на пределе (${Math.round(P[pk].h)}%) — переходи в режим «Беречь»!»`,true)}});
     if(broke){c.out=true;c.outLap=k;c.parkF=(k-1)+clamp((R.T-c.cum[k-1])/(R.track.base+5),.05,.95);c.cum.push(Infinity);c.outWhy=broke;feed(`${nm(c.did)} сходит: ${({ice:'выработан двигатель',ers:'отказ ERS',gb:'отказ коробки передач'})[broke]}.`,c.me);continue}
     if(!sc&&Math.random()<(c.mode==='push'?.012:c.mode==='save'?.002:.004)*(1.3-d.craft/100)*(wet?2.2:1)*R.ls*(1.1-(d.exp||50)/1000)*(c.me?1.25-srat(me(),'coach')/250:1)){const loss=rnd(1.5,5);lt+=loss;
@@ -1974,6 +1999,7 @@ function finishRace(){
   // развитие соперников
   S.teams.forEach(o=>{if(o.id===S.pid)return;
     PARTS.forEach(([k])=>o.next[k]+=(o.budget/60+fundFor(o)/22)*.6*rnd(.5,1.3)*.95*devEff(o,k)*.85*(24/NR())*DIFF_DEV[SET.diff]*(S.round>NR()*.4?1.4:.6));
+    if(Math.random()<.12+o.budget/900){const k=pick(['floor','fw','floor','gb','ice','ers']);if(teamSpec(o,k)<SPEC_MAX&&!((k==='ice'||k==='ers')&&(S.rules.freeze||o.engineSup))){o.spec=o.spec||{};o.spec[k]=teamSpec(o,k)+1}}
     let part=pick(['aero','engine','chassis','aero','engine','chassis','rel']);if(part==='engine'&&S.rules.freeze)part='chassis';o.car[part]=clamp(+(o.car[part]+o.budget/60*rnd(.15,.8)*facMul(o,part)*DIFF_DEV[SET.diff]).toFixed(1),0,100)});
   // новые предложения
   if(S.round%3===2){S.offers.push(mkOffer());S.offers=S.offers.slice(-5)}
@@ -2018,7 +2044,7 @@ function endSeason(){
     UI.season.newCar=PARTS.map(([k,n])=>[n,me().car[k],newCar[S.pid][k]]);
     S.teams.forEach(t=>{t.pts=0;PARTS.forEach(([k])=>t.car[k]=newCar[t.id][k]);t.next={aero:0,engine:0,chassis:0,rel:0}});
     S.spent=0;S.rules.freeze=false;S.vote=null;
-    Object.values(S.parts||{}).forEach(P=>COMPS.forEach(([k])=>{P[k].used=1;P[k].h=100}));S.gpen={};
+    Object.values(S.parts||{}).forEach(P=>COMPS.forEach(([k])=>{P[k].used=1;P[k].h=100;P[k].sp=1}));S.gpen={};S.teams.forEach(o=>o.spec={});S.stockNew={};
     const pool=[];
     Object.values(S.drivers).forEach(d=>{d.pts=0;d.age++;ensureAttrs(d);d.exp=Math.min(99,d.exp+3);
       if(d.age<=26)d.pace=clamp(d.pace+ri(0,2),50,99);else if(d.age>=33)d.pace=clamp(d.pace-ri(0,2),50,99);
@@ -2190,12 +2216,12 @@ function voteCard(){
     <p class="muted" style="font-size:12px">Если не проголосовать, голос будет засчитан «против» в начале уик-энда.</p></div>`;
 }
 function facCard(){
-  return`<div class="card"><div class="row between"><h3>База команды</h3><span class="pill">содержание ${fm(facUpkeep(),2)}/этап</span></div>
+  return`<div class="card" id="sec-fac"><div class="row between"><h3>База команды</h3><span class="pill">содержание ${fm(facUpkeep(),2)}/этап</span></div>
    ${FACS.map(([k,n,h])=>{const l=S.fac[k],b=S.facBuild[k];return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:4px">
      <div class="row between"><b>${n}</b><span class="mono" style="color:var(--accent)">${'●'.repeat(l)}<span class="muted">${'○'.repeat(5-l)}</span></span></div>
      <span class="muted" style="font-size:12px">${h}</span>
-     ${b?`<span class="pill info">строится уровень ${l+1}: готово ${etaText(b.days)}</span>`:l<5?`<button class="btn small" data-a="facup" data-v="${k}" ${S.budget<FAC_COST[l]?'disabled':''}>Улучшить до ${l+1} · ${FAC_COST[l]} млн · ${FAC_DAYS[l]} дн.</button>`:'<span class="pill good">максимальный уровень</span>'}</div>`}).join('')}
-   <p class="muted" style="font-size:12px">Уровень здания поднимает базу болида следующего сезона по своей части, ускоряет её разработку и продлевает ресурс связанных узлов. Стройка не входит в потолок расходов.</p></div>`;
+     ${b?`<span class="pill info">строится уровень ${l+1}: готово ${etaText(b.days)}</span>`:l<5?`<button class="btn small" data-a="facup" data-v="${k}" ${S.budget<FAC_COST[l]?'disabled':''}>Улучшить до ${l+1} · ${FAC_COST[l]} млн · ${FAC_DAYS[l]} дн.</button>${S.budget<FAC_COST[l]?`<span style="color:var(--bad);font-size:12px">Не хватает ${fm(+(FAC_COST[l]-S.budget).toFixed(2),2)} — заработайте призовыми, спонсорами или заданиями.</span>`:''}`:'<span class="pill good">максимальный уровень</span>'}</div>`}).join('')}
+   <p class="muted" style="font-size:12px">Уровень здания поднимает базу болида следующего сезона по своей части, ускоряет её разработку и продлевает ресурс связанных узлов. Стройка не входит в потолок расходов. Строить можно все здания одновременно, по одному уровню за раз; дни идут по календарю (кнопки дней в «Штабе» или поездка на этап).</p></div>`;
 }
 function partsCard(compact){
   const ids=me().drivers,col=h=>h<20?'var(--bad)':h<50?'var(--accent)':'var(--good)';
@@ -2207,7 +2233,7 @@ function partsCard(compact){
    <p class="muted" style="font-size:12px">Кнопками − и + выберите, сколько штук произвести (до 6 за заказ): все узлы заказа делаются параллельно и приходят на склад в указанный день. Срок и цена зависят от уровня завода (вкладка «База команды» ниже).</p></div>`;
   const drvBlock=id=>{const P=ensureParts(id);return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><b>${esc(drv(id).name)}</b>
    ${COMPS.map(([k,n,lim])=>{const h=Math.round(P[k].h);return`<div class="row between" style="gap:8px"><span style="width:92px;font-size:13px" class="ell">${n}</span><div class="bar grow"><i style="width:${h}%;background:${col(h)}"></i></div><span class="mono" style="width:36px;text-align:right">${h}%</span>${lim?`<span class="muted mono" style="font-size:11px;width:28px">${P[k].used}/${lim}</span>`:'<span style="width:28px"></span>'}<button class="btn small${partPen(id,k)?' danger':''}" data-a="fit" data-v="${id}|${k}" ${S.stock[k]>0?'':'disabled'} title="${partPen(id,k)?`Сверх лимита: штраф ${partPen(id,k)} мест на старте`:'Поставить новый узел со склада'}">${partPen(id,k)?`Штраф −${partPen(id,k)}`:'Заменить'}</button></div>`}).join('')}</div>`};
-  return`<div class="card"><div class="row between wrapflex"><h3>Узлы болидов</h3><span class="row wrapflex" style="gap:10px"><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autofit" ${S.autoFit?'checked':''}>автозамена &lt;20%</label><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autoorder" ${S.autoOrder?'checked':''}>автозаказ на заводе</label></span></div>
+  return`<div class="card" id="sec-parts"><div class="row between wrapflex"><h3>Узлы болидов</h3><span class="row wrapflex" style="gap:10px"><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autofit" ${S.autoFit?'checked':''}>автозамена &lt;20%</label><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autoorder" ${S.autoOrder?'checked':''}>автозаказ на заводе</label></span></div>
    ${ids.map(drvBlock).join('')}
    <p class="muted" style="font-size:12px">Узлы изнашиваются от манеры вождения: «Атака» ×1,5, «Беречь» ×0,75. Влияют мастерство пилота, надёжность болида, трасса и уровень базы. Изношенный узел отнимает темп, выработанный ДВС, ERS или КПП — сход. Лимит на сезон (по регламенту Ф-1): первый узел сверх лимита — штраф 10 мест на старте, каждый следующий того же типа — 5 мест, КПП — 5 мест; больше 15 мест — старт с последнего ряда. «Заменить» ставит узел со склада.</p></div>
    ${stockCard}`;
@@ -2217,7 +2243,11 @@ function vCar(){
   const best={};PARTS.forEach(([k])=>best[k]=Math.max(...S.teams.map(x=>x.car[k])));
   const rank=[...S.teams].sort((a,b)=>carOverall(b)-carOverall(a)).findIndex(x=>x.id===S.pid)+1;
   const slots=maxProjects(),busy=S.projects.length;
-  return`<div class="cols"><div class="col"><div class="card">
+  const capCard=`  <div class="card"><div class="row between"><h3>Потолок расходов</h3><span class="pill ${capLeft()<5?'bad':''}">осталось ${capLeft()} млн</span></div>
+    <div class="bar"><i style="width:${clamp(S.spent/S.rules.cap*100,0,100)}%"></i></div>
+    <p class="muted" style="font-size:12px">На разработку текущего болида и болида ${year()+1} за сезон можно потратить не больше ${S.rules.cap} млн. Каждый миллион выбирайте: очки сейчас или скорость в следующем году.</p></div>`;
+  return`<div class="subnav">${[['upg','Доработка'],['spec','Версии узлов'],['parts','Узлы и завод'],['fac','База'],['next','Болид '+(year()+1)]].map(([k,n])=>`<button class="btn small" data-a="jump" data-v="sec-${k}">${n}</button>`).join('')}</div>
+  <div class="cols"><div class="col"><div class="card">
     <div class="row between"><h2>Болид</h2><span class="pill acc">${rank}-й по скорости</span></div>
     ${HAS3D?`<canvas class="show" id="show" data-color="${t.color}" data-acc="${accentOf(t.id)}" aria-label="3D-модель болида, потяните чтобы повернуть"></canvas>`:''}
     ${PARTS.map(([k,n])=>`<div class="stat"><span>${n}</span><div class="bar"><i style="width:${t.car[k]}%"></i><b style="left:${best[k]}%"></b></div><span class="mono">${t.car[k].toFixed(0)}</span></div>`).join('')}
@@ -2225,15 +2255,11 @@ function vCar(){
   </div>
   <div class="card">
     <div class="row between"><h3>Разработка</h3><span class="pill">${busy}/${slots} слотов</span></div>
-    ${S.projects.length?S.projects.map(p=>`<div class="row between"><span>${PARTS.find(x=>x[0]===p.part)[1]} <span class="muted">+${p.gain.toFixed(1).replace('.',',')}</span></span><span class="pill info">${p.days} дн. · ${etaText(p.days)}</span></div>`).join(''):'<p class="muted">Нет активных проектов. Обновления приходят после гонок.</p>'}
-    <p class="muted" style="font-size:12px">Число слотов зависит от техдиректора (${t.td.rating}). Чем выше рейтинг, тем больше прирост.</p>
+    ${S.projects.length?S.projects.map(p=>`<div class="row between"><span>${p.comp?`${COMPS.find(c=>c[0]===p.comp)[1]} <span class="muted">спец. ${teamSpec(t,p.comp)+1}</span>`:`${PARTS.find(x=>x[0]===p.part)[1]} <span class="muted">+${p.gain.toFixed(1).replace('.',',')}</span>`}</span><span class="pill info">${p.days} дн. · ${etaText(p.days)}</span></div>`).join(''):'<p class="muted">Нет активных проектов. Ниже можно запустить доработку болида или новую версию узла.</p>'}
+    <p class="muted" style="font-size:12px">Число слотов зависит от техдиректора (${t.td.rating}). Чем выше рейтинг, тем больше прирост.${busy>=slots?' <b style="color:var(--accent)">Все слоты заняты — новый проект можно начать, когда закончится текущий.</b>':''}</p>
   </div>
-  ${partsCard()}
-  ${facCard()}
-  <div class="card"><div class="row between"><h3>Потолок расходов</h3><span class="pill ${capLeft()<5?'bad':''}">осталось ${capLeft()} млн</span></div>
-    <div class="bar"><i style="width:${clamp(S.spent/S.rules.cap*100,0,100)}%"></i></div>
-    <p class="muted" style="font-size:12px">На разработку текущего болида и болида ${year()+1} за сезон можно потратить не больше ${S.rules.cap} млн. Каждый миллион выбирайте: очки сейчас или скорость в следующем году.</p></div>
-  <div class="card"><div class="row between"><h2>Болид ${year()+1}</h2><span class="pill info">новый сезон</span></div>
+  ${upgCards()}
+  <div class="card" id="sec-next"><div class="row between"><h2>Болид ${year()+1}</h2><span class="pill info">новый сезон</span></div>
     <div class="kv"><div><span class="eyebrow">Фонд FOM на новый болид</span><b style="color:var(--good)">${fm(S.devFund,1)}</b><span class="muted" style="font-size:12px">не входит в потолок, тратится первым</span></div>
     <div><span class="eyebrow">Аэротруба (ATR)</span><b>${Math.round(atr(t)*100)}%</b><span class="muted" style="font-size:12px">${lastRank(t)}-е место прошлого сезона</span></div></div>
     <p class="muted" style="font-size:12px">Как в Формуле-1: отстающим больше фонда и времени в аэротрубе, лидерам меньше. Когда фонд закончится, вложения идут из бюджета команды и входят в потолок расходов.</p>
@@ -2244,9 +2270,21 @@ function vCar(){
       <div class="row">${[2,5,10].map(m=>`<button class="btn small grow" data-a="next" data-v="${k}|${m}" ${S.budget<Math.max(0,m-S.devFund)||Math.max(0,m-S.devFund)>capLeft()?'disabled':''}>+${m} млн</button>`).join('')}</div></div>`}).join('')}
     <p class="muted" style="font-size:12px">Белая риска — лучший прогноз среди соперников. Эффективность вложений зависит от техдиректора.</p></div>
   </div><div class="col">
-  ${PARTS.map(([k,n])=>`<div class="card flat"><h3>${n}${k==='engine'&&S.rules.freeze?' <span class="pill bad">заморожен</span>':''}</h3><div class="stack">${UPG.map(u=>{
+  ${partsCard()}
+  ${facCard()}
+  ${capCard}</div></div>`;
+}
+function upgCards(){
+  const t=me(),slots=maxProjects(),busy=S.projects.length;
+  return`<div class="card" id="sec-upg"><h3>Доработка болида в сезоне</h3><div class="stack" style="gap:12px">${PARTS.map(([k,n])=>`<div class="stack" style="gap:6px"><b>${n}${k==='engine'&&S.rules.freeze?' <span class="pill bad">заморожен</span>':''}</b>${UPG.map(u=>{
      const c=upgCost(k,u),g=u.g*(.7+t.td.rating/200)*partBoost(t,k);const dis=busy>=slots||S.budget<c||c>capLeft()||t.car[k]>=99||S.projects.some(p=>p.part===k)||(k==='engine'&&S.rules.freeze);
-     return`<button class="btn" style="justify-content:space-between" data-a="upg" data-v="${k}|${u.k}" ${dis?'disabled':''}><span>${u.n} <span class="muted">≈ +${g.toFixed(1).replace('.',',')} · ${u.d} дн.</span></span><span class="money">${c.toFixed(1).replace('.',',')}</span></button>`}).join('')}</div></div>`).join('')}</div></div>`;
+     return`<button class="btn" style="justify-content:space-between" data-a="upg" data-v="${k}|${u.k}" ${dis?'disabled':''}><span>${u.n} <span class="muted">≈ +${g.toFixed(1).replace('.',',')} · ${u.d} дн.</span></span><span class="money">${c.toFixed(1).replace('.',',')}</span></button>`}).join('')}</div>`).join('')}</div></div>
+  <div class="card" id="sec-spec"><h3>Новые версии узлов</h3>
+   ${COMPS.map(([k,n])=>{const sp=teamSpec(t,k),why=specBlock(t,k),[g,w]=SPEC[k],fit=t.drivers.map(id=>ensureParts(id)[k].sp||1);
+     return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><div class="row between"><b>${n}</b><span class="pill">спец. ${sp}${fit.some(x=>x<sp)?` · на машинах ${fit.join('/')}`:''}</span></div>
+     <button class="btn" style="justify-content:space-between" data-a="spec" data-v="${k}" ${why?'disabled':''}><span>Спец. ${sp+1} <span class="muted">${g?`−${g.toFixed(2).replace('.',',')} с/круг`:`износ −${Math.round(w*100)}%`} · ${specDays(t,k)} дн.</span></span><span class="money">${specCost(t,k).toFixed(1).replace('.',',')}</span></button>
+     ${why?`<span class="muted" style="font-size:12px">${why}</span>`:''}</div>`}).join('')}
+   <p class="muted" style="font-size:12px">Как в Ф-1: новую версию сначала разрабатывают (занимает слот разработки, входит в потолок расходов), потом узлы новой версии нужно произвести на заводе и поставить на машину. Узлы со склада, сделанные раньше, остаются старой версии. Замена тоже расходует лимит узлов на сезон. В новом сезоне версии начинаются заново.</p></div>`;
 }
 function attrGrid(d,floor){
   return`<div class="agrid">${ATTRS.map(([k,n])=>{const v=Math.floor(d[k]||0);return`<div class="stat" style="grid-template-columns:1fr 60px 26px"><span class="ell" style="font-size:12px">${n}</span><div class="bar"><i style="width:${v}%;background:${v>=90?'var(--good)':v>=75?'var(--accent)':'var(--muted)'}"></i></div><span class="mono">${v}</span></div>`}).join('')}</div>`;
@@ -2690,8 +2728,10 @@ document.addEventListener('click',e=>{
    case'facup':{const l=S.fac[v];if(l>=5||S.facBuild[v]||S.budget<FAC_COST[l])return;S.budget=+(S.budget-FAC_COST[l]).toFixed(2);S.facBuild[v]={days:FAC_DAYS[l]};save();toast(`Стройка начата: готово ${etaText(FAC_DAYS[l])}`);keepScroll(render);break}
    case'day':{const n=v==='wk'?Math.max(0,weekendDay()-S.day):+v;if(S.day+n>weekendDay())return;advanceDays(n);save();keepScroll(render);break}
    case'fit':{const[id,k]=v.split('|');const pp=partPen(id,k);if(pp&&S.stock[k]>0&&armed!=='fit'+v){UI.arm='fit'+v;toast(`Узел сверх лимита: штраф ${pp} мест на старте. Нажмите ещё раз, чтобы заменить`);return}if(fitPart(id,k,true)){toast(`Установлен новый узел: ${COMPS.find(c=>c[0]===k)[1]} — ${nm(id)}`);save()}keepScroll(render);break}
+   case'spec':{const t=me();if(specBlock(t,v))return;const c=specCost(t,v);S.budget=+(S.budget-c).toFixed(2);S.spent=+((S.spent||0)+c).toFixed(2);S.projects.push({comp:v,days:specDays(t,v)});save();toast(`Разработка: ${COMPS.find(x=>x[0]===v)[1]}, спец. ${teamSpec(t,v)+1} — готово ${etaText(specDays(t,v))}`);keepScroll(render);break}
+   case'jump':{const el=document.getElementById(v);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});break}
    case'pq':{const[k,dv]=v.split('|');UI.pq=UI.pq||{};UI.pq[k]=clamp(pqty(k)+(+dv),1,6);keepScroll(render);break}
-   case'prod':{const c=COMPS.find(x=>x[0]===v),n=pqty(v),pc=+(prodCost(v)*n).toFixed(2);if(S.budget<pc)return;S.budget=+(S.budget-pc).toFixed(2);for(let i=0;i<n;i++)S.prod.push({k:v,days:prodDays(v)});save();toast(`${c[1]} × ${n}: готово ${etaText(prodDays(v))}`);keepScroll(render);break}
+   case'prod':{const c=COMPS.find(x=>x[0]===v),n=pqty(v),pc=+(prodCost(v)*n).toFixed(2);if(S.budget<pc)return;S.budget=+(S.budget-pc).toFixed(2);for(let i=0;i<n;i++)S.prod.push({k:v,days:prodDays(v),sp:teamSpec(me(),v)});save();toast(`${c[1]} × ${n}: готово ${etaText(prodDays(v))}`);keepScroll(render);break}
    case'snego':{const sf=me()[v];UI.snego={k:v,len:2,offer:staffAsk(sf)};keepScroll(render);break}
    case'snlen':UI.snego.len=+v;keepScroll(render);break;
    case'sncancel':UI.snego=null;keepScroll(render);break;
@@ -2735,7 +2775,7 @@ render();
 if(SET.intro)showIntro();
 window.__pitwall={get S(){return S},get R(){return R},get G(){return G}};
 // внутренние функции для автотестов — только при открытии с ?debug
-if(/[?&]debug\b/.test(location.search))window.__dbg={lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,get R(){return R},get W(){return W}};
+if(/[?&]debug\b/.test(location.search))window.__dbg={lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,get R(){return R},get W(){return W}};
 })();
 </script>
 </body>
