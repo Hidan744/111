@@ -1362,7 +1362,7 @@ function startOptions(id){
 }
 // гонка: заехать сейчас на каждый состав или остаться на трассе
 function raceOptions(c){
-  const d=drv(c.did),k=Math.min(R.N-1,R.lapDone),wet=R.wet[k],rem=Math.max(0,R.N-R.lapDone-1),ruleOn=!R.anyWet&&!wet,used=c.used.filter(x=>x!=='I'),pit=R.track.pit+2.6+S.rules.pitAdd,ms=ruleOn&&S.rules.twoStop?Math.max(0,2-c.stops):0;
+  const d=drv(c.did),k=Math.min(R.N-1,R.lapDone),wet=R.wet[k],rem=Math.max(0,R.N-R.lapDone-1),ruleOn=!R.anyWet&&!wet,used=c.used.filter(x=>x!=='I'),pit=(R.sc>0?R.track.pit*.45:R.track.pit)+2.6+S.rules.pitAdd,ms=ruleOn&&S.rules.twoStop?Math.max(0,2-c.stops):0;
   const res={};
   Object.keys(TYRES).forEach(t=>{const b=bestPlan(t,100,rem,Math.max(1,ms-1),used,ruleOn,d,wet,R.ls,pit,Math.max(0,ms-1));res[t]={cost:pit+b.cost,plan:b.plan}});
   const stay=bestPlan(c.tyre,c.health,rem,2,used,ruleOn,d,wet,R.ls,pit,ms);res.stay={cost:stay.cost,plan:stay.plan};
@@ -1381,7 +1381,7 @@ const isFP=st=>st==='fp'||st==='fp1'||st==='fp2'||st==='fp3';
 function startWeekend(){
   ensureEcon();autoOrder();
   if(S.day<weekendDay())advanceDays(weekendDay()-S.day);
-  S.teams.forEach(t=>t.drivers.forEach(id=>{const P=ensureParts(id);COMPS.forEach(([k])=>{if(t.id!==S.pid){if(P[k].h<35)fitPart(id,k,false)}else if(S.autoFit&&P[k].h<20&&S.stock[k]>0)fitPart(id,k,true)})}));
+  S.teams.forEach(t=>t.drivers.forEach(id=>{const P=ensureParts(id);COMPS.forEach(([k])=>{if(t.id!==S.pid){if(P[k].h<clamp(2+t.budget/4,6,25))fitPart(id,k,false)}else if(S.autoFit&&P[k].h<20&&S.stock[k]>0)fitPart(id,k,true)})}));
   if(S.vote){if(S.vote.mine===null)S.vote.mine=false;resolveVote()}
   const tr=seasonTracks()[S.round],real=SET.mode==='real',laps=real?tr.realLaps:Math.max(8,Math.round(tr.laps*SET.len));
   W={ti:S.round,tr,laps,ls:tr.laps/laps,real,weather:genWeather(tr,laps),risk:{},grid:null,qt:{},start:{},
@@ -1438,7 +1438,7 @@ function runQuali(){
     if(stg&&!W.qin.includes(id))return;
     const d=drv(id);const risk=t.id===S.pid?W.risk[id]:Math.random()<.3;
     const sq=t.id===S.pid?mySq(id):W.aiSq[t.id];
-    let q=tr.base-1.2+(100-perf(t,tr))*.06+(100-d.pace)*.035+TYRES.S.off-(sq-60)*.012+gauss()*(.12+(100-d.craft)/100*.25);
+    let q=tr.base-1.2+(100-perf(t,tr))*.06+(100-d.pace)*.035+TYRES.S.off-(sq-60)*.012+gauss()*(.12+(100-(d.cons||d.craft))/100*.25);
     if(wet)q+=7+(100-(d.wet||d.craft))*.035;
     let note='';
     if(risk){q-=.28;if(Math.random()<(wet?.2:.12)){q+=rnd(1.2,3);note='ошибка'}}
@@ -1473,6 +1473,14 @@ function startRace(){
 function feed(t,mine){R.feed.unshift({t,mine,l:R.lapDone});R.feed=R.feed.slice(0,40)}
 const nm=id=>drv(id).name.split(' ').slice(-1)[0];
 
+// режим пилота-соперника: атака в борьбе и на финише, бережёт шины и узлы при износе
+function aiMode(c,gapAhead,k,wet){
+  if(c.me)return;
+  const P=S.parts[c.did],left=R.N-k+1,comp=P?Math.min(P.ice.h,P.ers.h,P.gb.h):100;
+  if(comp<25||(c.health<30&&!c.pitReq&&left>3))c.mode='save';
+  else if((gapAhead<1.2&&c.health>45&&comp>40)||(left<=3&&c.health>25&&comp>30))c.mode=wet&&c.health<60?'norm':'push';
+  else c.mode='norm';
+}
 function aiDecide(c,k,wet,sc){
   if((c.me&&!c.auto)||c.pitReq)return;
   if(c.me&&srat(me(),'strat')>=70&&!sc){const o=raceOptions(c),b=Object.keys(o).find(x=>o[x].delta<.05);if(b&&b!=='stay')c.pitReq=b;return}
@@ -1496,6 +1504,9 @@ function simLap(k){
   if(R.sc===0&&k>2&&k<R.N-1&&Math.random()<.028*R.ls){R.sc=Math.round(3/Math.sqrt(R.ls));feed('Машина безопасности на трассе!')}
   const sc=R.sc>0;
   const run=R.cars.filter(c=>!c.out).sort((a,b)=>a.cum[k-1]-b.cum[k-1]);
+  // износ шин зависит от погоды на этом круге — пересчитываем здесь, а не в интерфейсе
+  R.tw=trackWear(R.abr,R.temp,wet);
+  run.forEach((c,i)=>aiMode(c,i>0?c.cum[k-1]-run[i-1].cum[k-1]:99,k,wet));
   let prevEnd=null,prev=null;
   const pitted=new Set();
   for(const c of run){
@@ -1511,7 +1522,7 @@ function simLap(k){
     if(!sc&&Math.random()<(c.mode==='push'?.012:c.mode==='save'?.002:.004)*(1.3-d.craft/100)*(wet?2.2:1)*R.ls*(1.1-(d.exp||50)/1000)*(c.me?1.25-srat(me(),'coach')/250:1)){const loss=rnd(1.5,5);lt+=loss;
       // ошибка на пределе бьёт по аэродинамике; в дождь на атаке — риск аварии
       if(c.mode==='push'){P.fw.h=Math.max(0,P.fw.h-rnd(15,35));P.floor.h=Math.max(0,P.floor.h-rnd(4,14))}
-      if(wet&&c.mode==='push'&&loss>4){c.out=true;c.outLap=k;c.parkF=(k-1)+.5;c.cum.push(Infinity);c.outWhy='crash';P.fw.h=0;P.floor.h=Math.max(0,P.floor.h-40);feed(`${nm(c.did)} разбивает машину на мокрой трассе!`,c.me);continue}
+      if(c.mode==='push'&&loss>(wet?4:4.6)&&(wet||Math.random()<.3)){c.out=true;c.outLap=k;c.parkF=(k-1)+.5;c.cum.push(Infinity);c.outWhy='crash';P.fw.h=0;P.floor.h=Math.max(0,P.floor.h-40);feed(`${nm(c.did)} разбивает машину на мокрой трассе!`,c.me);continue}
       feed(`${nm(c.did)} ошибается и теряет ${loss.toFixed(1).replace('.',',')} с${c.mode==='push'?' — повреждено переднее крыло':''}.`,c.me)}
     // прокол
     if(c.health<10&&Math.random()<.18){lt+=rnd(18,28);c.health=0;if(!c.pitReq)c.pitReq=R.N-k>8?'M':'S';feed(`Прокол у ${nm(c.did)}! Ползёт в боксы.`,c.me)}
@@ -1541,7 +1552,9 @@ function simLap(k){
   }
   if(sc){
     const ord=R.cars.filter(c=>!c.out).sort((a,b)=>a.cum[k]-b.cum[k]);
-    for(let i=1;i<ord.length;i++){const g=ord[i].cum[k]-ord[i-1].cum[k];ord[i].cum[k]=ord[i-1].cum[k]+Math.min(g,.9)}
+    // очередь за машиной безопасности: отрывы сжимаются, круговые остаются на круг (и больше) позади
+    const lead=ord[0].cum[k],scLap=R.track.base*1.38,down=ord.map(c=>Math.floor((c.cum[k]-lead)/R.track.base));
+    for(let i=1;i<ord.length;i++)ord[i].cum[k]=Math.max(lead+down[i]*scLap+i*.9,ord[i-1].cum[k]+.9);
     R.sc--;if(R.sc===0)feed('Машина безопасности уходит. Рестарт!');
   }
   if(k<R.N&&R.wet[k]!==wet)feed(R.wet[k]?'Начинается дождь!':'Дождь прекращается, трасса подсыхает.');
@@ -1566,7 +1579,7 @@ function liveOrder(){
     if(x===lead){x.gap='Лидер';return}
     const L=Math.min(x.p.laps,R.N);
     const g=x.c.cum[L]-lead.c.cum[L];
-    const lapsDown=lead.p.laps-x.p.laps-(x.p.f>lead.p.f?0:0);
+    const lapsDown=lead.p.laps-x.p.laps;
     x.gap=lapsDown>=1&&g>R.track.base?`+${lapsDown} кр.`:fgap(Math.max(0,g));
   });
   R._lo=arr;R._loT=T;R._loL=R.lapDone;
@@ -1728,7 +1741,7 @@ function finishRace(){
     const pts=x.c.out?0:(POINTS[i]||0);
     const d=drv(x.c.did);d.pts+=pts;team(x.c.tid).pts+=pts;
     if(i===0&&!x.c.out)d.wins++;if(i<3&&!x.c.out)d.pods++;
-    return{did:x.c.did,tid:x.c.tid,pos:i+1,grid:x.c.grid,out:x.c.out,time:x.t,gap:x.c.out?null:x.t-win,pts,pen:x.c.pen,stops:x.c.stops,me:x.c.me,best:x.c.best};
+    return{did:x.c.did,tid:x.c.tid,pos:i+1,grid:x.c.grid,out:x.c.out,time:x.t,gap:x.c.out?null:x.t-win,lapsDown:x.c.out||!fin[0]?0:Math.floor((x.c.cum[N]-fin[0].c.cum[N])/(fin[0].c.cum[N]/N)),pts,pen:x.c.pen,stops:x.c.stops,me:x.c.me,best:x.c.best};
   });
   // экономика
   const mine=rows.filter(r=>r.me);
@@ -2333,7 +2346,6 @@ function updateRaceUi(){
   $('#wxacc').textContent=`стратег ${srat(me(),'strat')}: точно ${R.fexact} кр.`;
   // общая таблица шин (средний пилот) и поправка на навык каждого пилота
   const wNow=R.wet[cur],AV=80,tkey=cur+'|'+wNow+'|'+S.rules.wear;
-  if(R._twWet!==wNow){R._twWet=wNow;R.tw=trackWear(R.abr,R.temp,wNow)}
   if(R._tyK!==tkey){R._tyK=tkey;const rows=Object.entries(TYRES).map(([k,ty])=>{const T=TYRES[k];let off,w;
       off=wNow?(k==='I'?0:8.5):T.off;w=tyreWear(k,wNow,AV,'norm',R.ls,R.tw);return{k,ty,off,w,life:Math.floor(70/w)}});
     const bo=Math.min(...rows.map(r=>r.off));
@@ -2372,7 +2384,7 @@ function vResult(){
   <div class="scroll wrap">
    <div class="podium">${p.map((r,i)=>r?`<div class="p${[2,1,3][i]}"><b>${[2,1,3][i]}</b><span class="ell" style="font-weight:700">${esc(nm(r.did))}</span><span class="chip" style="background:${team(r.tid).color};margin:0 auto;width:28px;height:4px"></span><span class="muted ell">${esc(team(r.tid).short)}</span></div>`:'<div></div>').join('')}</div>
    <div class="card" style="padding:8px 10px"><div class="tblwrap"><table><thead><tr><th>#</th><th>Пилот</th><th class="num">Старт</th><th class="num">Время</th><th class="num">Очки</th></tr></thead><tbody>
-   ${rows.map(r=>`<tr${r.me?' class="me"':''}><td class="pos">${r.out?'—':r.pos}</td><td><span class="chip" style="background:${team(r.tid).color}"></span> ${esc(drv(r.did).name)}${r.pen?' <span class="pill bad">+10 с</span>':''}</td><td class="num muted">${r.grid}</td><td class="num">${r.out?'сход':r.pos===1?fsec(r.time):fgap(r.gap)}</td><td class="num">${r.pts||''}</td></tr>`).join('')}
+   ${rows.map(r=>`<tr${r.me?' class="me"':''}><td class="pos">${r.out?'—':r.pos}</td><td><span class="chip" style="background:${team(r.tid).color}"></span> ${esc(drv(r.did).name)}${r.pen?' <span class="pill bad">+10 с</span>':''}</td><td class="num muted">${r.grid}</td><td class="num">${r.out?'сход':r.pos===1?fsec(r.time):r.lapsDown>0?`+${r.lapsDown} кр.`:fgap(r.gap)}</td><td class="num">${r.pts||''}</td></tr>`).join('')}
    </tbody></table></div></div>
    <div class="card"><div class="row between"><h3>Финансы этапа</h3><span class="money" style="color:${L.net>=0?'var(--good)':'var(--bad)'}">${L.net>=0?'+':''}${fm(L.net,2)}</span></div>
     ${L.inc.map(x=>`<div class="row between"><span>${esc(x[0])}</span><span class="mono" style="color:var(--good)">+${x[1].toFixed(2).replace('.',',')}</span></div>`).join('')}
@@ -2512,5 +2524,7 @@ window.addEventListener('resize',()=>{if(UI.screen!=='race')after()});
 
 render();
 window.__pitwall={get S(){return S},get R(){return R},get G(){return G}};
+// внутренние функции для автотестов — только при открытии с ?debug
+if(/[?&]debug\b/.test(location.search))window.__dbg={lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,get R(){return R},get W(){return W}};
 })();
 </script>
