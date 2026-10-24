@@ -433,6 +433,52 @@ function tickDay(){
   const A=S.academy;if(A.mission){A.mission.days--;if(A.mission.days<=0){{const pool=[...S.leagues.f4,...S.leagues.f3].filter(d=>d.region===A.mission.region&&d.age<=19).sort(()=>Math.random()-.5).slice(0,3),w=SCOUT_W[A.scout-1];
     A.prospects=pool.map(d=>{const lo=clamp(Math.round(d.pot-rnd(0,w)),40,99);return{...d,est:[lo,Math.min(99,lo+w)],focus:'pace',league:LEAGUES.find(([k])=>S.leagues[k].includes(d))[0],src:d.id}});while(A.prospects.length<3)A.prospects.push(mkJunior(A.mission.region))}news(`Скауты вернулись из региона «${A.mission.region}»: три новых таланта.`);A.mission=null}}
 }
+/* ---------- задания ---------- */
+const OWN_COLORS=['#f97316','#22c55e','#eab308','#a855f7','#ec4899','#14b8a6','#f43f5e','#84cc16','#0ea5e9','#e5e7eb'];
+const maxPaceByRep=()=>Math.floor(74+S.rep/3);
+function mkTask(){
+  const st=teamStandings(),pos=st.findIndex(t=>t.id===S.pid),n0=st.length,strong=pos<3,mid=pos<7,weak=pos>=n0-3,rivals=st.filter(t=>t.id!==S.pid);
+  const above=st[Math.max(0,pos-1)]&&st[Math.max(0,pos-1)].id!==S.pid?st[pos-1]:rivals[0];
+  const opts=[
+   ()=>{if(weak)return{type:'beat',t:`Опередить «${above.name}» хотя бы в одной из 3 гонок`,data:above.id,target:1,left:3,rep:2,money:1};const n=strong?40:mid?14:4,k=3;return{type:'pts',t:`Набрать ${n} ${plural(n,'очко','очка','очков')} за ${k} гонки`,target:n,left:k,rep:2,money:1.5}},
+   ()=>({type:'beat',t:`Финишировать выше «${above.name}» в следующей гонке`,data:above.id,target:1,left:1,rep:1.5,money:.8}),
+   ()=>({type:'both',t:'Оба пилота финишируют 3 гонки подряд',target:3,left:4,rep:1.5,money:.6}),
+   ()=>{const cars=S.teams.length*2,n=strong?3:mid?6:weak?cars-6:10,k=weak?3:2;return{type:'top',t:`Финишировать в топ-${n} за ${k} ${plural(k,'гонку','гонки','гонок')}`,target:n,left:k,rep:2,money:1.2}},
+   ()=>{const cars=S.teams.length*2,q=weak?cars-6:10;return{type:'q',t:weak?`Пилот проходит Q1 (старт в топ-${q})`:'Пилот стартует из первой десятки',target:1,data:q,left:3,rep:1,money:.6}},
+   ()=>({type:'dev',t:'Запустить 2 разработки (болид или болид следующего сезона)',data:S.devCount||0,target:2,left:4,rep:1,money:.5}),
+   ()=>({type:'acad',t:'Юниор академии на подиуме в младших формулах',target:1,left:4,rep:1,money:.5}),
+  ];
+  const used=new Set((S.tasks||[]).map(x=>x.type));const pool=opts.map(f=>f()).filter(x=>!used.has(x.type));if(!pool.length)return opts[2]();
+  const t=pick(pool);t.id='t'+(uid++);t.prog=0;return t;
+}
+function newTasks(){S.tasks=S.tasks||[];while(S.tasks.length<3)S.tasks.push(mkTask())}
+function tasksAfterRace(rows,grid){
+  const mine=rows.filter(r=>r.me),best=Math.min(...mine.map(r=>r.out?99:r.pos)),pts=mine.reduce((a,r)=>a+r.pts,0);
+  const done=[];
+  S.tasks.forEach(t=>{
+    if(t.type==='pts')t.prog+=pts;
+    else if(t.type==='beat'){const o=rows.filter(r=>r.tid===t.data&&!r.out).map(r=>r.pos);if(best<Math.min(99,...o))t.prog=1}
+    else if(t.type==='both')t.prog=mine.every(r=>!r.out)?t.prog+1:0;
+    else if(t.type==='top')t.prog=best<=t.target?1:t.prog;
+    else if(t.type==='q')t.prog=grid.slice(0,t.data||10).some(g=>g.tid===S.pid)?1:t.prog;
+    else if(t.type==='dev')t.prog=(S.devCount||0)-t.data;
+    else if(t.type==='acad')t.prog=S.academy.juniors.some(j=>j.last&&j.last<=3)?1:t.prog;
+    const ok=t.type==='top'||t.type==='q'||t.type==='acad'||t.type==='beat'?t.prog>=1:t.prog>=t.target;
+    t.left--;
+    if(ok){S.rep=clamp(S.rep+t.rep,10,100);S.budget=+(S.budget+t.money).toFixed(2);news(`Задание выполнено: «${t.t}» — репутация +${t.rep}, +${String(t.money).replace('.',',')} млн.`);done.push(t)}
+    else if(t.left<=0){S.rep=clamp(S.rep-.5,10,100);news(`Задание провалено: «${t.t}».`);done.push(t)}
+  });
+  S.tasks=S.tasks.filter(t=>!done.includes(t));newTasks();
+}
+function tasksCard(){
+  newTasks();
+  return`<div class="card"><div class="row between"><h3>Задания</h3><span class="pill acc">репутация ${Math.round(S.rep)}</span></div>
+   ${S.tasks.map(t=>{const tgt=t.type==='top'||t.type==='q'||t.type==='acad'||t.type==='beat'?1:t.target,pr=Math.min(tgt,Math.max(0,t.prog));return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:4px">
+     <div class="row between"><span>${esc(t.t)}</span><span class="muted mono" style="font-size:12px">${t.left} ${plural(t.left,'гонка','гонки','гонок')}</span></div>
+     <div class="row between"><div class="bar grow"><i style="width:${pr/tgt*100}%"></i></div><span class="mono" style="font-size:12px;margin-left:8px">${pr}/${tgt}</span></div>
+     <span class="muted" style="font-size:12px">Награда: репутация +${t.rep}, ${String(t.money).replace('.',',')} млн</span></div>`}).join('')}
+   <p class="muted" style="font-size:12px">Репутация открывает сильных пилотов и персонал: сейчас пилоты со скоростью до ~${maxPaceByRep()} готовы к разговору.</p></div>`;
+}
 /* ---------- тесты и аналитика команд ---------- */
 const CATS=[['straight','Скорость на прямых'],['corner','Повороты'],['traction','Тяга и шасси'],['tyres','Работа с шинами'],['rel','Надёжность'],['pace','Темп в гонке']];
 const PROGS=[['aero','Аэро-замеры',['corner','straight'],60],['long','Длинные отрезки',['tyres','pace'],95],['quali','Квалификационные симуляции',['pace','traction'],70],['rel','Пробег на надёжность',['rel','straight'],140]];
@@ -522,6 +568,12 @@ function compPen(P){if(!P)return 0;const h=k=>P[k].h;
   return Math.max(0,60-h('ice'))*.012+Math.max(0,60-h('ers'))*.01+Math.max(0,40-h('gb'))*.01+Math.max(0,70-h('floor'))*.015+Math.max(0,70-h('fw'))*.012+(h('floor')<=0?1.5:0)+(h('fw')<=0?1.2:0)}
 const compLimit=k=>COMPS.find(c=>c[0]===k)[2];
 // установка нового узла: из склада (наша команда) или сразу (соперники); сверх лимита — штраф 5 мест
+// автозаказ: узел у пилота < 40%, на складе и в производстве пусто — заводу ставится заказ
+function autoOrder(){
+  if(!S.autoOrder)return;
+  COMPS.forEach(([k,n])=>{const need=me().drivers.some(id=>ensureParts(id)[k].h<40),have=(S.stock[k]||0)+S.prod.filter(q=>q.k===k).length;
+    if(need&&have===0&&S.budget>=prodCost(k)){S.budget=+(S.budget-prodCost(k)).toFixed(2);S.prod.push({k,days:prodDays(k)});news(`Автозаказ на заводе: ${n}, готово ${etaText(prodDays(k))}.`)}});
+}
 function fitPart(id,k,own){
   const P=ensureParts(id);if(own){if(!(S.stock[k]>0))return false;S.stock[k]--}
   P[k].h=100;P[k].used++;const lim=compLimit(k);
@@ -635,23 +687,37 @@ function newGame(ti,customName){
     const dd=[dl[i*2],dl[i*2+1]];dd.forEach(d=>d.team=t[0]);
     return{id:t[0],name:t[1],short:t[2],color:t[3],car:{aero:t[4][0],engine:t[4][1],chassis:t[4][2],rel:t[4][3]},budget:t[5],rep:t[6],drivers:dd.map(d=>d.id),td:mkStaff('td',85-i*3),crew:mkStaff('crew',84-i*2.5),aero:mkStaff('aero',84-i*2.5),engine:mkStaff('engine',84-i*2.5),eng:mkStaff('eng',82-i*2),strat:mkStaff('strat',82-i*2),coach:mkStaff('coach',78-i*2),com:mkStaff('com',80-i*2),pts:0};
   });
-  const p=teams[ti];
-  if(customName&&customName.trim()){p.name=customName.trim().slice(0,24);p.short=p.name.replace(/[^А-ЯЁA-Zа-яёa-z]/g,'').slice(0,3).toUpperCase()||p.short}
-  S={v:1,season:1,round:0,pid:p.id,rep:p.rep,budget:Math.round(RS.teams[ti][5]*.5+10),teams,drivers,year0:UI.year0,real:UI.real,
-     sponsors:[],offers:[],projects:[],news:[],results:[],warnings:0,history:[],market:null,goal:Math.min(nT-1,ti+2),lastRace:null};
+  let p,budget,goal;
+  if(UI.own){
+    // своя команда: новый участник чемпионата
+    const sup=teams.find(t=>t.id===UI.ownEng)||teams[0],eng=sup.car.engine-3,nm0=(UI.teamName||'').trim()||'Новая команда';
+    const fa=dl.slice(nT*2).filter(d=>d.pace<=82).sort(()=>Math.random()-.5);while(fa.length<2){const r=rookie();drivers[r.id]=r;fa.push(r)}
+    p={id:'own',name:nm0.slice(0,24),short:((UI.ownShort||'').trim()||nm0.replace(/[^А-ЯЁA-Zа-яёa-z]/g,'').slice(0,3)).toUpperCase().slice(0,3)||'НОВ',color:UI.ownColor||OWN_COLORS[0],
+       car:{aero:70,engine:eng,chassis:70,rel:72},budget:24,rep:22,drivers:[fa[0].id,fa[1].id],pts:0,engineFrom:sup.name,engineSup:sup.id};
+    STAFF_ROLES.forEach(([k])=>{p[k]=mkStaff(k,ri(52,62));p[k].contract=ri(2,3)});
+    fa.slice(0,2).forEach(d=>{d.team='own';d.contract=2});
+    teams.push(p);budget=Math.round(34-(eng-75)*.8);goal=teams.length;
+  }else{
+    p=teams[ti];
+    if(customName&&customName.trim()){p.name=customName.trim().slice(0,24);p.short=p.name.replace(/[^А-ЯЁA-Zа-яёa-z]/g,'').slice(0,3).toUpperCase()||p.short}
+    budget=Math.round(RS.teams[ti][5]*.5+10);goal=Math.min(nT-1,ti+2);
+  }
+  S={v:1,season:1,round:0,pid:p.id,rep:p.rep,budget,teams,drivers,year0:UI.year0,real:UI.real,own:!!UI.own,
+     sponsors:[],offers:[],projects:[],news:[],results:[],warnings:0,history:[],market:null,goal,lastRace:null};
   ensureEcon();
+  if(UI.own){S.fac={wt:1,eng:1,comp:1,rig:1,sim:1,fac:1};S.stock={ice:1,ers:1,gb:1,floor:1,fw:2};news(`Команда «${p.name}» основана! Двигатели — как у «${p.engineFrom}». Первая цель — не оказаться последними и выполнять задания, чтобы расти.`)}
   S.market=staffMarket();
   const first=mkOffer();first.name='Титульный: '+first.name;first.per=+(first.per*1.6).toFixed(2);S.sponsors.push(first);
   for(let i=0;i<4;i++)S.offers.push(mkOffer());
-  news(`Вы — новый руководитель команды «${p.name}». Совет директоров ждёт ${S.goal}-е место или выше в Кубке конструкторов.`);
-  save();
+  if(!UI.own)news(`Вы — новый руководитель команды «${p.name}». Совет директоров ждёт ${S.goal}-е место или выше в Кубке конструкторов.`);
+  newTasks();save();
 }
 function news(t){S.news.unshift({r:S.round,s:S.season,t});S.news=S.news.slice(0,30)}
 
 /* ---------- производные ---------- */
 function perf(t,tr){const a=tr.aero*(S&&S.rules?S.rules.aeroW:1),w=a+tr.engine+1;return(t.car.aero*a+t.car.engine*tr.engine+t.car.chassis)/w}
 /* ---------- регламент, потолок расходов, болид следующего сезона ---------- */
-const DEF_RULES={cap:60,wear:1,twoStop:false,aeroW:1,freeze:false,pitAdd:0,prizeFlat:false};
+const DEF_RULES={cap:80,wear:1,twoStop:false,aeroW:1,freeze:false,pitAdd:0,prizeFlat:false};
 function ensureEcon(){
   if(!S.rules)S.rules={...DEF_RULES};
   if(S.spent==null)S.spent=0;
@@ -659,9 +725,11 @@ function ensureEcon(){
   if(S.market)STAFF_ROLES.forEach(([k])=>{if(!S.market[k])S.market[k]=[0,1,2].map(()=>mkStaff(k,ri(55,93)))});
   if(!S.votes)S.votes=[];
   if(S.vote===undefined)S.vote=null;
+  if(!S.lastPos){S.lastPos={};[...S.teams].sort((a,b)=>carOverall(b)-carOverall(a)).forEach((t,i)=>S.lastPos[t.id]=i+1)}
+  if(S.devFund==null)S.devFund=fundFor(me());
   if(!S.fac)S.fac={wt:2,eng:2,comp:2,rig:2,sim:2,fac:2};if(!S.facBuild)S.facBuild={};
   S.teams.forEach(t=>{if(t.id!==S.pid&&!t.fac){const l=clamp(Math.round(t.budget/18),1,5);t.fac={wt:l,eng:l,comp:l,rig:l,sim:l,fac:l}}});
-  if(!S.stock)S.stock={ice:1,ers:1,gb:1,floor:2,fw:3};if(!S.prod)S.prod=[];if(S.autoFit===undefined)S.autoFit=true;
+  if(!S.stock)S.stock={ice:1,ers:1,gb:1,floor:2,fw:3};if(!S.prod)S.prod=[];if(S.autoFit===undefined)S.autoFit=true;if(S.autoOrder===undefined)S.autoOrder=true;
   Object.values(S.drivers).forEach(d=>{if(d.team)ensureParts(d.id)});
   if(S.academy&&S.academy.mission&&S.academy.mission.days==null)S.academy.mission.days=(S.academy.mission.left||1)*14;
   if(S.day==null)S.day=S.round<NR()?raceDay(seasonTracks()[S.round])-10:dayOf(12,10);
@@ -671,12 +739,19 @@ function ensureEcon(){
   const nums=[...Object.keys(S.drivers),...S.academy.juniors.map(j=>j.id),...(S.leagues?Object.values(S.leagues).flat().map(d=>d.id):[])].map(x=>+String(x).slice(1)).filter(n=>!isNaN(n));
   uid=Math.max(uid,...nums,999)+1;
   Object.values(S.drivers).forEach(ensureAttrs);
+  if(!S.tasks)newTasks();
   STAFF_ROLES.forEach(([k])=>{const sf=me()[k];if(sf&&sf.contract==null)sf.contract=ri(1,3)});
   ensureLeagues();
 }
 const capLeft=()=>+(S.rules.cap-S.spent).toFixed(1);
 // очки разработки на следующий сезон за 1 млн
-const partBoost=(t,k)=>(k==='aero'?.8+srat(t,'aero')/250:k==='engine'||k==='rel'?.8+srat(t,'engine')/250:1)*facMul(t,k);
+// место в Кубке конструкторов прошлого сезона (в первом сезоне — по силе команд)
+const lastRank=t=>(S.lastPos&&S.lastPos[t.id])||S.teams.length;
+// ATR: время в аэротрубе — отстающим больше (последнее место 115%, чемпион 70%)
+const atr=t=>.7+.45*(lastRank(t)-1)/Math.max(1,S.teams.length-1);
+// фонд FOM на болид следующего сезона: последним больше
+const fundFor=t=>Math.round(14+16*(lastRank(t)-1)/Math.max(1,S.teams.length-1));
+const partBoost=(t,k)=>(k==='aero'?.8+srat(t,'aero')/250:k==='engine'||k==='rel'?.8+srat(t,'engine')/250:1)*facMul(t,k)*(k==='aero'?atr(t):1);
 const devEff=(t,k)=>(.7+t.td.rating/200)*partBoost(t,k||'chassis');
 // прогноз характеристики болида следующего сезона
 const nextStat=(t,k)=>+(62+facL(t,PART_FAC[k])*1.2+22*(1-Math.exp(-t.next[k]/20))+(t.car[k]-75)*.25).toFixed(1);
@@ -722,7 +797,7 @@ function driverStandings(){return Object.values(S.drivers).filter(d=>d.team).sor
 const myPos=()=>teamStandings().findIndex(t=>t.id===S.pid)+1;
 const maxProjects=()=>me().td.rating>=82?3:me().td.rating>=66?2:1;
 function costPerRace(){const t=me();return t.drivers.reduce((s,id)=>s+drv(id).salary,0)/NR()+staffSalary(t)/NR()+.9+acadUpkeep()+facUpkeep()}
-const incomePerRace=()=>S.sponsors.reduce((s,x)=>s+x.per,0);
+const incomePerRace=()=>1+S.sponsors.reduce((s,x)=>s+x.per,0);
 const UPG=[{k:'small',n:'Доработка',g:1.2,c:3,d:12},{k:'major',n:'Новый пакет',g:3,c:7,d:30},{k:'rev',n:'Концепция',g:5.5,c:12,d:55}];
 const upgCost=(part,u)=>+(u.c*(1+Math.max(0,me().car[part]-70)/40)).toFixed(1);
 
@@ -1304,7 +1379,7 @@ function genWeather(tr,laps){
 const SESS={media:['Четверг','Медиа-день'],fp1:['Пятница','Практика 1'],fp2:['Пятница','Практика 2'],fp3:['Суббота','Практика 3'],fp:['Пятница','Свободная практика'],quali:['Суббота','Квалификация'],race:['Воскресенье','Гонка']};
 const isFP=st=>st==='fp'||st==='fp1'||st==='fp2'||st==='fp3';
 function startWeekend(){
-  ensureEcon();
+  ensureEcon();autoOrder();
   if(S.day<weekendDay())advanceDays(weekendDay()-S.day);
   S.teams.forEach(t=>t.drivers.forEach(id=>{const P=ensureParts(id);COMPS.forEach(([k])=>{if(t.id!==S.pid){if(P[k].h<35)fitPart(id,k,false)}else if(S.autoFit&&P[k].h<20&&S.stock[k]>0)fitPart(id,k,true)})}));
   if(S.vote){if(S.vote.mine===null)S.vote.mine=false;resolveVote()}
@@ -1661,6 +1736,7 @@ function finishRace(){
   const best=Math.min(...mine.map(r=>r.out?99:r.pos));
   const goalOk={finish:mine.every(r=>!r.out),points:mine.some(r=>!r.out&&r.pos<=10),both:mine.every(r=>!r.out&&r.pos<=10),podium:best<=3,win:best===1};
   const inc=[];
+  inc.push(['Выплаты FOM',1]);
   S.sponsors.forEach(s=>{inc.push([s.name,s.per]);if(goalOk[s.goal])inc.push([`Бонус: ${s.name}`,s.bonus])});
   if(ptsMine)inc.push(['Призовые за очки',+(ptsMine*.25).toFixed(2)]);
   const t=me();
@@ -1671,7 +1747,8 @@ function finishRace(){
   S.budget=+(S.budget+net).toFixed(2);
   // репутация
   const exp_pos=S.goal*2;
-  S.rep=clamp(S.rep+clamp((exp_pos-best)*.25,-1.2,1.5)+(best<=3?1:0),10,100);
+  S.rep=clamp(S.rep+clamp((exp_pos-best)*.08,-1,.4)+(best<=3?.8:0),10,100);
+  tasksAfterRace(rows,W.grid||[]);
   if(W.hype){const ok=best<=10;S.rep=clamp(S.rep+(ok?2.5:-3),10,100);news(ok?'Громкие заявления на медиа-дне подтвердились — репутация растёт.':'Обещания на медиа-дне не сбылись — пресса критикует команду.')}
   // тренер пилотов: молодые растут
   t.drivers.forEach(id=>{const d=drv(id);if(d.age<=29&&d.pace<97&&Math.random()<srat(t,'coach')/900){d.pace++;news(`${d.name} прогрессирует: скорость ${d.pace} — работа тренера.`)}else if(Math.random()<srat(t,'coach')/1500&&d.craft<97){d.craft++}});
@@ -1679,11 +1756,11 @@ function finishRace(){
 
   // развитие соперников
   S.teams.forEach(o=>{if(o.id===S.pid)return;
-    PARTS.forEach(([k])=>o.next[k]+=o.budget/60*rnd(.5,1.3)*.95*devEff(o,k)*.85*(24/NR())*DIFF_DEV[SET.diff]*(S.round>NR()*.4?1.4:.6));
+    PARTS.forEach(([k])=>o.next[k]+=(o.budget/60+fundFor(o)/22)*.6*rnd(.5,1.3)*.95*devEff(o,k)*.85*(24/NR())*DIFF_DEV[SET.diff]*(S.round>NR()*.4?1.4:.6));
     let part=pick(['aero','engine','chassis','aero','engine','chassis','rel']);if(part==='engine'&&S.rules.freeze)part='chassis';o.car[part]=clamp(+(o.car[part]+o.budget/60*rnd(.15,.8)*facMul(o,part)*DIFF_DEV[SET.diff]).toFixed(1),0,100)});
   // новые предложения
   if(S.round%3===2){S.offers.push(mkOffer());S.offers=S.offers.slice(-5)}
-  academyRace();ensureIntel();CATS.forEach(([k])=>S.intel.conf[k]=Math.min(.92,S.intel.conf[k]+.035));
+  academyRace();autoOrder();ensureIntel();CATS.forEach(([k])=>S.intel.conf[k]=Math.min(.92,S.intel.conf[k]+.035));
   if(S.round===Math.floor(NR()*.5))S.teams.forEach(tm=>tm.drivers.forEach(id=>{const d=drv(id);if(!d.retiring&&d.age>=35&&Math.random()<(d.age-34)*.1+(d.pace<80?.1:0)){d.retiring=true;news(`${d.name} (${d.age}) объявляет, что завершит карьеру в конце сезона${tm.id===S.pid?' — можно попробовать уговорить его остаться':''}.`)}}));
   if(S.vote)resolveVote();
   if(S.round%6===2&&S.round<NR()-1)newVote();
@@ -1709,12 +1786,20 @@ function endSeason(){
   else{S.warnings++;verdict={ok:false,t:`Провал: ${pos}-е место при задаче ${S.goal}-е. Предупреждение ${S.warnings} из 2.`}}
   const champ=driverStandings()[0];
   S.history.push({season:year(),pos,champ:champ.name,ctid:st[0].id,cname:st[0].name});
-  UI.season={pos,prize,verdict,champ:champ.name,cteam:st[0].name,gameover:S.warnings>=2};
+  // неистраченный фонд FOM инженеры распределяют поровну
+  if(S.devFund>0){const per=S.devFund/4;PARTS.forEach(([k])=>me().next[k]+=per*devEff(me(),k));news(`Инженеры распределили остаток фонда на новый болид: ${fm(S.devFund,1)}.`);S.devFund=0}
+  const broke=S.budget<-20;
+  if(broke)verdict={ok:false,t:`Банкротство: долг ${fm(-S.budget,1)}. Владельцы закрывают проект.`};
+  UI.season={pos,prize,verdict,champ:champ.name,cteam:st[0].name,gameover:S.warnings>=2||broke};
+  S.lastPos={};st.forEach((t,i)=>S.lastPos[t.id]=i+1);S.devFund=fundFor(me());
   // межсезонье
   if(!UI.season.gameover){
     S.season++;S.round=0;S.results=[];S.projects=[];S.day=raceDay(seasonTracks()[0])-24;
-    UI.season.newCar=PARTS.map(([k,n])=>[n,me().car[k],nextStat(me(),k)]);
-    S.teams.forEach(t=>{t.pts=0;PARTS.forEach(([k])=>t.car[k]=clamp(nextStat(t,k),40,99));t.next={aero:0,engine:0,chassis:0,rel:0}});
+    // клиентский мотор: как у поставщика минус 3
+    const newCar={};S.teams.forEach(t=>{newCar[t.id]={};PARTS.forEach(([k])=>newCar[t.id][k]=clamp(nextStat(t,k),40,99))});
+    S.teams.forEach(t=>{if(t.engineSup&&newCar[t.engineSup])newCar[t.id].engine=clamp(newCar[t.engineSup].engine-3,40,99)});
+    UI.season.newCar=PARTS.map(([k,n])=>[n,me().car[k],newCar[S.pid][k]]);
+    S.teams.forEach(t=>{t.pts=0;PARTS.forEach(([k])=>t.car[k]=newCar[t.id][k]);t.next={aero:0,engine:0,chassis:0,rel:0}});
     S.spent=0;S.rules.freeze=false;S.vote=null;
     Object.values(S.parts||{}).forEach(P=>COMPS.forEach(([k])=>{P[k].used=1;P[k].h=100}));S.gpen={};
     const pool=[];
@@ -1809,13 +1894,21 @@ function vNew(){
    <div class="card"><h3>Стартовый сезон</h3>${seg('year0',UI.year0,[[2025,'2025 · 10 команд'],[2026,'2026 · 11 команд']])}
     <p class="muted" style="font-size:13px">Реальный календарь: ${CALENDARS[UI.year0].length} этапов, с ${CALENDARS[UI.year0][0][1]} (${CIRCUITS[CALENDARS[UI.year0][0][0]][0]}) по ${CALENDARS[UI.year0].slice(-1)[0][1]} (${CIRCUITS[CALENDARS[UI.year0].slice(-1)[0][0]][0]}).</p></div>
    <div class="card"><h3>Команды и пилоты</h3>${seg('real',UI.real?1:0,[[1,'Реальные Ф-1'],[0,'Вымышленные']])}</div>
-   <p class="muted">Чем ниже команда в списке, тем слабее болид и скромнее бюджет, но и ожидания совета ниже.</p>
-   <div class="teampick">${RS.teams.map((t,i)=>{const dd=RS.drivers.slice(i*2,i*2+2).map(d=>d[0].split(' ').slice(-1)[0]).join(', ');const ov=Math.round((t[4][0]+t[4][1]+t[4][2])/3);
+   <div class="card"><h3>Режим карьеры</h3>${seg('ownmode',UI.own?1:0,[[0,'Возглавить команду'],[1,'Создать свою команду']])}
+    <p class="muted" style="font-size:13px">${UI.own?'Новый участник чемпионата: скромный бюджет, слабый болид, база первого уровня, начинающий персонал и низкая репутация. Растите через задания и результаты.':'Возглавьте одну из существующих команд.'}</p></div>
+   ${UI.own?`<div class="card"><h3>Своя команда</h3>
+    <label class="stack"><span class="eyebrow">Название</span><input type="text" id="tname" maxlength="24" placeholder="Например, Пит-Уолл Рейсинг" value="${esc(UI.teamName)}"></label>
+    <label class="stack"><span class="eyebrow">Сокращение (3 буквы)</span><input type="text" id="tshort" maxlength="3" placeholder="ПУР" value="${esc(UI.ownShort||'')}"></label>
+    <span class="eyebrow">Цвет</span><div class="row wrapflex">${OWN_COLORS.map(c=>`<button data-a="ocolor" data-v="${c}" aria-label="Цвет" style="width:34px;height:34px;border-radius:8px;background:${c};${(UI.ownColor||OWN_COLORS[0])===c?'box-shadow:0 0 0 3px var(--fg)':''}"></button>`).join('')}</div>
+    <span class="eyebrow">Двигатель</span><div class="stack">${[...RS.teams].sort((a,b)=>b[4][1]-a[4][1]).slice(0,5).map(t=>{const eng=t[4][1]-3,b=Math.round(34-(eng-75)*.8);return`<button class="btn ${(UI.ownEng||RS.teams[0][0])===t[0]?'primary':''}" style="justify-content:space-between" data-a="oeng" data-v="${t[0]}"><span>Как у «${t[1]}» · мощность ${eng}</span><span class="mono">бюджет ${b} млн</span></button>`}).join('')}</div>
+    <p class="muted" style="font-size:12px">Сильный мотор дороже: стартовый бюджет меньше. Пилоты — из свободных агентов.</p></div>`:''}
+   ${UI.own?'':'<p class="muted">Чем ниже команда в списке, тем слабее болид и скромнее бюджет, но и ожидания совета ниже.</p>'}
+   ${UI.own?'':`<div class="teampick">${RS.teams.map((t,i)=>{const dd=RS.drivers.slice(i*2,i*2+2).map(d=>d[0].split(' ').slice(-1)[0]).join(', ');const ov=Math.round((t[4][0]+t[4][1]+t[4][2])/3);
      return`<button data-a="pick" data-v="${i}" class="${i===sel?'on':''}"><span class="chip" style="background:${t[3]};width:14px;height:34px"></span>
        <span class="grow"><b>${t[1]}</b> <span class="muted">${dd}</span><br><span class="muted mono" style="font-size:12px">Болид ${ov} · бюджет ${Math.round(t[5]*.5+10)} млн · цель: ${Math.min(nT-1,i+2)}-е</span></span>
        ${i<2?'<span class="pill bad">высокие ожидания</span>':i>nT-3?'<span class="pill acc">аутсайдер</span>':''}</button>`}).join('')}</div>
-   <label class="stack"><span class="eyebrow">Своё название команды (необязательно)</span><input type="text" id="tname" maxlength="24" placeholder="${RS.teams[sel][1]}" value="${esc(UI.teamName)}"></label>
-   <button class="btn primary block" data-a="create">Подписать контракт</button>
+   <label class="stack"><span class="eyebrow">Своё название команды (необязательно)</span><input type="text" id="tname" maxlength="24" placeholder="${RS.teams[sel][1]}" value="${esc(UI.teamName)}"></label>`}
+   <button class="btn primary block" data-a="create">${UI.own?'Основать команду':'Подписать контракт'}</button>
    <button class="btn block" data-a="home">Назад</button>
   </div></div>`;
 }
@@ -1834,7 +1927,9 @@ function vHQ(){
     <canvas class="track" data-track="${tr.seed}" data-r=".5"></canvas>
     <div class="row wrapflex"><span class="pill">${feat}</span><span class="pill ${tr.over>.6?'bad':tr.over<.4?'good':''}">Обгоны: ${tr.over>.6?'трудно':tr.over<.4?'легко':'средне'}</span><span class="pill info">Дождь ${Math.round(tr.rain*100)}%</span></div>
     ${need?`<p style="color:var(--bad)">Нужно два пилота. Подпишите пилота во вкладке «Команда» или переведите юниора из академии.</p>`:''}
-    ${STAFF_ROLES.filter(([k])=>t[k]&&t[k].contract<=1&&!t[k].acting).map(([k,n])=>`<p style="color:var(--accent);font-size:13px">${n} ${esc(t[k].name)}: контракт истекает в конце сезона.</p>`).join('')}
+    ${t.drivers.flatMap(id=>COMPS.filter(([k])=>FATAL.has(k)&&ensureParts(id)[k].h<30&&!(S.stock[k]>0)).map(([k,n])=>`<p style="color:var(--bad);font-size:13px">${esc(nm(id))}: ${n} ${Math.round(S.parts[id][k].h)}%, на складе пусто — закажите узел на заводе (вкладка «Болид»), иначе будет сход.</p>`)).join('')}
+    ${S.budget<0?`<p style="color:var(--bad);font-size:13px">Бюджет в минусе (${fm(S.budget,1)}). Тратить на разработку нельзя, при долге больше 20 млн к концу сезона — банкротство. Ищите спонсоров и выполняйте задания.</p>`:''}
+    ${(()=>{const ex=STAFF_ROLES.filter(([k])=>t[k]&&t[k].contract<=1&&!t[k].acting).map(([,n])=>n.toLowerCase());return ex.length?`<p style="color:var(--accent);font-size:13px">Контракты персонала истекают в конце сезона: ${ex.join(', ')}. Переговоры — во вкладке «Команда».</p>`:''})()}
     ${t.drivers.map(drv).filter(d=>d.contract<=1||d.retiring).map(d=>`<p style="color:var(--accent);font-size:13px">${esc(d.name)}: ${d.retiring?'завершит карьеру в конце сезона':'контракт истекает в конце сезона — проведите переговоры'}.</p>`).join('')}
     <div class="row between wrapflex" style="font-size:13px"><span>Сегодня: <b>${fdate(S.day)}</b>, ${wday(S.day)}</span><span>${weekendDay()-S.day>0?`до уик-энда <b>${weekendDay()-S.day}</b> ${plural(weekendDay()-S.day,'день','дня','дней')}`:'уик-энд начинается'}</span></div>
     ${weekendDay()-S.day>0?`<div class="row">${[[1,'+1 день'],[7,'+7 дней']].map(([n,l])=>`<button class="btn small grow" data-a="day" data-v="${n}" ${S.day+n>weekendDay()?'disabled':''}>${l}</button>`).join('')}<button class="btn small grow" data-a="day" data-v="wk">К уик-энду</button></div>`:''}
@@ -1845,12 +1940,13 @@ function vHQ(){
     <p>Цель: <b>${S.goal}-е</b> место в Кубке конструкторов. Сейчас: <b>${pos}-е</b>, ${t.pts} ${plural(t.pts,'очко','очка','очков')}.${S.warnings?` <span style="color:var(--bad)">Предупреждений: ${S.warnings}/2.</span>`:''}</p>
   </div>
   ${testAvail()?`<div class="card" style="border-color:var(--info)"><div class="row between"><h3>${testAvail()==='pre'?'Предсезонные тесты':'Тестовый день в сезоне'}</h3><span class="pill info">${testAvail()==='pre'?`день ${S.intel.days+1}/3`:'1 день'}</span></div><p class="muted" style="font-size:13px">Соберите данные о болиде и соперниках: кто сильнее на прямых, в поворотах, на шинах и по надёжности.</p><button class="btn block" data-a="totest">На тесты</button></div>`:''}
+  ${tasksCard()}
   ${voteCard()}
   <div class="card"><h3>Регламент</h3><ul style="margin:0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:4px">${rulesList().map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
   <div class="card"><h3>Новости паддока</h3><div class="feed">${S.news.slice(0,6).map(n=>`<div><span class="muted mono" style="font-size:11px">${(S.year0||2026)+n.s-1} · этап ${n.r+1}</span><br>${esc(n.t)}</div>`).join('')}</div></div>
   </div><div class="col">
   <div class="kv">
-    <div><span class="eyebrow">Доход за этап</span><b style="color:var(--good)">+${incomePerRace().toFixed(1).replace('.',',')}</b><span class="muted" style="font-size:12px">+ бонусы спонсоров</span></div>
+    <div><span class="eyebrow">Доход за этап</span><b style="color:var(--good)">+${incomePerRace().toFixed(1).replace('.',',')}</b><span class="muted" style="font-size:12px">FOM, спонсоры + бонусы</span></div>
     <div><span class="eyebrow">Расходы за этап</span><b style="color:var(--bad)">−${costPerRace().toFixed(1).replace('.',',')}</b><span class="muted" style="font-size:12px">зарплаты и логистика</span></div>
     <div><span class="eyebrow">Репутация</span><b>${Math.round(S.rep)}</b><span class="muted" style="font-size:12px">влияет на спонсоров</span></div>
     <div><span class="eyebrow">Разработки</span><b>${S.projects.length}/${maxProjects()}</b><span class="muted" style="font-size:12px">проекты в работе</span></div>
@@ -1892,7 +1988,7 @@ function partsCard(compact){
    <p class="muted" style="font-size:12px">Новый узел появляется на складе в указанный день. Срок и цена зависят от уровня завода (вкладка «База команды» ниже).</p></div>`;
   const drvBlock=id=>{const P=ensureParts(id);return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><b>${esc(drv(id).name)}</b>
    ${COMPS.map(([k,n,lim])=>{const h=Math.round(P[k].h);return`<div class="row between" style="gap:8px"><span style="width:92px;font-size:13px" class="ell">${n}</span><div class="bar grow"><i style="width:${h}%;background:${col(h)}"></i></div><span class="mono" style="width:36px;text-align:right">${h}%</span>${lim?`<span class="muted mono" style="font-size:11px;width:28px">${P[k].used}/${lim}</span>`:'<span style="width:28px"></span>'}<button class="btn small" data-a="fit" data-v="${id}|${k}" ${S.stock[k]>0?'':'disabled'} title="Поставить новый узел со склада">Заменить</button></div>`}).join('')}</div>`};
-  return`<div class="card"><div class="row between wrapflex"><h3>Узлы болидов</h3><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autofit" ${S.autoFit?'checked':''}>автозамена &lt;20%</label></div>
+  return`<div class="card"><div class="row between wrapflex"><h3>Узлы болидов</h3><span class="row wrapflex" style="gap:10px"><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autofit" ${S.autoFit?'checked':''}>автозамена &lt;20%</label><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autoorder" ${S.autoOrder?'checked':''}>автозаказ на заводе</label></span></div>
    ${ids.map(drvBlock).join('')}
    <p class="muted" style="font-size:12px">Узлы изнашиваются от манеры вождения: «Атака» ×1,5, «Беречь» ×0,75. Влияют мастерство пилота, надёжность болида, трасса и уровень базы. Изношенный узел отнимает темп, выработанный ДВС, ERS или КПП — сход. Сверх лимита на сезон — штраф 5 мест на старте. «Заменить» ставит узел со склада.</p></div>
    ${stockCard}`;
@@ -1919,10 +2015,14 @@ function vCar(){
     <div class="bar"><i style="width:${clamp(S.spent/S.rules.cap*100,0,100)}%"></i></div>
     <p class="muted" style="font-size:12px">На разработку текущего болида и болида ${year()+1} за сезон можно потратить не больше ${S.rules.cap} млн. Каждый миллион выбирайте: очки сейчас или скорость в следующем году.</p></div>
   <div class="card"><div class="row between"><h2>Болид ${year()+1}</h2><span class="pill info">новый сезон</span></div>
+    <div class="kv"><div><span class="eyebrow">Фонд FOM на новый болид</span><b style="color:var(--good)">${fm(S.devFund,1)}</b><span class="muted" style="font-size:12px">не входит в потолок, тратится первым</span></div>
+    <div><span class="eyebrow">Аэротруба (ATR)</span><b>${Math.round(atr(t)*100)}%</b><span class="muted" style="font-size:12px">${lastRank(t)}-е место прошлого сезона</span></div></div>
+    <p class="muted" style="font-size:12px">Как в Формуле-1: отстающим больше фонда и времени в аэротрубе, лидерам меньше. Когда фонд закончится, вложения идут из бюджета команды и входят в потолок расходов.</p>
     <p class="muted" style="font-size:13px">К каждому сезону строится новая машина. Без вложений она будет медленной — соперники уже работают над своими.</p>
-    ${PARTS.map(([k,n])=>{const ns=nextStat(t,k),bestN=Math.max(...S.teams.filter(x=>x.id!==S.pid).map(x=>nextStat(x,k)));return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px">
+    ${t.engineSup?`<p style="font-size:13px">Двигатель — клиентский, как у «${esc(t.engineFrom)}» (минус 3). Вкладываться в мотор не нужно.</p>`:''}
+    ${PARTS.filter(([k])=>!(t.engineSup&&k==='engine')).map(([k,n])=>{const ns=nextStat(t,k),bestN=Math.max(...S.teams.filter(x=>x.id!==S.pid).map(x=>nextStat(x,k)));return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px">
       <div class="stat"><span>${n}</span><div class="bar"><i style="width:${ns}%;background:var(--info)"></i><b style="left:${bestN}%"></b></div><span class="mono">${ns.toFixed(0)}</span></div>
-      <div class="row">${[2,5,10].map(m=>`<button class="btn small grow" data-a="next" data-v="${k}|${m}" ${S.budget<m||m>capLeft()?'disabled':''}>+${m} млн</button>`).join('')}</div></div>`}).join('')}
+      <div class="row">${[2,5,10].map(m=>`<button class="btn small grow" data-a="next" data-v="${k}|${m}" ${S.budget<Math.max(0,m-S.devFund)||Math.max(0,m-S.devFund)>capLeft()?'disabled':''}>+${m} млн</button>`).join('')}</div></div>`}).join('')}
     <p class="muted" style="font-size:12px">Белая риска — лучший прогноз среди соперников. Эффективность вложений зависит от техдиректора.</p></div>
   </div><div class="col">
   ${PARTS.map(([k,n])=>`<div class="card flat"><h3>${n}${k==='engine'&&S.rules.freeze?' <span class="pill bad">заморожен</span>':''}</h3><div class="stack">${UPG.map(u=>{
@@ -2283,7 +2383,7 @@ function vResult(){
 }
 function vSeason(){
   const s=UI.season;
-  if(s.gameover)return`<div class="title wrap"><div class="stripes"></div><div class="eyebrow">Решение совета директоров</div><h1>Вы уволены</h1><p>${esc(s.verdict.t)}</p><p class="muted">Чемпион: ${esc(s.champ)}. Кубок конструкторов: ${esc(s.cteam)}.</p><button class="btn primary block" data-a="restart">Новая карьера</button><div class="stripes"></div></div>`;
+  if(s.gameover)return`<div class="title wrap"><div class="stripes"></div><div class="eyebrow">Решение совета директоров</div><h1>${S.budget<-20?'Команда закрыта':'Вы уволены'}</h1><p>${esc(s.verdict.t)}</p><p class="muted">Чемпион: ${esc(s.champ)}. Кубок конструкторов: ${esc(s.cteam)}.</p><button class="btn primary block" data-a="restart">Новая карьера</button><div class="stripes"></div></div>`;
   return`<div class="scroll wrap">
    <div><div class="eyebrow">Сезон ${year()-1} завершён</div><h1>${s.pos}-е место</h1></div>
    <div class="card"><h3>Совет директоров</h3><p style="color:${s.verdict.ok?'var(--good)':s.verdict.ok===false?'var(--bad)':'var(--accent)'}">${esc(s.verdict.t)}</p></div>
@@ -2301,8 +2401,10 @@ function toast(t){let el=$('.toast');if(el)el.remove();el=document.createElement
 const keepScroll=fn=>{const sc=$('#sc');const y=sc?sc.scrollTop:0;fn();const s2=$('#sc');if(s2)s2.scrollTop=y};
 
 document.addEventListener('input',e=>{
+  if(e.target.id==='tshort')UI.ownShort=e.target.value;
   if(e.target.id==='tname')UI.teamName=e.target.value;
   if(e.target.id==='autofit'){S.autoFit=e.target.checked;save()}
+  if(e.target.id==='autoorder'){S.autoOrder=e.target.checked;save()}
   if(e.target.id==='snego-offer'&&UI.snego){const sf=me()[UI.snego.k];UI.snego.offer=+e.target.value;const pc=Math.round(staffChance(sf,UI.snego.offer,UI.snego.len)*100),v=$('#snego-v'),pp=$('#snego-p');if(v)v.textContent=fm(UI.snego.offer,2);if(pp){pp.textContent=`согласие ~${pc}%`;pp.className='pill '+(pc>=70?'good':pc>=40?'acc':'bad')}}
   if(e.target.id==='nego-offer'&&UI.nego){const d=drv(UI.nego.id);UI.nego.offer=+e.target.value;const v=$('#nego-v'),pp=$('#nego-p'),pc=Math.round(acceptChance(d,UI.nego.offer,UI.nego.len)*100);if(v)v.textContent=fm(UI.nego.offer,2);if(pp){pp.textContent=`согласие ~${pc}%`;pp.className='pill '+(pc>=70?'good':pc>=40?'acc':'bad')}}
   const k=e.target.dataset&&e.target.dataset.k;if(k&&W&&W.setups[UI.pd]){W.setups[UI.pd][k]=+e.target.value;const o=$('#sv-'+k);if(o)o.textContent=e.target.value}
@@ -2318,6 +2420,9 @@ document.addEventListener('click',e=>{
    case'pick':UI.pickTeam=+v;keepScroll(render);break;
    case'year0':UI.year0=+v;keepScroll(render);break;
    case'real':UI.real=v==='1';keepScroll(render);break;
+   case'ownmode':UI.own=v==='1';keepScroll(render);break;
+   case'ocolor':UI.ownColor=v;keepScroll(render);break;
+   case'oeng':UI.ownEng=v;keepScroll(render);break;
    case'create':newGame(UI.pickTeam,UI.teamName);UI.screen='hub';UI.tab='hq';render();break;
    case'restart':wipe();S=null;UI.screen='new';render();break;
    case'tab':UI.tab=v;render();$('#sc').scrollTop=0;break;
@@ -2352,11 +2457,11 @@ document.addEventListener('click',e=>{
    case'mode':{const[id,m]=v.split('|');const c=R.cars.find(x=>x.did===id);if(c&&!c.out){c.mode=m;updateRaceUi()}break}
    case'pit':{const[id,t]=v.split('|');const c=R.cars.find(x=>x.did===id);if(c&&!c.out){c.pitReq=c.pitReq===t?null:t;updateRaceUi()}break}
    case'endseason':endSeason();break;
-   case'next':{const[k,m]=v.split('|'),c=+m;if(S.budget<c||c>capLeft())return;S.budget=+(S.budget-c).toFixed(2);S.spent=+(S.spent+c).toFixed(2);me().next[k]+=c*devEff(me(),k);save();toast(`Вложено ${c} млн в болид ${year()+1}`);keepScroll(render);break}
+   case'next':{const[k,m]=v.split('|'),c=+m,ff=Math.min(S.devFund,c),fb=+(c-ff).toFixed(2);if(S.budget<fb||fb>capLeft())return;S.devCount=(S.devCount||0)+1;S.devFund=+(S.devFund-ff).toFixed(2);S.budget=+(S.budget-fb).toFixed(2);S.spent=+(S.spent+fb).toFixed(2);me().next[k]+=c*devEff(me(),k);save();toast(`Вложено ${c} млн в болид ${year()+1}`);keepScroll(render);break}
    case'closevote':UI.lastVote=null;keepScroll(render);break;
    case'vote':S.vote.mine=v==='1';save();keepScroll(render);break;
    case'castvote':resolveVote();save();keepScroll(render);break;
-   case'upg':{const[part,k]=v.split('|');const u=UPG.find(x=>x.k===k),c=upgCost(part,u);if(S.budget<c||c>capLeft())return;S.spent=+(S.spent+c).toFixed(2);
+   case'upg':{const[part,k]=v.split('|');const u=UPG.find(x=>x.k===k),c=upgCost(part,u);if(S.budget<c||c>capLeft())return;S.spent=+(S.spent+c).toFixed(2);S.devCount=(S.devCount||0)+1;
      const g=+(u.g*(.7+me().td.rating/200)*partBoost(me(),part)*rnd(.8,1.2)).toFixed(1);
      S.budget=+(S.budget-c).toFixed(2);S.projects.push({part,gain:g,days:u.d});save();toast(`Проект запущен: готово ${etaText(u.d)}`);keepScroll(render);break}
    case'fire':{if(armed!=='fire'+v){UI.arm='fire'+v;keepScroll(render);return}
