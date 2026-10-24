@@ -139,10 +139,12 @@ canvas.track{width:100%;display:block;background:var(--panel);border-radius:10px
 .spdtop{flex:none}
 .spdtop button{min-height:34px;padding:6px 10px}
 @media (max-width:600px){.spdtop button{padding:6px 7px;font-size:12px}.racehead .lapbox{font-size:17px}}
-.tower{position:absolute;left:8px;top:8px;background:rgba(8,11,15,.84);border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:11px;width:220px;max-width:46%;z-index:2}
+.tower{position:absolute;left:8px;top:8px;background:rgba(8,11,15,.86);border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:12.5px;width:300px;max-width:52%;z-index:2}
 .tower .th{cursor:pointer}
 .tower .th{display:flex;justify-content:space-between;padding:4px 7px;background:var(--accent);color:var(--accent-ink);font-weight:600;letter-spacing:.06em}
-.tower .tr{display:grid;grid-template-columns:18px 3px 34px 1fr 12px 18px;gap:5px;align-items:center;padding:0 7px;height:16px;border-top:1px solid rgba(255,255,255,.05);cursor:pointer}
+.tower .tr{display:grid;grid-template-columns:20px 4px 38px 1fr 20px 34px 22px;gap:6px;align-items:center;padding:0 8px;height:21px;border-top:1px solid rgba(255,255,255,.05);cursor:pointer}
+.tower .tr svg{display:block}
+.tower .tr .w{text-align:right}
 .tower .tr .a{text-align:right;color:#9fb0c2}
 .tower .tr.fo{box-shadow:inset 2px 0 0 #fff}
 .tower .tr.me{background:rgba(255,176,32,.2)}
@@ -156,7 +158,7 @@ canvas.track{width:100%;display:block;background:var(--panel);border-radius:10px
 .ovfc .ms i{flex:1;background:#3b4652;display:block}
 .ovfc .ms i.w{background:var(--info)}
 .ovfc .dr{display:flex;gap:5px;align-items:center;font-family:var(--mono);white-space:nowrap;overflow:hidden}
-@media (max-width:600px){.tower{font-size:10px;width:172px}.tower .tr{grid-template-columns:16px 3px 30px 1fr 10px 14px;height:14px;gap:4px}.ovright{width:40%}.ovfc{font-size:10px;padding:4px 6px}}
+@media (max-width:600px){.tower{font-size:10px;width:218px}.tower .tr{grid-template-columns:16px 3px 30px 1fr 15px 28px 16px;height:16px;gap:4px}.tower .tr svg{width:15px;height:15px}.ovright{width:40%}.ovfc{font-size:10px;padding:4px 6px}}
 .wxstrip{display:flex;gap:1px;height:16px;border-radius:4px;overflow:hidden}
 .wxstrip i{flex:1;background:#3b4652;display:block}
 .wxstrip i.w{background:var(--info)}
@@ -168,6 +170,10 @@ canvas.track{width:100%;display:block;background:var(--panel);border-radius:10px
 .stratl{display:flex;flex-direction:column;gap:8px;font-size:13px;border-top:1px solid var(--line);padding-top:8px}
 .wearf{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted)}
 .wearf b{color:var(--fg)}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+@media (max-width:600px){.agrid{grid-template-columns:1fr}}
+.ovr{display:inline-grid;place-items:center;min-width:38px;height:38px;border-radius:8px;font-family:var(--display);font-size:17px;flex:none}
+.ovr.a{background:var(--good);color:#04130a}.ovr.b{background:var(--accent);color:var(--accent-ink)}.ovr.c{background:var(--info);color:#04131f}.ovr.d{background:var(--panel2);color:var(--fg)}
 .tcol{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:44px}
 .tcol small{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
 .tcol small.best{color:var(--good)}
@@ -401,7 +407,19 @@ const drv=id=>S.drivers[id];
 const me=()=>team(S.pid);
 const salaryFor=p=>+(0.6+Math.pow(Math.max(0,p-70)/25,2)*9).toFixed(2);
 let uid=1000;
-function mkDriver(name,age,pace,craft,tyre){const id='d'+(uid++);return{id,name,age,pace,craft,tyre,salary:salaryFor(pace),contract:ri(1,3),team:null,pts:0,wins:0,pods:0,career:0}}
+function mkDriver(name,age,pace,craft,tyre){const id='d'+(uid++);return ensureAttrs({id,name,age,pace,craft,tyre,salary:salaryFor(pace),contract:ri(1,3),team:null,pts:0,wins:0,pods:0,career:0})}
+// умения пилота и их вес в общем рейтинге
+const ATTRS=[['pace','Скорость',.22],['craft','Гоночное мастерство',.14],['tyre','Работа с шинами',.11],['overtake','Обгон',.1],['defend','Защита',.08],['cons','Стабильность',.1],['wet','Дождь',.08],['start','Старт',.06],['fb','Обратная связь',.05],['exp','Опыт',.06]];
+const REAL_TRAITS={'Ферстаппен':{wet:98,overtake:96,start:92,cons:94},'Хэмилтон':{wet:96,defend:93,exp:99},'Алонсо':{defend:97,exp:99,start:96,overtake:93},'Норрис':{cons:86,fb:90},'Леклер':{overtake:90,defend:84},'Пиастри':{cons:92,defend:88},'Расселл':{wet:90,fb:89},'Сайнс':{fb:93,cons:90},'Боттас':{start:80,fb:90},'Хюлькенберг':{fb:90,exp:95},'Перес':{tyre:92,start:85},'Антонелли':{wet:90}};
+function ensureAttrs(d){
+  if(d.overtake!=null)return d;
+  const b=(d.pace+d.craft)/2,r=v=>clamp(Math.round(v),25,99);
+  d.overtake=r(b+gauss()*4);d.defend=r(b+gauss()*4);d.cons=r(d.craft+gauss()*3);d.wet=r(b+gauss()*5);d.start=r(b+gauss()*5);d.fb=r(d.craft+gauss()*5);d.exp=r(30+(d.age-17)*4.5);
+  const tr=REAL_TRAITS[String(d.name).split(' ').slice(-1)[0]];if(tr)Object.assign(d,tr);
+  return d;
+}
+const ovr=d=>Math.round(ATTRS.reduce((a,[k,,w])=>a+(d[k]||0)*w,0));
+const ovrPill=d=>{const o=ovr(d);return`<span class="ovr ${o>=88?'a':o>=80?'b':o>=70?'c':'d'}">${o}</span>`};
 function rookie(){return mkDriver(pick(FIRST)+' '+pick(LAST),ri(18,22),ri(72,82),ri(68,78),ri(70,80))}
 /* ---------- календарь по дням ---------- */
 const MONTHS=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -423,7 +441,63 @@ function tickDay(){
   // стройка базы
   Object.entries(S.facBuild).forEach(([k,b])=>{b.days--;if(b.days<=0){S.fac[k]++;delete S.facBuild[k];news(`База: «${FACS.find(f=>f[0]===k)[1]}» — уровень ${S.fac[k]}.`)}});
   // скауты
-  const A=S.academy;if(A.mission){A.mission.days--;if(A.mission.days<=0){A.prospects=[0,1,2].map(()=>mkJunior(A.mission.region));news(`Скауты вернулись из региона «${A.mission.region}»: три новых таланта.`);A.mission=null}}
+  const A=S.academy;if(A.mission){A.mission.days--;if(A.mission.days<=0){{const pool=[...S.leagues.f4,...S.leagues.f3].filter(d=>d.region===A.mission.region&&d.age<=19).sort(()=>Math.random()-.5).slice(0,3),w=SCOUT_W[A.scout-1];
+    A.prospects=pool.map(d=>{const lo=clamp(Math.round(d.pot-rnd(0,w)),40,99);return{...d,est:[lo,Math.min(99,lo+w)],focus:'pace',league:LEAGUES.find(([k])=>S.leagues[k].includes(d))[0],src:d.id}});while(A.prospects.length<3)A.prospects.push(mkJunior(A.mission.region))}news(`Скауты вернулись из региона «${A.mission.region}»: три новых таланта.`);A.mission=null}}
+}
+/* ---------- тесты и аналитика команд ---------- */
+const CATS=[['straight','Скорость на прямых'],['corner','Повороты'],['traction','Тяга и шасси'],['tyres','Работа с шинами'],['rel','Надёжность'],['pace','Темп в гонке']];
+const PROGS=[['aero','Аэро-замеры',['corner','straight'],60],['long','Длинные отрезки',['tyres','pace'],95],['quali','Квалификационные симуляции',['pace','traction'],70],['rel','Пробег на надёжность',['rel','straight'],140]];
+function intelTrue(t,k){
+  const c=t.car,ty=t.drivers.length?t.drivers.reduce((a,id)=>a+drv(id).tyre,0)/t.drivers.length:80;
+  return k==='straight'?c.engine*1.1-c.aero*.1:k==='corner'?c.aero*.6+c.chassis*.4:k==='traction'?c.chassis:k==='tyres'?60+(ty-80)*1.2+(c.chassis-80)*.5+20:k==='rel'?c.rel:(c.aero+c.engine+c.chassis)/3;
+}
+function ensureIntel(){
+  if(S.intel&&S.intel.season===S.season)return;
+  const noise={};S.teams.forEach(t=>{noise[t.id]={};CATS.forEach(([k])=>noise[t.id][k]=gauss())});
+  S.intel={season:S.season,conf:Object.fromEntries(CATS.map(([k])=>[k,.05])),noise,days:0,mid:false,log:[]};S.testBonus=0;
+}
+const intelErr=k=>Math.round((1-S.intel.conf[k])*7);
+const intelEst=(t,k)=>t.id===S.pid?intelTrue(t,k):intelTrue(t,k)+((S.intel.noise[t.id]||{})[k]||0)*(1-S.intel.conf[k])*7;
+const testAvail=()=>{ensureIntel();const pre=S.round===0&&S.intel.days<3&&S.day<weekendDay()-1,mid=S.round>=8&&S.round<NR()&&!S.intel.mid&&S.day<weekendDay();return pre?'pre':mid?'mid':null};
+function runTestDay(prog,did){
+  const pg=PROGS.find(x=>x[0]===prog),t=me(),d=drv(did),kind=testAvail();if(!kind)return;
+  pg[2].forEach(k=>S.intel.conf[k]=Math.min(.92,S.intel.conf[k]+.3));CATS.forEach(([k])=>{if(!pg[2].includes(k))S.intel.conf[k]=Math.min(.92,S.intel.conf[k]+.05)});
+  const laps=Math.round(pg[3]*rnd(.85,1.1)*(1.4-t.car.rel/150>1?.9:1)),tr=CIRCUITS['bh-2002'];
+  const best=tr[3]-1+(100-(t.car.aero*.9+t.car.engine*1.1+t.car.chassis)/3)*.06+(100-d.pace)*.035+(prog==='quali'?TYRES.S.off:TYRES.M.off)+gauss()*.25;
+  S.testBonus=Math.min(4,(S.testBonus||0)+1);
+  if(kind==='pre')S.intel.days++;else S.intel.mid=true;
+  S.intel.log.unshift({day:kind==='pre'?S.intel.days:'сезон',prog:pg[1],did,laps,best});
+  S.day++;tickDay();
+  news(`Тесты: ${d.name} проехал ${laps} кругов (${pg[1].toLowerCase()}), лучший ${fsec(best)}.`);
+}
+function intelView(){
+  ensureIntel();const ts=S.teams,me_=me();
+  const rows=CATS.map(([k,n])=>{const vals=ts.map(t=>({t,v:intelEst(t,k)})).sort((a,b)=>b.v-a.v);const mn=Math.min(...vals.map(x=>x.v)),mx=Math.max(...vals.map(x=>x.v));
+    const myRank=vals.findIndex(x=>x.t.id===S.pid)+1;
+    return`<div class="card"><div class="row between"><h3>${n}</h3><span class="pill ${intelErr(k)<=2?'good':intelErr(k)<=4?'acc':'bad'}">точность ±${intelErr(k)}</span></div>
+     <p class="muted" style="font-size:12px">Лучше всех: <b style="color:var(--fg)">${esc(vals[0].t.name)}</b> · мы ${myRank}-е</p>
+     ${vals.map(x=>`<div class="stat" style="grid-template-columns:120px 1fr 34px"><span class="ell" style="${x.t.id===S.pid?'color:var(--accent);font-weight:700':''}"><span class="chip" style="background:${x.t.color}"></span> ${esc(x.t.short)}</span><div class="bar"><i style="width:${clamp(20+(x.v-mn)/((mx-mn)||1)*80,5,100)}%;background:${x.t.color}"></i></div><span class="mono">${x.v.toFixed(0)}</span></div>`).join('')}</div>`});
+  const mine=CATS.map(([k,n])=>({n,r:ts.map(t=>intelEst(t,k)).sort((a,b)=>b-a).indexOf(intelEst(me_,k))+1}));
+  const strong=mine.filter(x=>x.r<=3).map(x=>x.n.toLowerCase()),weak=mine.filter(x=>x.r>=ts.length-2).map(x=>x.n.toLowerCase());
+  return`<div class="card"><h3>Сводка инженеров</h3><p style="font-size:13px">Сильные стороны: ${strong.join(', ')||'явных нет'}. Слабые: ${weak.join(', ')||'явных нет'}.</p>
+    <p class="muted" style="font-size:12px">Данные собраны на тестах (${S.intel.days} ${plural(S.intel.days,'день','дня','дней')}${S.intel.mid?' + тестовый день в сезоне':''}) и в гонках. Значения у соперников — оценка: чем выше точность, тем ближе к правде. Тестовые программы уточняют свои категории.</p></div>
+    <div class="cols"><div class="col">${rows.slice(0,3).join('')}</div><div class="col">${rows.slice(3).join('')}</div></div>`;
+}
+function vTest(){
+  ensureIntel();const kind=testAvail(),ids=me().drivers;UI.tprog=UI.tprog||'aero';if(!ids.includes(UI.tdrv))UI.tdrv=ids[0];
+  const title=kind==='mid'?'Тестовый день в сезоне · Барселона':'Предсезонные тесты · Сахир';
+  return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">${fdate(S.day)}, ${wday(S.day)}</div><h2>${title}</h2></div>${kind==='pre'?`<span class="pill acc">день ${S.intel.days+1}/3</span>`:''}</div>
+  <div class="scroll wrap" id="sc"><div class="cols"><div class="col">
+   <div class="card"><h3>Программа дня</h3>
+    <div class="stack">${PROGS.map(([k,n,cats,laps])=>`<button class="btn ${UI.tprog===k?'primary':''}" style="justify-content:space-between" data-a="tprog" data-v="${k}"><span>${n}</span><span class="muted" style="font-size:12px;${UI.tprog===k?'color:var(--accent-ink)':''}">~${laps} кр. · ${cats.map(c=>CATS.find(x=>x[0]===c)[1].toLowerCase()).join(', ')}</span></button>`).join('')}</div></div>
+   <div class="card"><h3>За рулём</h3><div class="seg">${ids.map(id=>`<button data-a="tdrv" data-v="${id}" class="${UI.tdrv===id?'on':''}">${esc(nm(id))}</button>`).join('')}</div>
+    <p class="muted" style="font-size:12px">Каждый тестовый день добавляет понимание болида (+ к качеству настройки на весь сезон, максимум 4 дня) и уточняет аналитику соперников. Тесты идут на отдельных узлах — сезонный лимит не тратится.</p></div>
+   ${kind?`<button class="btn primary block" data-a="tday">Провести тестовый день</button>`:`<div class="card"><p>Тесты завершены. Смотрите вкладку «Таблица» → «Аналитика».</p></div>`}
+   <button class="btn block small" data-a="hub">В штаб</button>
+  </div><div class="col">
+   <div class="card"><h3>Протокол тестов</h3>${S.intel.log.length?S.intel.log.map(l=>`<div class="row between" style="border-top:1px solid var(--line);padding-top:8px"><span>${typeof l.day==='number'?'День '+l.day:'В сезоне'} · ${esc(S.drivers[l.did]?nm(l.did):'')}<br><span class="muted" style="font-size:12px">${esc(l.prog)} · ${l.laps} кр.</span></span><span class="mono">${fsec(l.best)}</span></div>`).join(''):'<p class="muted">Пока ни одного дня.</p>'}</div>
+   ${intelView().split('<div class="cols">')[0]}
+  </div></div></div>`;
 }
 /* ---------- база команды ---------- */
 // ключ, здание, на что влияет
@@ -468,8 +542,12 @@ function fitPart(id,k,own){
 /* ---------- контракты ---------- */
 // требования пилота: уровень, очки в сезоне, слабой команде просит больше
 const asking=d=>+(salaryFor(d.pace)*(1+Math.min(.4,d.pts/600))*(1+(70-S.rep)/160)).toFixed(2);
+// форма команды: место в Кубке конструкторов и очки за последние 5 гонок (0…1)
+function teamForm(){const n=S.teams.length,pos=myPos(),rec=(S.results||[]).slice(-5),pts=rec.reduce((a,r)=>a+r.my.reduce((b,x)=>b+(typeof x==='number'?(POINTS[x-1]||0):0),0),0);
+  return clamp(((n+1-pos)/n)*.6+Math.min(1,pts/(rec.length*20||1))*.4,0,1)}
+const formText=f=>f>=.7?'команда на подъёме':f>=.45?'стабильная форма':'команда в кризисе';
 function acceptChance(d,offer,len){
-  let p=.5+(offer/asking(d)-1)*1.7+(S.rep-60)/120;
+  let p=.5+(offer/asking(d)-1)*1.7+(S.rep-60)/120+(teamForm()-.5)*.35;
   if(d.age>=32)p+=len>=2?.08:-.1;else if(d.age<=24&&len===3)p-=.08;
   if(d.pace>=90&&S.rep<65)p-=.2;
   return clamp(p,.02,.97);
@@ -482,18 +560,53 @@ const ACAD_SLOTS=[2,3,4],ACAD_GROW=[.7,1,1.3],ACAD_UPKEEP=[.1,.2,.35],ACAD_COST=
 function mkJunior(region){
   const age=ri(15,19),pot=Math.round(68+29*Math.pow(Math.random(),1.8)),base=clamp(ri(54,66)+(age-15)*1.6,50,pot);
   const w=SCOUT_W[(S.academy?S.academy.scout:1)-1],lo=clamp(Math.round(pot-rnd(0,w)),50,99);
-  return{id:'j'+(uid++),name:pick(FIRST)+' '+pick(LAST),age,region,pace:base,craft:clamp(base+ri(-4,3),45,95),tyre:clamp(base+ri(-3,4),45,95),pot,est:[lo,Math.min(99,lo+w)],f2:[],f2pts:0};
+  const j=ensureAttrs({id:'j'+(uid++),name:pick(FIRST)+' '+pick(LAST),age,region,pace:base,craft:clamp(base+ri(-4,3),45,95),tyre:clamp(base+ri(-3,4),45,95),pot,est:[lo,Math.min(99,lo+w)],lpts:0,focus:'pace'});
+  j.league=ovr(j)<58?'f4':ovr(j)<68?'f3':'f2';return j;
+}
+/* ---------- младшие формулы ---------- */
+const LEAGUES=[['f2','Формула-2',[66,80],[18,22]],['f3','Формула-3',[57,71],[16,20]],['f4','Формула-4',[46,62],[15,17]]];
+const LTEAMS=['Вектор Юниор','Сапсан Рейсинг','Кедр Моторспорт','Полюс ГП','Нева Рейсинг','Альтаир','Квазар','Буран Юниор','Метеор','Рубин Рейсинг'];
+function mkLeagueDriver(lg){
+  const L=LEAGUES.find(x=>x[0]===lg),age=ri(L[3][0],L[3][1]),pace=ri(L[2][0],L[2][1]),pot=clamp(Math.round(pace+rnd(2,22)),pace,99);
+  return ensureAttrs({id:'l'+(uid++),name:pick(FIRST)+' '+pick(LAST),age,region:pick(REGIONS),pace,craft:clamp(pace+ri(-4,4),40,95),tyre:clamp(pace+ri(-4,4),40,95),pot,team:pick(LTEAMS),lpts:0,lwins:0,last:null});
+}
+function ensureLeagues(){
+  if(!S.leagues){S.leagues={};LEAGUES.forEach(([k])=>{S.leagues[k]=[];for(let i=0;i<20;i++)S.leagues[k].push(mkLeagueDriver(k))})}
+  S.academy.juniors.forEach(j=>{ensureAttrs(j);if(!j.league)j.league=ovr(j)<58?'f4':ovr(j)<68?'f3':'f2';if(j.lpts==null)j.lpts=j.f2pts||0});
+}
+const farmName=()=>me().short+' Юниор';
+function leagueRaces(){
+  const A=S.academy;
+  LEAGUES.forEach(([k,n])=>{
+    const field=[...S.leagues[k],...A.juniors.filter(j=>j.league===k)];
+    const res=field.map(d=>({d,sc:ovr(d)+gauss()*5})).sort((a,b)=>b.sc-a.sc);
+    res.forEach((r,i)=>{r.d.last=i+1;r.d.lpts=(r.d.lpts||0)+(POINTS[i]||0);if(i===0)r.d.lwins=(r.d.lwins||0)+1});
+    res.forEach((r,i)=>{if(A.juniors.includes(r.d)&&i<3)news(`${n}: юниор академии ${r.d.name} — ${i+1}-е место${i===0?', победа!':'.'}`)});
+    // рост пилотов лиги
+    S.leagues[k].forEach(d=>{const g=rnd(0,.3)*(d.age<=19?1.2:.8);if(d.pace<d.pot)d.pace=Math.min(d.pot,d.pace+g);ATTRS.forEach(([a])=>{if(a!=='pace'&&a!=='exp')d[a]=Math.min(97,d[a]+g*.5)})});
+  });
+}
+function leaguesSeasonEnd(){
+  const A=S.academy,sorted=k=>[...S.leagues[k],...A.juniors.filter(j=>j.league===k)].sort((a,b)=>(b.lpts||0)-(a.lpts||0));
+  const champs=LEAGUES.map(([k,n])=>{const s0=sorted(k)[0];return s0?`${n}: ${s0.name}${A.juniors.includes(s0)?' (наша академия)':''}`:''}).filter(Boolean);
+  if(champs.length)news('Чемпионы младших формул — '+champs.join('; ')+'.');
+  // повышения: лучшие F4 → F3, F3 → F2, F2 → рынок Ф-1
+  const move=(from,to,n)=>{sorted(from).filter(d=>!A.juniors.includes(d)).slice(0,n).forEach(d=>{S.leagues[from]=S.leagues[from].filter(x=>x!==d);S.leagues[to].push(d)})};
+  sorted('f2').filter(d=>!A.juniors.includes(d)&&ovr(d)>=70).slice(0,3).forEach(d=>{S.leagues.f2=S.leagues.f2.filter(x=>x!==d);const nd=mkDriver(d.name,d.age,Math.floor(d.pace),Math.floor(d.craft),Math.floor(d.tyre));ATTRS.forEach(([a])=>nd[a]=Math.floor(d[a]));nd.pot=d.pot;S.drivers[nd.id]=nd;news(`${d.name} поднимается из Формулы-2 на рынок Ф-1.`)});
+  move('f3','f2',3);move('f4','f3',3);
+  LEAGUES.forEach(([k,,,ages])=>{S.leagues[k].forEach(d=>{d.age++;d.lpts=0;d.lwins=0;d.exp=Math.min(99,(d.exp||40)+4)});S.leagues[k]=S.leagues[k].filter(d=>d.age<=ages[1]+2);while(S.leagues[k].length<20)S.leagues[k].push(mkLeagueDriver(k))});
+  A.juniors.forEach(j=>{j.lpts=0;j.lwins=0});
 }
 const acadUpkeep=()=>S.academy?ACAD_UPKEEP[S.academy.level-1]+S.academy.juniors.length*.08:0;
 function academyRace(){
   const A=S.academy;if(!A)return;
+  ensureLeagues();
+  // тренировки: выбранное умение растёт вдвое быстрее, остальные медленнее
   A.juniors.forEach(j=>{
     const g=rnd(.1,.45)*ACAD_GROW[A.level-1]*(.8+srat(me(),'coach')/250)*(j.age<=19?1.2:.8);
-    if(j.pace<j.pot)j.pace=Math.min(j.pot,j.pace+g);j.craft=Math.min(97,j.craft+g*.8);j.tyre=Math.min(97,j.tyre+g*.7);
-    const sc=j.pace+j.craft*.3+gauss()*3,pos=clamp(Math.round(11-(sc-93)/1.6+gauss()),1,22);
-    j.f2.push(pos);j.f2=j.f2.slice(-6);j.f2pts+=POINTS[pos-1]||0;
-    if(pos===1)news(`Юниор академии ${j.name} побеждает в гонке Формулы-2!`);
+    ATTRS.forEach(([a])=>{if(a==='exp')return;const m=a===j.focus?2:.6,cap=a==='pace'?j.pot:Math.min(97,j.pot+3);if(j[a]<cap)j[a]=Math.min(cap,j[a]+g*m)});
   });
+  leagueRaces();
 }
 // роли персонала: ключ, должность, на что влияет, коэффициент зарплаты
 const STAFF_ROLES=[
@@ -511,6 +624,8 @@ const srat=(t,k)=>(t[k]&&t[k].rating)||60;
 function mkStaff(kind,rating){rating=Math.round(clamp(rating,40,95));return{name:Math.random()<.3?pick(STAFF_NAMES):pick(FIRST)+' '+pick(LAST),rating,salary:+(0.4+Math.pow((rating-40)/55,2)*roleK(kind)).toFixed(2)}}
 function staffMarket(){const m={};STAFF_ROLES.forEach(([k])=>{m[k]=[];for(let i=0;i<3;i++)m[k].push(mkStaff(k,ri(55,93)))});return m}
 const hireCost=(kind,sf)=>+(sf.salary*(kind==='td'?1.5:1.2)).toFixed(1);
+const staffAsk=sf=>+(sf.salary*(1+(sf.rating-70)/200)*(1+(70-S.rep)/160)).toFixed(2);
+function staffChance(sf,offer,len){let p=.5+(offer/staffAsk(sf)-1)*1.7+(S.rep-60)/120+(teamForm()-.5)*.35;if(sf.rating>=85&&S.rep<60)p-=.2;if(len===3)p+=.04;return clamp(p,.03,.97)}
 const staffSalary=t=>STAFF_ROLES.reduce((a,[k])=>a+(t[k]?t[k].salary:0),0);
 
 function mkOffer(){
@@ -563,6 +678,12 @@ function ensureEcon(){
   if(S.day==null)S.day=S.round<NR()?raceDay(seasonTracks()[S.round])-10:dayOf(12,10);
   (S.projects||[]).forEach(p=>{if(p.days==null)p.days=(p.left||1)*14});(S.prod||[]).forEach(q=>{if(q.days==null)q.days=(q.left||1)*7});
   if(!S.academy){S.academy={level:1,scout:1,juniors:[],prospects:[],mission:null};S.academy.juniors.push(mkJunior(pick(REGIONS)))}
+  // счётчик ID после загрузки: не пересекаться с уже существующими
+  const nums=[...Object.keys(S.drivers),...S.academy.juniors.map(j=>j.id),...(S.leagues?Object.values(S.leagues).flat().map(d=>d.id):[])].map(x=>+String(x).slice(1)).filter(n=>!isNaN(n));
+  uid=Math.max(uid,...nums,999)+1;
+  Object.values(S.drivers).forEach(ensureAttrs);
+  STAFF_ROLES.forEach(([k])=>{const sf=me()[k];if(sf&&sf.contract==null)sf.contract=ri(1,3)});
+  ensureLeagues();
 }
 const capLeft=()=>+(S.rules.cap-S.spent).toFixed(1);
 // очки разработки на следующий сезон за 1 млн
@@ -1136,12 +1257,13 @@ function initShow(cv,color,accent){
 function lapModel(c,lap,wet){
   const tr=R.track,t=team(c.tid),d=drv(c.did);
   let lt=tr.base+(100-perf(t,tr))*.06+(100-d.pace)*.035-lap*.03*R.ls;
-  if(wet){lt+=7+(100-d.craft)*.025+(c.tyre==='I'?0:8.5)}else lt+=TYRES[c.tyre].off;
+  if(wet){lt+=7+(100-(d.wet||d.craft))*.03+(c.tyre==='I'?0:8.5)}else lt+=TYRES[c.tyre].off;
   const h=c.health;lt+=(100-h)*.018+(h<35?(35-h)*.09:0);
   lt+=c.mode==='push'?-.35:c.mode==='save'?.45:0;
   lt-=(c.sq-60)*.012;
   lt+=compPen(S.parts[c.did]);
-  lt+=gauss()*(.15+(100-d.craft)/100*.35)*(lap===1?2.2:1);
+  lt+=gauss()*(.15+(100-(d.cons||d.craft))/100*.35)*(lap===1?2.2:1);
+  if(lap===1)lt-=((d.start||80)-80)*.02;
   return lt;
 }
 function wearRate(c,wet){return tyreWear(c.tyre,wet,drv(c.did).tyre,c.mode,R.ls,R.tw)}
@@ -1226,7 +1348,7 @@ function enterStep(){
   render();
 }
 function nextStep(){W.step=Math.min(W.steps.length-1,W.step+1);enterStep()}
-const mySq=id=>clamp(setupQ(W.setups[id]||{wing:5,susp:5,gear:5,brake:5},W.ideal)+(srat(me(),'eng')-70)*.15+((S.fac?S.fac.sim:2)-2)*2,0,100);
+const mySq=id=>clamp(setupQ(W.setups[id]||{wing:5,susp:5,gear:5,brake:5},W.ideal)+(srat(me(),'eng')-70)*.15+((S.fac?S.fac.sim:2)-2)*2+(S.testBonus||0)*.75,0,100);
 function practiceRun(id){
   if(!(W.runsBy[id]>0))return;W.runsBy[id]--;
   const t=me(),tr=W.tr,d=drv(id),setup=W.setups[id];
@@ -1234,7 +1356,7 @@ function practiceRun(id){
   const lap=tr.base+(sessWet()?7:0)-(stepName()==='fp3'?.3:stepName()==='fp2'?.15:0)+(100-perf(t,tr))*.06+(100-d.pace)*.035-(sq-60)*.012+TYRES.M.off+gauss()*.2;
   const fb={};
   SETUP.forEach(([k,,,,lo,hi])=>{
-    const diff=setup[k]-W.ideal[k],right=Math.random()<.56+srat(me(),'eng')/400+d.craft/800+(S.fac?S.fac.sim:2)*.01;
+    const diff=setup[k]-W.ideal[k],right=Math.random()<.56+srat(me(),'eng')/400+(d.fb||d.craft)/700+(S.fac?S.fac.sim:2)*.01;
     if(Math.abs(diff)<=1&&right){fb[k]={ok:true,t:'Ощущения хорошие, менять не нужно.'}}
     else{let dir=Math.sign(diff)||pick([-1,1]);if(!right)dir=-dir;
       fb[k]={ok:false,dir:-dir,t:(dir<0?lo:hi)+(Math.abs(diff)>=4?' Очень сильно.':'')}}
@@ -1253,7 +1375,7 @@ function runQuali(){
     const d=drv(id);const risk=t.id===S.pid?W.risk[id]:Math.random()<.3;
     const sq=t.id===S.pid?mySq(id):W.aiSq[t.id];
     let q=tr.base-1.2+(100-perf(t,tr))*.06+(100-d.pace)*.035+TYRES.S.off-(sq-60)*.012+gauss()*(.12+(100-d.craft)/100*.25);
-    if(wet)q+=7+(100-d.craft)*.03;
+    if(wet)q+=7+(100-(d.wet||d.craft))*.035;
     let note='';
     if(risk){q-=.28;if(Math.random()<(wet?.2:.12)){q+=rnd(1.2,3);note='ошибка'}}
     q-=stg>1?(stg-1)*.18:0;
@@ -1322,7 +1444,7 @@ function simLap(k){
     COMPS.forEach(([pk])=>{P[pk].h=Math.max(0,P[pk].h-compWear(pk,d,t,c.mode,R.track)/R.N*(sc?.4:1));if(FATAL.has(pk)&&P[pk].h<=0&&!broke)broke=pk});
     if(c.me)COMPS.forEach(([pk,pn])=>{if(FATAL.has(pk)&&P[pk].h<20&&!(c.warn||{})[pk]){c.warn=c.warn||{};c.warn[pk]=1;feed(`Радио ${nm(c.did)}: «${pn} на пределе (${Math.round(P[pk].h)}%) — переходи в режим «Беречь»!»`,true)}});
     if(broke){c.out=true;c.outLap=k;c.parkF=(k-1)+clamp((R.T-c.cum[k-1])/(R.track.base+5),.05,.95);c.cum.push(Infinity);c.outWhy=broke;feed(`${nm(c.did)} сходит: ${({ice:'выработан двигатель',ers:'отказ ERS',gb:'отказ коробки передач'})[broke]}.`,c.me);continue}
-    if(!sc&&Math.random()<(c.mode==='push'?.012:c.mode==='save'?.002:.004)*(1.3-d.craft/100)*(wet?2.2:1)*R.ls*(c.me?1.25-srat(me(),'coach')/250:1)){const loss=rnd(1.5,5);lt+=loss;
+    if(!sc&&Math.random()<(c.mode==='push'?.012:c.mode==='save'?.002:.004)*(1.3-d.craft/100)*(wet?2.2:1)*R.ls*(1.1-(d.exp||50)/1000)*(c.me?1.25-srat(me(),'coach')/250:1)){const loss=rnd(1.5,5);lt+=loss;
       // ошибка на пределе бьёт по аэродинамике; в дождь на атаке — риск аварии
       if(c.mode==='push'){P.fw.h=Math.max(0,P.fw.h-rnd(15,35));P.floor.h=Math.max(0,P.floor.h-rnd(4,14))}
       if(wet&&c.mode==='push'&&loss>4){c.out=true;c.outLap=k;c.parkF=(k-1)+.5;c.cum.push(Infinity);c.outWhy='crash';P.fw.h=0;P.floor.h=Math.max(0,P.floor.h-40);feed(`${nm(c.did)} разбивает машину на мокрой трассе!`,c.me);continue}
@@ -1343,7 +1465,7 @@ function simLap(k){
       if(end<prevEnd+.25){
         if(end<prevEnd){
           const pd=drv(prev.did);
-          const p=clamp(.22+(prevEnd-end)*.35-R.track.over*.38+(d.craft-pd.craft)/150-(wet?.05:0),.05,.92);
+          const p=clamp(.22+(prevEnd-end)*.35-R.track.over*.38+((d.overtake||d.craft)-(pd.defend||pd.craft))/110-(wet?.05:0),.05,.92);
           if(Math.random()<p){if(c.me||prev.me)feed(`${nm(c.did)} обгоняет ${nm(prev.did)}!`,true)}
           else end=prevEnd+rnd(.25,.6);
         }else end=prevEnd+.25+rnd(0,.2);
@@ -1572,7 +1694,7 @@ function finishRace(){
     let part=pick(['aero','engine','chassis','aero','engine','chassis','rel']);if(part==='engine'&&S.rules.freeze)part='chassis';o.car[part]=clamp(+(o.car[part]+o.budget/60*rnd(.15,.8)*facMul(o,part)*DIFF_DEV[SET.diff]).toFixed(1),0,100)});
   // новые предложения
   if(S.round%3===2){S.offers.push(mkOffer());S.offers=S.offers.slice(-5)}
-  academyRace();
+  academyRace();ensureIntel();CATS.forEach(([k])=>S.intel.conf[k]=Math.min(.92,S.intel.conf[k]+.035));
   if(S.round===Math.floor(NR()*.5))S.teams.forEach(tm=>tm.drivers.forEach(id=>{const d=drv(id);if(!d.retiring&&d.age>=35&&Math.random()<(d.age-34)*.1+(d.pace<80?.1:0)){d.retiring=true;news(`${d.name} (${d.age}) объявляет, что завершит карьеру в конце сезона${tm.id===S.pid?' — можно попробовать уговорить его остаться':''}.`)}}));
   if(S.vote)resolveVote();
   if(S.round%6===2&&S.round<NR()-1)newVote();
@@ -1607,19 +1729,22 @@ function endSeason(){
     S.spent=0;S.rules.freeze=false;S.vote=null;
     Object.values(S.parts||{}).forEach(P=>COMPS.forEach(([k])=>{P[k].used=1;P[k].h=100}));S.gpen={};
     const pool=[];
-    Object.values(S.drivers).forEach(d=>{d.pts=0;d.age++;
+    Object.values(S.drivers).forEach(d=>{d.pts=0;d.age++;ensureAttrs(d);d.exp=Math.min(99,d.exp+3);
       if(d.age<=26)d.pace=clamp(d.pace+ri(0,2),50,99);else if(d.age>=33)d.pace=clamp(d.pace-ri(0,2),50,99);
       d.salary=salaryFor(d.pace);
       if(d.team&&d.team!==S.pid){d.contract--;if(d.contract<=0)d.contract=ri(1,3)}
       if(d.team===S.pid)d.contract--;
     });
     // завершение карьеры и истёкшие контракты в нашей команде
+    STAFF_ROLES.forEach(([k,n])=>{const sf=me()[k];if(!sf)return;sf.contract=(sf.contract||1)-1;
+      if(sf.contract<=0){news(`${n} ${sf.name} покидает команду: контракт истёк. Обязанности временно исполняет помощник.`);me()[k]={name:'И. о. — '+pick(FIRST)+' '+pick(LAST),rating:48,salary:.4,contract:1,acting:true}}});
     me().drivers=me().drivers.filter(id=>{const d=drv(id);
       if(d.retiring){d.team=null;d.retired=true;news(`${d.name} завершил карьеру. Нужен новый пилот — смотрите рынок и академию.`);return false}
       if(d.contract<=0){d.team=null;d.contract=0;news(`Контракт ${d.name} истёк — пилот покидает команду.`);return false}
       return true});
     // академия: юниоры взрослеют, старше 23 — выпускаются
-    S.academy.juniors.forEach(j=>j.age++);S.academy.juniors=S.academy.juniors.filter(j=>{if(j.age>23){news(`${j.name} покидает академию: возраст.`);return false}j.f2pts=0;return true});
+    leaguesSeasonEnd();
+    S.academy.juniors.forEach(j=>{j.age++;j.exp=Math.min(99,(j.exp||40)+4)});S.academy.juniors=S.academy.juniors.filter(j=>{if(j.age>23){news(`${j.name} покидает академию: возраст.`);return false}return true});
     // уход ветеранов у соперников
     S.teams.forEach(t=>{if(t.id===S.pid)return;t.drivers=t.drivers.map(id=>{const d=drv(id);if(d.retiring||d.age>=45){d.team=null;d.retired=true;
       let fa=Object.values(S.drivers).filter(x=>!x.team&&!x.retired).sort((a,b)=>b.pace-a.pace)[0];
@@ -1661,7 +1786,7 @@ function render(){
   disposeShow();
   if(UI.screen!=='race')dispose3D();
   app.classList.toggle('wide',UI.screen==='race');
-  const fn={title:vTitle,new:vNew,hub:vHub,setup:vSetup,settings:vSettings,media:vMedia,qstage:vQstage,quali:vQuali,qres:vQres,race:vRace,result:vResult,season:vSeason}[UI.screen];
+  const fn={title:vTitle,new:vNew,hub:vHub,setup:vSetup,settings:vSettings,media:vMedia,qstage:vQstage,test:vTest,quali:vQuali,qres:vQres,race:vRace,result:vResult,season:vSeason}[UI.screen];
   app.innerHTML=fn();
   after();
 }
@@ -1720,6 +1845,7 @@ function vHQ(){
     <canvas class="track" data-track="${tr.seed}" data-r=".5"></canvas>
     <div class="row wrapflex"><span class="pill">${feat}</span><span class="pill ${tr.over>.6?'bad':tr.over<.4?'good':''}">Обгоны: ${tr.over>.6?'трудно':tr.over<.4?'легко':'средне'}</span><span class="pill info">Дождь ${Math.round(tr.rain*100)}%</span></div>
     ${need?`<p style="color:var(--bad)">Нужно два пилота. Подпишите пилота во вкладке «Команда» или переведите юниора из академии.</p>`:''}
+    ${STAFF_ROLES.filter(([k])=>t[k]&&t[k].contract<=1&&!t[k].acting).map(([k,n])=>`<p style="color:var(--accent);font-size:13px">${n} ${esc(t[k].name)}: контракт истекает в конце сезона.</p>`).join('')}
     ${t.drivers.map(drv).filter(d=>d.contract<=1||d.retiring).map(d=>`<p style="color:var(--accent);font-size:13px">${esc(d.name)}: ${d.retiring?'завершит карьеру в конце сезона':'контракт истекает в конце сезона — проведите переговоры'}.</p>`).join('')}
     <div class="row between wrapflex" style="font-size:13px"><span>Сегодня: <b>${fdate(S.day)}</b>, ${wday(S.day)}</span><span>${weekendDay()-S.day>0?`до уик-энда <b>${weekendDay()-S.day}</b> ${plural(weekendDay()-S.day,'день','дня','дней')}`:'уик-энд начинается'}</span></div>
     ${weekendDay()-S.day>0?`<div class="row">${[[1,'+1 день'],[7,'+7 дней']].map(([n,l])=>`<button class="btn small grow" data-a="day" data-v="${n}" ${S.day+n>weekendDay()?'disabled':''}>${l}</button>`).join('')}<button class="btn small grow" data-a="day" data-v="wk">К уик-энду</button></div>`:''}
@@ -1729,6 +1855,7 @@ function vHQ(){
     <div class="row between"><h3>Совет директоров</h3><span class="pill ${pos<=S.goal?'good':pos<=S.goal+1?'acc':'bad'}">${pos<=S.goal?'по плану':pos<=S.goal+1?'на грани':'ниже цели'}</span></div>
     <p>Цель: <b>${S.goal}-е</b> место в Кубке конструкторов. Сейчас: <b>${pos}-е</b>, ${t.pts} ${plural(t.pts,'очко','очка','очков')}.${S.warnings?` <span style="color:var(--bad)">Предупреждений: ${S.warnings}/2.</span>`:''}</p>
   </div>
+  ${testAvail()?`<div class="card" style="border-color:var(--info)"><div class="row between"><h3>${testAvail()==='pre'?'Предсезонные тесты':'Тестовый день в сезоне'}</h3><span class="pill info">${testAvail()==='pre'?`день ${S.intel.days+1}/3`:'1 день'}</span></div><p class="muted" style="font-size:13px">Соберите данные о болиде и соперниках: кто сильнее на прямых, в поворотах, на шинах и по надёжности.</p><button class="btn block" data-a="totest">На тесты</button></div>`:''}
   ${voteCard()}
   <div class="card"><h3>Регламент</h3><ul style="margin:0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:4px">${rulesList().map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
   <div class="card"><h3>Новости паддока</h3><div class="feed">${S.news.slice(0,6).map(n=>`<div><span class="muted mono" style="font-size:11px">${(S.year0||2026)+n.s-1} · этап ${n.r+1}</span><br>${esc(n.t)}</div>`).join('')}</div></div>
@@ -1768,14 +1895,18 @@ function facCard(){
    <p class="muted" style="font-size:12px">Уровень здания поднимает базу болида следующего сезона по своей части, ускоряет её разработку и продлевает ресурс связанных узлов. Стройка не входит в потолок расходов.</p></div>`;
 }
 function partsCard(compact){
-  const ids=me().drivers,cell=(P,k)=>{const h=Math.round(P[k].h),lim=compLimit(k);return`<td><div class="bar" style="width:56px;display:inline-block;vertical-align:middle"><i style="width:${h}%;background:${h<20?'var(--bad)':h<50?'var(--accent)':'var(--good)'}"></i></div> <span class="mono">${h}%</span>${lim?` <span class="muted mono" style="font-size:10px">${P[k].used}/${lim}</span>`:''}</td>`};
-  return`<div class="card"><div class="row between"><h3>Узлы болидов</h3><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autofit" ${S.autoFit?'checked':''}>автозамена &lt;20%</label></div>
-   <div class="tblwrap"><table><thead><tr><th>Узел</th>${ids.map(id=>`<th>${esc(nm(id))}</th>`).join('')}<th class="num">Склад</th></tr></thead><tbody>
-   ${COMPS.map(([k,n])=>`<tr><td>${n}</td>${ids.map(id=>{const P=ensureParts(id);return cell(P,k)}).join('')}<td class="num">${S.stock[k]||0}</td></tr>
-     <tr><td></td>${ids.map(id=>`<td><button class="btn small" data-a="fit" data-v="${id}|${k}" ${S.stock[k]>0?'':'disabled'}>Заменить</button></td>`).join('')}<td class="num"><button class="btn small" data-a="prod" data-v="${k}" ${S.budget<prodCost(k)?'disabled':''}>+1 · ${String(prodCost(k)).replace('.',',')} · ${prodDays(k)} дн.</button></td></tr>`).join('')}
-   </tbody></table></div>
-   ${S.prod.length?`<p style="font-size:13px">На заводе: ${S.prod.map(q=>COMPS.find(c=>c[0]===q.k)[1]+' — '+etaText(q.days)).join('; ')}</p>`:''}
-   <p class="muted" style="font-size:12px">Узлы изнашиваются от манеры вождения: «Атака» ×1,5, «Беречь» ×0,75. Влияют мастерство пилота, надёжность болида и трасса. Изношенный узел отнимает темп, выработанный ДВС, ERS или КПП — сход. Лимит на сезон: ДВС 4, ERS 3, КПП 4. Сверх лимита — штраф 5 мест. Срок производства зависит от уровня завода.</p></div>`;
+  const ids=me().drivers,col=h=>h<20?'var(--bad)':h<50?'var(--accent)':'var(--good)';
+  const stockCard=`<div class="card"><div class="row between"><h3>Склад и завод</h3><span class="pill">завод: уровень ${S.fac?S.fac.fac:2}</span></div>
+   ${COMPS.map(([k,n,lim])=>{const q=S.prod.filter(x=>x.k===k);return`<div class="row between wrapflex" style="border-top:1px solid var(--line);padding-top:8px;gap:8px">
+     <div class="grow"><b>${n}</b><br><span class="muted" style="font-size:12px">на складе: <b style="color:var(--fg)">${S.stock[k]||0}</b>${lim?` · лимит на пилота: ${lim}`:''}${q.length?` · в производстве: ${q.length} (готово ${etaText(Math.min(...q.map(x=>x.days)))})`:''}</span></div>
+     <button class="btn small" data-a="prod" data-v="${k}" ${S.budget<prodCost(k)?'disabled':''}>Произвести · ${String(prodCost(k)).replace('.',',')} млн · ${prodDays(k)} дн.</button></div>`}).join('')}
+   <p class="muted" style="font-size:12px">Новый узел появляется на складе в указанный день. Срок и цена зависят от уровня завода (вкладка «База команды» ниже).</p></div>`;
+  const drvBlock=id=>{const P=ensureParts(id);return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><b>${esc(drv(id).name)}</b>
+   ${COMPS.map(([k,n,lim])=>{const h=Math.round(P[k].h);return`<div class="row between" style="gap:8px"><span style="width:92px;font-size:13px" class="ell">${n}</span><div class="bar grow"><i style="width:${h}%;background:${col(h)}"></i></div><span class="mono" style="width:36px;text-align:right">${h}%</span>${lim?`<span class="muted mono" style="font-size:11px;width:28px">${P[k].used}/${lim}</span>`:'<span style="width:28px"></span>'}<button class="btn small" data-a="fit" data-v="${id}|${k}" ${S.stock[k]>0?'':'disabled'} title="Поставить новый узел со склада">Заменить</button></div>`}).join('')}</div>`};
+  return`<div class="card"><div class="row between wrapflex"><h3>Узлы болидов</h3><label class="row" style="font-size:12px;gap:6px"><input type="checkbox" id="autofit" ${S.autoFit?'checked':''}>автозамена &lt;20%</label></div>
+   ${ids.map(drvBlock).join('')}
+   <p class="muted" style="font-size:12px">Узлы изнашиваются от манеры вождения: «Атака» ×1,5, «Беречь» ×0,75. Влияют мастерство пилота, надёжность болида, трасса и уровень базы. Изношенный узел отнимает темп, выработанный ДВС, ERS или КПП — сход. Сверх лимита на сезон — штраф 5 мест на старте. «Заменить» ставит узел со склада.</p></div>
+   ${stockCard}`;
 }
 function vCar(){
   const t=me();
@@ -1809,11 +1940,14 @@ function vCar(){
      const c=upgCost(k,u),g=u.g*(.7+t.td.rating/200)*partBoost(t,k);const dis=busy>=slots||S.budget<c||c>capLeft()||t.car[k]>=99||S.projects.some(p=>p.part===k)||(k==='engine'&&S.rules.freeze);
      return`<button class="btn" style="justify-content:space-between" data-a="upg" data-v="${k}|${u.k}" ${dis?'disabled':''}><span>${u.n} <span class="muted">≈ +${g.toFixed(1).replace('.',',')} · ${u.d} дн.</span></span><span class="money">${c.toFixed(1).replace('.',',')}</span></button>`}).join('')}</div></div>`).join('')}</div></div>`;
 }
+function attrGrid(d,floor){
+  return`<div class="agrid">${ATTRS.map(([k,n])=>{const v=Math.floor(d[k]||0);return`<div class="stat" style="grid-template-columns:1fr 60px 26px"><span class="ell" style="font-size:12px">${n}</span><div class="bar"><i style="width:${v}%;background:${v>=90?'var(--good)':v>=75?'var(--accent)':'var(--muted)'}"></i></div><span class="mono">${v}</span></div>`}).join('')}</div>`;
+}
 function drvCard(d,mine){
   const fire=UI.arm==='fire'+d.id,N=UI.nego&&UI.nego.id===d.id?UI.nego:null;
   const cp=!mine?'':d.contract<=1?`<span class="pill bad">последний сезон</span>`:`<span class="pill">контракт до ${endYear(d)}</span>`;
-  return`<div class="card"><div class="row between"><div><h3>${esc(d.name)}</h3><span class="muted" style="font-size:12px">${d.age} лет · ${d.pts} очк. · побед ${d.wins}</span></div><div class="row wrapflex" style="justify-content:flex-end">${d.retiring?'<span class="pill acc">уходит из спорта</span>':''}${cp}</div></div>
-   ${[['Скорость',d.pace],['Гоночное мастерство',d.craft],['Работа с шинами',d.tyre]].map(([n,v])=>`<div class="stat"><span>${n}</span><div class="bar"><i style="width:${v}%"></i></div><span class="mono">${v}</span></div>`).join('')}
+  return`<div class="card"><div class="row between"><div class="row">${ovrPill(ensureAttrs(d))}<div><h3>${esc(d.name)}</h3><span class="muted" style="font-size:12px">${d.age} лет · ${d.pts} очк. · побед ${d.wins}</span></div></div><div class="row wrapflex" style="justify-content:flex-end">${d.retiring?'<span class="pill acc">уходит из спорта</span>':''}${cp}</div></div>
+   ${attrGrid(ensureAttrs(d))}
    <div class="row between wrapflex"><span class="muted">Зарплата: <span class="mono">${fm(d.salary,2)}</span>/сезон</span>
    ${mine?`<div class="row wrapflex">${d.retiring&&!d.persuaded?`<button class="btn small" data-a="persuade" data-v="${d.id}">Уговорить остаться</button>`:''}${!d.retiring?`<button class="btn small" data-a="nego" data-v="${d.id}">Переговоры</button>`:''}<button class="btn small danger" data-a="fire" data-v="${d.id}">${fire?'Точно уволить?':'Уволить'}</button></div>`:''}</div>
    ${N?(()=>{const ask=asking(d),pc=Math.round(acceptChance(d,N.offer,N.len)*100),blk=d.negoBlock&&d.negoBlock>negoKey();return`<div class="nego stack" style="border-top:1px solid var(--line);padding-top:10px">
@@ -1821,7 +1955,7 @@ function drvCard(d,mine){
      <div class="seg">${[1,2,3].map(l=>`<button data-a="nlen" data-v="${l}" class="${N.len===l?'on':''}">${l} ${plural(l,'сезон','сезона','сезонов')} · до ${year()+l}</button>`).join('')}</div>
      <input type="range" id="nego-offer" min="${(ask*.6).toFixed(2)}" max="${(ask*1.6).toFixed(2)}" step="0.05" value="${N.offer}" aria-label="Зарплата в предложении">
      <div class="row between"><span>Предложение: <b class="mono" id="nego-v">${fm(N.offer,2)}</b>/сезон</span><span class="pill ${pc>=70?'good':pc>=40?'acc':'bad'}" id="nego-p">согласие ~${pc}%</span></div>
-     <p class="muted" style="font-size:12px">На решение влияют деньги, репутация команды (${Math.round(S.rep)}), возраст и амбиции пилота. После отказа к разговору можно вернуться через 2 этапа.</p>
+     <p class="muted" style="font-size:12px">На решение влияют деньги, репутация (${Math.round(S.rep)}), форма команды (${formText(teamForm())}), возраст и амбиции пилота. После отказа к разговору можно вернуться через 2 этапа.</p>
      <div class="row"><button class="btn small grow" data-a="nsend" data-v="${d.id}" ${blk?'disabled':''}>${blk?'Пилот пока не готов к разговору':'Предложить контракт'}</button><button class="btn small" data-a="ncancel">Отмена</button></div></div>`})():''}
    </div>`;
 }
@@ -1831,12 +1965,14 @@ function vAcademy(){
   const potTxt=j=>`<span class="pill info">потенциал ${j.est[0]}–${j.est[1]}</span>`;
   return`<div class="cols"><div class="col">
    <div class="card"><div class="row between"><h2>Академия</h2><span class="pill">уровень ${A.level} · ${A.juniors.length}/${slots}</span></div>
-    <p class="muted" style="font-size:13px">Юниоры выступают в Формуле-2 и растут к своему потенциалу. Быстрее — с прокачанной академией и сильным тренером пилотов (${srat(me(),'coach')}). Содержание: ${fm(acadUpkeep(),2)} за этап.</p>
+    <p class="muted" style="font-size:13px">Юниоры выступают за фарм-команду «${esc(farmName())}» в Ф-4, Ф-3 и Ф-2 и растут к своему потенциалу. Выберите фокус тренировок — это умение растёт вдвое быстрее. Быстрее — с прокачанной академией и сильным тренером пилотов (${srat(me(),'coach')}). Содержание: ${fm(acadUpkeep(),2)} за этап.</p>
     ${A.level<3?`<button class="btn small" data-a="acadup" ${S.budget<ACAD_COST[A.level]?'disabled':''}>Расширить академию до уровня ${A.level+1} · ${ACAD_COST[A.level]} млн</button>`:''}</div>
-   ${A.juniors.length?A.juniors.map(j=>`<div class="card"><div class="row between"><div><h3>${esc(j.name)}</h3><span class="muted" style="font-size:12px">${j.age} лет · ${esc(j.region)} · Ф-2: ${j.f2pts} очк.${j.f2.length?' · последние: '+j.f2.join(', '):''}</span></div>${potTxt(j)}</div>
-     ${bar('Скорость',j.pace)}${bar('Гоночное мастерство',j.craft)}${bar('Работа с шинами',j.tyre)}
-     <div class="row wrapflex"><button class="btn small" data-a="promote" data-v="${j.id}" ${seat&&j.pace>=74?'':'disabled'}>Перевести в Ф-1</button><button class="btn small danger" data-a="release" data-v="${j.id}">${UI.arm==='rel'+j.id?'Точно отчислить?':'Отчислить'}</button></div>
-     <p class="muted" style="font-size:12px">${j.pace<74?'Для суперлицензии нужна скорость 74+.':seat?'Готов к дебюту в Формуле-1.':'Суперлицензия есть — освободите место в основном составе.'}</p></div>`).join(''):'<div class="card"><p class="muted">В академии пока нет юниоров — отправьте скаутов.</p></div>'}
+   ${A.juniors.length?A.juniors.map(j=>`<div class="card"><div class="row between"><div class="row">${ovrPill(j)}<div><h3>${esc(j.name)}</h3><span class="muted" style="font-size:12px">${j.age} лет · ${esc(j.region)} · ${LEAGUES.find(l=>l[0]===j.league)[1]} за «${esc(farmName())}» · ${j.lpts||0} очк.${j.last?' · последняя гонка: '+j.last+'-й':''}</span></div></div>${potTxt(j)}</div>
+     ${attrGrid(j,true)}
+     <div class="stack" style="gap:4px"><span class="eyebrow">Фокус тренировок</span><div class="seg wrapflex">${ATTRS.filter(([a])=>a!=='exp').map(([a,n])=>`<button data-a="focus" data-v="${j.id}|${a}" class="${j.focus===a?'on':''}" style="flex:none">${n}</button>`).join('')}</div></div>
+     <div class="row wrapflex"><span class="muted" style="font-size:12px">Лига:</span>${LEAGUES.map(([k,n])=>`<button class="btn small ${j.league===k?'on':''}" data-a="jleague" data-v="${j.id}|${k}">${n}</button>`).join('')}</div>
+     <div class="row wrapflex"><button class="btn small" data-a="promote" data-v="${j.id}" ${seat&&ovr(j)>=72?'':'disabled'}>Перевести в Ф-1</button><button class="btn small danger" data-a="release" data-v="${j.id}">${UI.arm==='rel'+j.id?'Точно отчислить?':'Отчислить'}</button></div>
+     <p class="muted" style="font-size:12px">${ovr(j)<72?'Для суперлицензии нужен рейтинг 72+.':seat?'Готов к дебюту в Формуле-1.':'Суперлицензия есть — освободите место в основном составе.'}</p></div>`).join(''):'<div class="card"><p class="muted">В академии пока нет юниоров — отправьте скаутов.</p></div>'}
   </div><div class="col">
    <div class="card"><div class="row between"><h2>Поиск талантов</h2><span class="pill">скауты: уровень ${A.scout}</span></div>
     <p class="muted" style="font-size:13px">Скауты ищут картингистов и пилотов младших формул. Чем выше уровень сети, тем точнее оценка потенциала (сейчас ±${SCOUT_W[A.scout-1]}).</p>
@@ -1845,7 +1981,7 @@ function vAcademy(){
    </div>
    ${A.prospects.length?`<div class="card"><h3>Найденные таланты</h3>${A.prospects.map(j=>{const fee=+Math.max(.3,.3+((j.est[0]+j.est[1])/2-70)*.06).toFixed(1);return`<div class="stack" style="border-top:1px solid var(--line);padding-top:10px;gap:6px">
      <div class="row between"><div><b>${esc(j.name)}</b> <span class="muted">${j.age} л. · ${esc(j.region)}</span></div>${potTxt(j)}</div>
-     <span class="mono muted" style="font-size:12px">СКР ${Math.floor(j.pace)} · МАС ${Math.floor(j.craft)} · ШИН ${Math.floor(j.tyre)}</span>
+     <span class="row" style="gap:6px">${ovrPill(j)}<span class="mono muted" style="font-size:12px">${LEAGUES.find(l=>l[0]===j.league)?.[1]||''} · СКР ${Math.floor(j.pace)} · МАС ${Math.floor(j.craft)} · ШИН ${Math.floor(j.tyre)}</span></span>
      <button class="btn small" data-a="signj" data-v="${j.id}" ${A.juniors.length>=slots||S.budget<fee?'disabled':''}>В академию · ${String(fee).replace('.',',')} млн</button></div>`}).join('')}</div>`:''}
   </div></div>`;
 }
@@ -1856,14 +1992,21 @@ function vStaff(){
   return`<div class="cols"><div class="col"><div class="eyebrow">Пилоты</div>${t.drivers.map(id=>drvCard(drv(id),true)).join('')}
    <div class="card"><div class="row between"><h3>Свободные пилоты</h3>${free?'<span class="pill bad">есть место</span>':'<span class="pill">мест нет</span>'}</div>
    ${pool.length?pool.map(d=>{const req=Math.max(0,Math.round((d.pace-74)*3));const ok=S.rep>=req;const fee=+(d.salary*.5).toFixed(1);
-     return`<div class="row between" style="border-top:1px solid var(--line);padding-top:10px"><div class="grow"><b>${esc(d.name)}</b> <span class="muted">${d.age} л.</span><br><span class="mono muted" style="font-size:12px">СКР ${d.pace} · МАС ${d.craft} · ШИН ${d.tyre} · ${fm(d.salary,1)}/с</span>${ok?'':`<br><span style="color:var(--bad);font-size:12px">нужна репутация ${req}</span>`}</div>
+     return`<div class="row between" style="border-top:1px solid var(--line);padding-top:10px">${ovrPill(ensureAttrs(d))}<div class="grow"><b>${esc(d.name)}</b> <span class="muted">${d.age} л.</span><br><span class="mono muted" style="font-size:12px">СКР ${d.pace} · МАС ${d.craft} · ОБГ ${d.overtake} · ДОЖ ${d.wet} · ${fm(d.salary,1)}/с</span>${ok?'':`<br><span style="color:var(--bad);font-size:12px">нужна репутация ${req}</span>`}</div>
      <button class="btn small" data-a="hire" data-v="${d.id}" ${!free||!ok||S.budget<fee?'disabled':''}>Подписать · ${fee.toFixed(1).replace('.',',')}</button></div>`}).join(''):'<p class="muted">Рынок пуст.</p>'}
-   <p class="muted" style="font-size:12px">Чтобы подписать нового пилота, сначала освободите место. Увольнение стоит половину годовой зарплаты.</p></div></div>
+   <p class="muted" style="font-size:12px">Чтобы подписать нового пилота, сначала освободите место. Увольнение стоит половину годовой зарплаты.</p></div>
+   <div class="card"><h3>Из Формулы-2 (суперлицензия)</h3>${S.leagues.f2.filter(d=>ovr(d)>=72).sort((a,b)=>ovr(b)-ovr(a)).slice(0,6).map(d=>{const fee=+(1+ovr(d)*.02).toFixed(1),ok=S.rep>=Math.max(0,(ovr(d)-74)*3);return`<div class="row between" style="border-top:1px solid var(--line);padding-top:10px">${ovrPill(d)}<div class="grow"><b>${esc(d.name)}</b> <span class="muted">${d.age} л. · ${esc(d.team)} · ${d.lpts} очк.</span></div><button class="btn small" data-a="hiref2" data-v="${d.id}" ${!free||!ok||S.budget<fee?'disabled':''}>Подписать · ${String(fee).replace('.',',')}</button></div>`}).join('')||'<p class="muted">Пока никто в Ф-2 не дотягивает до суперлицензии.</p>'}</div></div>
    <div class="col"><div class="eyebrow">Персонал</div>
    ${STAFF_ROLES.map(([k,n,h])=>`<div class="card">
      <div class="row between"><div><h3>${n}</h3><span class="muted" style="font-size:12px">${h}</span></div><span class="pill acc mono">${t[k].rating}</span></div>
-     <p>${esc(t[k].name)} <span class="muted">· ${fm(t[k].salary,2)}/сезон</span></p>
-     ${S.market[k].map((c,i)=>{const cost=hireCost(k,c);return`<div class="row between" style="border-top:1px solid var(--line);padding-top:8px"><span>${esc(c.name)} <span class="mono">${c.rating}</span><br><span class="muted" style="font-size:12px">${fm(c.salary,2)}/сезон</span></span><button class="btn small" data-a="staff" data-v="${k}|${i}" ${S.budget<cost?'disabled':''}>Нанять · ${cost.toFixed(1).replace('.',',')}</button></div>`}).join('')}
+     <div class="row between wrapflex"><span>${esc(t[k].name)} <span class="muted">· ${fm(t[k].salary,2)}/сезон</span></span>${t[k].acting?'<span class="pill bad">временно</span>':`<span class="row" style="gap:6px"><span class="pill ${t[k].contract<=1?'bad':''}">${t[k].contract<=1?'последний сезон':'до '+(year()+t[k].contract-1)}</span><button class="btn small" data-a="snego" data-v="${k}">Переговоры</button></span>`}</div>
+     ${UI.snego&&UI.snego.k===k?(()=>{const N=UI.snego,sf=t[k],ask=staffAsk(sf),pc=Math.round(staffChance(sf,N.offer,N.len)*100),blk=sf.negoBlock&&sf.negoBlock>negoKey();return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px">
+       <div class="row between"><b>Продление</b><span class="muted" style="font-size:12px">просит ~${fm(ask,2)} · ${formText(teamForm())}</span></div>
+       <div class="seg">${[1,2,3].map(l=>`<button data-a="snlen" data-v="${l}" class="${N.len===l?'on':''}">до ${year()+l}</button>`).join('')}</div>
+       <input type="range" id="snego-offer" min="${(ask*.6).toFixed(2)}" max="${(ask*1.6).toFixed(2)}" step="0.05" value="${N.offer}" aria-label="Зарплата в предложении">
+       <div class="row between"><span>Предложение: <b class="mono" id="snego-v">${fm(N.offer,2)}</b></span><span class="pill ${pc>=70?'good':pc>=40?'acc':'bad'}" id="snego-p">согласие ~${pc}%</span></div>
+       <div class="row"><button class="btn small grow" data-a="snsend" ${blk?'disabled':''}>${blk?'Пока не готов к разговору':'Предложить'}</button><button class="btn small" data-a="sncancel">Отмена</button></div></div>`})():''}
+     ${S.market[k].map((c,i)=>{const cost=hireCost(k,c);return`<div class="row between" style="border-top:1px solid var(--line);padding-top:8px"><span>${esc(c.name)} <span class="mono">${c.rating}</span><br><span class="muted" style="font-size:12px">${fm(c.salary,2)}/сезон</span></span><button class="btn small" data-a="staff" data-v="${k}|${i}" ${S.budget<cost||c.refused?'disabled':''} title="Шанс согласия ~${Math.round(staffChance(c,c.salary,2)*100)}%">${c.refused?'Отказался':`Нанять (~${Math.round(staffChance(c,c.salary,2)*100)}%)`} · ${cost.toFixed(1).replace('.',',')}</button></div>`}).join('')}
    </div>`).join('')}</div></div>`;
 }
 function vMoney(){
@@ -1877,7 +2020,11 @@ function vMoney(){
 }
 function vTable(){
   const ds=driverStandings(),ts=teamStandings();
-  return`<div class="seg"><button data-a="stand" data-v="drivers" class="${UI.stand==='drivers'?'on':''}">Пилоты</button><button data-a="stand" data-v="teams" class="${UI.stand==='teams'?'on':''}">Конструкторы</button><button data-a="stand" data-v="hist" class="${UI.stand==='hist'?'on':''}">История</button></div>
+  const segs=`<div class="seg wrapflex">${[['drivers','Пилоты'],['teams','Конструкторы'],['intel','Аналитика'],['f2','Ф-2'],['f3','Ф-3'],['f4','Ф-4'],['hist','История']].map(([k,n])=>`<button data-a="stand" data-v="${k}" class="${UI.stand===k?'on':''}">${n}</button>`).join('')}</div>`;
+  if(UI.stand==='f2'||UI.stand==='f3'||UI.stand==='f4'){const k=UI.stand,A=S.academy,list=[...S.leagues[k],...A.juniors.filter(j=>j.league===k)].sort((a,b)=>(b.lpts||0)-(a.lpts||0)||ovr(b)-ovr(a));
+    return segs+`<div class="card"><h3>${LEAGUES.find(l=>l[0]===k)[1]}</h3><div class="tblwrap"><table><thead><tr><th>#</th><th>Пилот</th><th>Команда</th><th class="num">Рейт.</th><th class="num">Поб</th><th class="num">Очки</th></tr></thead><tbody>${list.map((d,i)=>{const mine=A.juniors.includes(d);return`<tr${mine?' class="me"':''}><td class="num">${i+1}</td><td>${esc(d.name)} <span class="muted" style="font-size:11px">${d.age}</span></td><td class="muted">${esc(mine?farmName():d.team)}</td><td class="num">${ovr(d)}</td><td class="num">${d.lwins||0}</td><td class="num">${d.lpts||0}</td></tr>`}).join('')}</tbody></table></div></div>`}
+  if(UI.stand==='intel')return segs+intelView();
+  return segs+`
   <div class="card"><div class="tblwrap"><table>
   ${UI.stand==='drivers'?`<thead><tr><th>#</th><th>Пилот</th><th class="num">Поб</th><th class="num">Очки</th></tr></thead><tbody>${ds.map((d,i)=>`<tr${d.team===S.pid?' class="me"':''}><td class="num">${i+1}</td><td><span class="chip" style="background:${team(d.team).color}"></span> ${esc(d.name)}</td><td class="num">${d.wins}</td><td class="num">${d.pts}</td></tr>`).join('')}</tbody>`
   :UI.stand==='teams'?`<thead><tr><th>#</th><th>Команда</th><th class="num">Болид</th><th class="num">Очки</th></tr></thead><tbody>${ts.map((t,i)=>`<tr${t.id===S.pid?' class="me"':''}><td class="num">${i+1}</td><td><span class="chip" style="background:${t.color}"></span> ${esc(t.name)}</td><td class="num">${carOverall(t).toFixed(0)}</td><td class="num">${t.pts}</td></tr>`).join('')}</tbody>`
@@ -2049,6 +2196,9 @@ function vSettings(){
    ${S?card('Карьера',`<button class="btn danger block" data-a="reset">${UI.arm==='reset'?'Нажмите ещё раз — карьера будет удалена':'Сбросить карьеру'}</button>`):''}
   </div></div></div>`;
 }
+// кольцо шины: дуга уменьшается вместе с остатком ресурса
+function tyreRing(ty,h){const r=7,c=2*Math.PI*r,f=clamp(h/100,0,1);
+  return`<svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="${r}" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="3"/><circle cx="10" cy="10" r="${r}" fill="none" stroke="${ty.col}" stroke-width="3" stroke-dasharray="${(c*f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 10 10)"/><text x="10" y="13.2" text-anchor="middle" font-size="8" font-weight="700" fill="${ty.col}" font-family="JetBrains Mono, monospace">${ty.l}</text></svg>`}
 function updateRaceUi(){
   if(!$('#tower'))return;
   const ord=liveOrder();
@@ -2110,11 +2260,11 @@ function updateRaceUi(){
     el.innerHTML=`<span style="flex-basis:100%">${pl}</span><span>${TYRES[c.tyre].n}: <b>${pct}%</b>, ${Math.max(0,R.lapDone-c.stintLap)} кр. на комплекте, износ ${w.toFixed(1).replace('.',',')}%/кр. (${c.mode==='push'?'атака':c.mode==='save'?'бережём':'норма'})</span><span>${l30>=left?`<span style="color:var(--good)">до финиша хватит (на финише ~${end}%)</span>`:`до 30% — <b>${l30}</b> кр. (к ${R.lapDone+l30+1}-му), полный износ через ${l0} кр.`}</span>`});
   // табло трансляции
   const tw=$('#tower');
-  if(tw){const vp=tw.parentElement,rh=vp.clientWidth<600?15:17,n=UI.towerMin?0:Math.max(3,Math.floor((vp.clientHeight-(vp.clientWidth<600?112:96))/rh));
+  if(tw){const vp=tw.parentElement,rh=vp.clientWidth<600?16:21,n=UI.towerMin?0:Math.max(3,Math.floor((vp.clientHeight-(vp.clientWidth<600?112:96))/rh));
     let rows=ord.map((x,i)=>({x,i}));if(rows.length>n){const top=rows.slice(0,n),mine=rows.filter(r=>r.x.c.me&&r.i>=n);rows=[...top.slice(0,n-mine.length),...mine]}
     tw.innerHTML=`<div class="th" data-a="tower" title="Свернуть или развернуть табло"><span>КРУГ ${Math.min(R.N,lap)}/${R.N}</span><span>${R.sc>0?'SC':UI.towerMin?'▸':''}</span></div>`+rows.map(({x,i})=>{const t=team(x.c.tid),ty=TYRES[x.c.tyre];
       const age=Math.max(0,Math.min(R.N,x.p.laps)-x.c.stintLap);
-      return`<div class="tr${x.c.me?' me':''}${x.c.out?' out':''}${x.c.did===UI.follow?' fo':''}" data-a="follow" data-v="${x.c.did}"><b>${x.c.out?'—':i+1}</b><span style="background:${t.color};height:12px"></span><b>${esc(nm(x.c.did).slice(0,3).toUpperCase())}</b><span class="g">${x.c.out?'СХОД':i===0?'Лидер':x.gap}</span><i style="border-color:${ty.col}"></i><span class="a">${x.c.out?'':age}</span></div>`}).join('')}
+      return`<div class="tr${x.c.me?' me':''}${x.c.out?' out':''}${x.c.did===UI.follow?' fo':''}" data-a="follow" data-v="${x.c.did}"><b>${x.c.out?'—':i+1}</b><span style="background:${t.color};height:12px"></span><b>${esc(nm(x.c.did).slice(0,3).toUpperCase())}</b><span class="g">${x.c.out?'СХОД':i===0?'Лидер':x.gap}</span>${x.c.out?'<span></span><span></span>':`${tyreRing(ty,x.c.health)}<span class="w" style="color:${x.c.health<30?'var(--bad)':x.c.health<55?'var(--accent)':'#c9d3dd'}">${Math.round(x.c.health)}%</span>`}<span class="a">${x.c.out?'':age+'к'}</span></div>`}).join('')}
   // прогноз поверх трансляции
   const ov=$('#ovfc');
   if(ov){const m=[];for(let i=cur;i<Math.min(R.N,cur+15);i++)m.push(fc(i));
@@ -2164,6 +2314,7 @@ const keepScroll=fn=>{const sc=$('#sc');const y=sc?sc.scrollTop:0;fn();const s2=
 document.addEventListener('input',e=>{
   if(e.target.id==='tname')UI.teamName=e.target.value;
   if(e.target.id==='autofit'){S.autoFit=e.target.checked;save()}
+  if(e.target.id==='snego-offer'&&UI.snego){const sf=me()[UI.snego.k];UI.snego.offer=+e.target.value;const pc=Math.round(staffChance(sf,UI.snego.offer,UI.snego.len)*100),v=$('#snego-v'),pp=$('#snego-p');if(v)v.textContent=fm(UI.snego.offer,2);if(pp){pp.textContent=`согласие ~${pc}%`;pp.className='pill '+(pc>=70?'good':pc>=40?'acc':'bad')}}
   if(e.target.id==='nego-offer'&&UI.nego){const d=drv(UI.nego.id);UI.nego.offer=+e.target.value;const v=$('#nego-v'),pp=$('#nego-p'),pc=Math.round(acceptChance(d,UI.nego.offer,UI.nego.len)*100);if(v)v.textContent=fm(UI.nego.offer,2);if(pp){pp.textContent=`согласие ~${pc}%`;pp.className='pill '+(pc>=70?'good':pc>=40?'acc':'bad')}}
   const k=e.target.dataset&&e.target.dataset.k;if(k&&W&&W.setups[UI.pd]){W.setups[UI.pd][k]=+e.target.value;const o=$('#sv-'+k);if(o)o.textContent=e.target.value}
 });
@@ -2182,6 +2333,10 @@ document.addEventListener('click',e=>{
    case'restart':wipe();S=null;UI.screen='new';render();break;
    case'tab':UI.tab=v;render();$('#sc').scrollTop=0;break;
    case'stand':UI.stand=v;keepScroll(render);break;
+   case'totest':UI.screen='test';render();break;
+   case'tprog':UI.tprog=v;keepScroll(render);break;
+   case'tdrv':UI.tdrv=v;keepScroll(render);break;
+   case'tday':runTestDay(UI.tprog,UI.tdrv);save();toast('Тестовый день завершён');keepScroll(render);break;
    case'hub':UI.screen='hub';UI.tab='hq';render();break;
    case'weekend':startWeekend();break;
    case'prac':practiceRun(v);keepScroll(render);break;
@@ -2222,6 +2377,12 @@ document.addEventListener('click',e=>{
    case'day':{const n=v==='wk'?Math.max(0,weekendDay()-S.day):+v;if(S.day+n>weekendDay())return;advanceDays(n);save();keepScroll(render);break}
    case'fit':{const[id,k]=v.split('|');if(fitPart(id,k,true)){toast(`Установлен новый узел: ${COMPS.find(c=>c[0]===k)[1]} — ${nm(id)}`);save()}keepScroll(render);break}
    case'prod':{const c=COMPS.find(x=>x[0]===v),pc=prodCost(v);if(S.budget<pc)return;S.budget=+(S.budget-pc).toFixed(2);S.prod.push({k:v,days:prodDays(v)});save();toast(`${c[1]}: готово ${etaText(prodDays(v))}`);keepScroll(render);break}
+   case'snego':{const sf=me()[v];UI.snego={k:v,len:2,offer:staffAsk(sf)};keepScroll(render);break}
+   case'snlen':UI.snego.len=+v;keepScroll(render);break;
+   case'sncancel':UI.snego=null;keepScroll(render);break;
+   case'snsend':{const N=UI.snego,sf=me()[N.k];if(!sf||(sf.negoBlock&&sf.negoBlock>negoKey()))return;
+     if(Math.random()<staffChance(sf,N.offer,N.len)){sf.salary=+N.offer.toFixed(2);sf.contract=1+N.len;UI.snego=null;news(`${sf.name} продлевает контракт до ${year()+sf.contract-1}.`);toast('Контракт продлён')}
+     else{sf.negoBlock=negoKey()+2;toast(`${sf.name} отказался. Вернуться к разговору можно через 2 этапа`)}save();keepScroll(render);break}
    case'nego':{const d=drv(v);UI.nego={id:v,len:2,offer:asking(d)};keepScroll(render);break}
    case'nlen':UI.nego.len=+v;keepScroll(render);break;
    case'ncancel':UI.nego=null;keepScroll(render);break;
@@ -2234,15 +2395,21 @@ document.addEventListener('click',e=>{
    case'scoutup':{const c=SCOUT_COST[S.academy.scout];if(S.budget<c)return;S.budget=+(S.budget-c).toFixed(2);S.academy.scout++;save();toast('Сеть скаутов расширена');keepScroll(render);break}
    case'scout':{if(S.budget<.8||S.academy.mission)return;S.budget=+(S.budget-.8).toFixed(2);S.academy.mission={region:v,days:18};save();toast(`Скауты отправлены: ${v}, вернутся ${etaText(18)}`);keepScroll(render);break}
    case'signj':{const A=S.academy,j=A.prospects.find(x=>x.id===v);if(!j)return;const fee=+Math.max(.3,.3+((j.est[0]+j.est[1])/2-70)*.06).toFixed(1);if(S.budget<fee||A.juniors.length>=ACAD_SLOTS[A.level-1])return;
-     S.budget=+(S.budget-fee).toFixed(2);A.juniors.push(j);A.prospects=A.prospects.filter(x=>x!==j);news(`${j.name} подписан в академию.`);save();toast(`${j.name} в академии`);keepScroll(render);break}
+     S.budget=+(S.budget-fee).toFixed(2);if(j.src)LEAGUES.forEach(([k])=>S.leagues[k]=S.leagues[k].filter(x=>x.id!==j.src));delete j.src;j.team=null;A.juniors.push(j);A.prospects=A.prospects.filter(x=>x!==j);news(`${j.name} подписан в академию.`);save();toast(`${j.name} в академии`);keepScroll(render);break}
    case'release':{if(armed!=='rel'+v){UI.arm='rel'+v;keepScroll(render);return}S.academy.juniors=S.academy.juniors.filter(j=>j.id!==v);save();keepScroll(render);break}
-   case'promote':{const A=S.academy,j=A.juniors.find(x=>x.id===v);if(!j||me().drivers.length>=2||j.pace<74)return;
-     const d=mkDriver(j.name,j.age,Math.floor(j.pace),Math.floor(j.craft),Math.floor(j.tyre));d.salary=+(salaryFor(d.pace)*.6).toFixed(2);d.contract=2;d.team=S.pid;d.pot=j.pot;S.drivers[d.id]=d;me().drivers.push(d.id);ensureParts(d.id);
+   case'focus':{const[id,a]=v.split('|'),j=S.academy.juniors.find(x=>x.id===id);if(j){j.focus=a;save()}keepScroll(render);break}
+   case'jleague':{const[id,k]=v.split('|'),j=S.academy.juniors.find(x=>x.id===id);if(j){j.league=k;save();toast(`${j.name} выступает в ${LEAGUES.find(l=>l[0]===k)[1]}`)}keepScroll(render);break}
+   case'hiref2':{const d=S.leagues.f2.find(x=>x.id===v);if(!d||me().drivers.length>=2)return;const fee=+(1+ovr(d)*.02).toFixed(1);if(S.budget<fee)return;
+     S.leagues.f2=S.leagues.f2.filter(x=>x!==d);const nd=mkDriver(d.name,d.age,Math.floor(d.pace),Math.floor(d.craft),Math.floor(d.tyre));ATTRS.forEach(([a])=>nd[a]=Math.floor(d[a]));nd.team=S.pid;nd.contract=2;nd.salary=+(salaryFor(nd.pace)*.7).toFixed(2);S.drivers[nd.id]=nd;me().drivers.push(nd.id);ensureParts(nd.id);
+     S.budget=+(S.budget-fee).toFixed(2);news(`${nd.name} переходит из Формулы-2 в основной состав.`);save();toast(`${nd.name} в команде`);keepScroll(render);break}
+   case'promote':{const A=S.academy,j=A.juniors.find(x=>x.id===v);if(!j||me().drivers.length>=2||ovr(j)<72)return;
+     const d=mkDriver(j.name,j.age,Math.floor(j.pace),Math.floor(j.craft),Math.floor(j.tyre));ATTRS.forEach(([a])=>d[a]=Math.floor(j[a]));d.salary=+(salaryFor(d.pace)*.6).toFixed(2);d.contract=2;d.team=S.pid;d.pot=j.pot;S.drivers[d.id]=d;me().drivers.push(d.id);ensureParts(d.id);
      A.juniors=A.juniors.filter(x=>x!==j);news(`Дебют: выпускник академии ${d.name} становится боевым пилотом команды.`);save();toast(`${d.name} — в основном составе`);keepScroll(render);break}
    case'hire':{const d=drv(v),fee=+(d.salary*.5).toFixed(2);if(me().drivers.length>=2||S.budget<fee||S.rep<Math.max(0,Math.round((d.pace-74)*3)))return;
      S.budget=+(S.budget-fee).toFixed(2);d.team=S.pid;d.contract=2;me().drivers.push(d.id);ensureParts(d.id);news(`${d.name} подписывает контракт с командой.`);save();toast(`${d.name} в команде`);keepScroll(render);break}
-   case'staff':{const[k,i]=v.split('|');const c=S.market[k][+i],cost=hireCost(k,c);if(S.budget<cost)return;
-     S.budget=+(S.budget-cost).toFixed(2);me()[k]=c;S.market[k].splice(+i,1);news(`${STAFF_ROLES.find(r=>r[0]===k)[1]}: ${c.name} (${c.rating}).`);save();toast('Сотрудник нанят');keepScroll(render);break}
+   case'staff':{const[k,i]=v.split('|');const c=S.market[k][+i],cost=hireCost(k,c);if(S.budget<cost||c.refused)return;
+     if(Math.random()>staffChance(c,c.salary,2)){c.refused=true;save();toast(`${c.name} отказался: ${formText(teamForm())}, репутация ${Math.round(S.rep)}`);keepScroll(render);break}
+     c.contract=2;S.budget=+(S.budget-cost).toFixed(2);me()[k]=c;S.market[k].splice(+i,1);news(`${STAFF_ROLES.find(r=>r[0]===k)[1]}: ${c.name} (${c.rating}).`);save();toast('Сотрудник нанят');keepScroll(render);break}
    case'sign':{if(S.sponsors.length>=3)return;const o=S.offers.splice(+v,1)[0];S.sponsors.push(o);S.budget=+(S.budget+o.sign).toFixed(2);save();toast(`Контракт с «${o.name}» подписан`);keepScroll(render);break}
    case'drop':{if(armed!=='drop'+v){UI.arm='drop'+v;keepScroll(render);return}S.sponsors.splice(+v,1);save();keepScroll(render);break}
   }
