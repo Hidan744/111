@@ -17,8 +17,9 @@ const check = (name, ok, info) => { results.push({ name, ok, info }); console.lo
   page.on('pageerror', e => errors.push(e.message));
   page.on('dialog', d => { errors.push('dialog: ' + d.message()); d.dismiss(); });
   await page.goto(GAME);
-  await page.evaluate(() => localStorage.clear());
-  await page.reload();
+  // заставка и музыка мешают кликам — отключаем их для логических проверок
+  const clean = async () => { await page.evaluate(() => { localStorage.clear(); localStorage.setItem('pitwall_settings_v1', '{"intro":0,"music":0}'); }); await page.reload(); };
+  await clean();
 
   // 1. Пользовательское имя команды экранируется
   await page.click('[data-a=new]');
@@ -26,8 +27,7 @@ const check = (name, ok, info) => { results.push({ name, ok, info }); console.lo
   await page.fill('#tname', '<img src=x onerror=alert(1)>');
   await page.click('[data-a=create]');
   check('имя команды экранируется', await page.evaluate(() => document.querySelectorAll('img').length) === 0);
-  await page.evaluate(() => localStorage.clear());
-  await page.reload();
+  await clean();
   await page.click('[data-a=new]');
   await page.click('[data-a=create]');
   await page.click('[data-a=settings]');
