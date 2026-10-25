@@ -1301,7 +1301,6 @@ function init3D(cv){
   const adc=i=>Math.floor(i/6)%2?0xf2f4f6:ads[Math.floor(i/12)%ads.length];
   const wallM=lam(0xffffff,{vertexColors:true});
   const crowded=(i,o)=>{const a=F[i],x=a.x+a.nx*o,z=a.z+a.nz*o,N=F.length;for(let j=0;j<N;j+=2){const di=Math.min(Math.abs(j-i),N-Math.abs(j-i));if(di<25)continue;const dx=F[j].x-x,dz=F[j].z-z;if(dx*dx+dz*dz<18*18)return true}return false};
-  [17,-17].forEach(o=>{const w=mesh(ribbonGeo(F,o,o,0,1.4,adc,i=>crowded(i,o)),wallM,true);if(q>=2)w.castShadow=true});
   // старт-финиш
   const ck=document.createElement('canvas');ck.width=128;ck.height=32;const cx=ck.getContext('2d');
   for(let i=0;i<16;i++)for(let j=0;j<4;j++){cx.fillStyle=(i+j)%2?'#0b0f14':'#f4f4f4';cx.fillRect(i*8,j*8,8,8)}
@@ -1309,7 +1308,7 @@ function init3D(cv){
   sl.rotation.order='YXZ';sl.rotation.y=Math.atan2(F[0].tx,F[0].tz);sl.rotation.x=-Math.PI/2;sl.position.set(F[0].x,.12,F[0].z);scene.add(sl);
   // стартовая решётка
   const gridM=lam(0xe8eef4);
-  for(let i=0;i<R.cars.length;i++){const s=w3f(F,-(i*.32/R.track.base)-4/F.len,i===0?0:(i%2?2.6:-2.6));const gb=new THREE.Mesh(geo('gridbox',()=>new THREE.PlaneGeometry(3,.4)),gridM);gb.rotation.order='YXZ';gb.rotation.y=Math.atan2(s.tx,s.tz);gb.rotation.x=-Math.PI/2;gb.position.set(s.x,.11,s.z);scene.add(gb)}
+  for(let i=0;i<R.cars.length;i++){const s=w3f(F,-(5+i*8)/F.len,(i+1)%2?-3:3);const gb=new THREE.Mesh(geo('gridbox',()=>new THREE.PlaneGeometry(3,.4)),gridM);gb.rotation.order='YXZ';gb.rotation.y=Math.atan2(s.tx,s.tz);gb.rotation.x=-Math.PI/2;gb.position.set(s.x,.11,s.z);scene.add(gb)}
   // расстояние до трассы
   const near=(x,z,r)=>{for(let i=0;i<F.length;i+=3){const dx=F[i].x-x,dz=F[i].z-z;if(dx*dx+dz*dz<r*r)return true}return false};
   // трибуны и пит-здание
@@ -1353,15 +1352,39 @@ function init3D(cv){
   const sMain=sideFree(1)?1:sideFree(-1)?-1:0;
   if(sMain){const st=grandstand(100,14,fill,seatSets[0]);place(st.g,iMain,sMain,22,100)}
   // пит-здание с боксами на другой стороне
-  const pSide=sMain?-sMain:1;
-  if(standFits(iMain,pSide,21,12,110)){
+  const pSide=sMain?-sMain:1;R._pS=pSide;R._pL=F.len;R._pg=null;
+  const pg0=pitGeo(),fm=m=>1+m/F.len,iB=Math.round((F.len-110)/F.len*N0)%N0;
+  {// полоса пит-лейна: переменное смещение, асфальт и белые линии
+    const strip=(o1,o2,y,mat,boxFree)=>{const pos=[];for(let m=-pg0.len;m<0;m+=3){const m2=Math.min(0,m+3);
+      const A=w3f(F,fm(m),0),B=w3f(F,fm(m2),0),oA=pitOff(m)*pSide,oB=pitOff(m2)*pSide,
+        P=(S0,o)=>[S0.x+(-S0.tz)*o*pSide,y,S0.z+S0.tx*o*pSide];
+      const a1=P(A,oA+o1(m)),a2=P(A,oA+o2(m)),b1=P(B,oB+o1(m2)),b2=P(B,oB+o2(m2));pos.push(...a1,...a2,...b1,...a2,...b2,...b1)}
+      const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.computeVertexNormals();return mesh(g,mat,true)};
+    const wide=m=>m>-pg0.len+PIT.inR&&m<-PIT.outR?5.2:2.6;
+    strip(()=>-2.6,wide,.065,asphalt);
+    strip(()=>-2.75,()=>-2.45,.09,lam(0xeef2f6));
+    strip(m=>wide(m)-.15,wide,.09,lam(0xeef2f6));
+    // линия ограничителя скорости на въезде и выезде
+    [-pg0.len+PIT.inR,-PIT.outR].forEach(m=>{const S0=w3f(F,fm(m),PIT.fast*pSide);const b=new THREE.Mesh(new THREE.PlaneGeometry(5.5,.5),lam(0xf2c230));b.rotation.order='YXZ';b.rotation.y=Math.atan2(S0.tx,S0.tz);b.rotation.x=-Math.PI/2;b.position.set(S0.x,.1,S0.z);scene.add(b)});
+  }
+  // боксы команд: цветная разметка, ворота гаража и механики
+  const crews={};
+  S.teams.forEach(t=>{const bm=pg0.box[t.id],S0=w3f(F,fm(bm),PIT.work*pSide),yaw=Math.atan2(S0.tx,S0.tz),nx=-S0.tz*pSide,nz=S0.tx*pSide;
+    const mk=new THREE.Mesh(new THREE.PlaneGeometry(2.6,5.4),lam(t.color,{transparent:true,opacity:.55}));mk.rotation.order='YXZ';mk.rotation.y=yaw;mk.rotation.x=-Math.PI/2;mk.position.set(S0.x,.08,S0.z);scene.add(mk);
+    const dr=new THREE.Mesh(new THREE.BoxGeometry(6.5,4.2,.3),lam(t.color));dr.rotation.y=yaw+Math.PI/2;dr.position.set(S0.x+nx*2.6,2.1,S0.z+nz*2.6);scene.add(dr);
+    const mat=lam(t.color),men=[],idle=[];
+    for(let j=0;j<8;j++){const mm=new THREE.Mesh(geo('mech',()=>new THREE.BoxGeometry(.5,1.7,.45)),mat);const v=new THREE.Vector3(S0.x+nx*1.8+S0.tx*(-2.6+j*.75),.85,S0.z+nz*1.8+S0.tz*(-2.6+j*.75));mm.position.copy(v);scene.add(mm);men.push(mm);idle.push(v)}
+    // во время стоянки: по механику у каждого колеса, домкраты спереди и сзади, двое у кокпита
+    crews[t.id]={men,idle,st:null,act:[[1.6,1.4],[1.6,-1.4],[-1.6,1.4],[-1.6,-1.4],[3.4,0],[-3.4,0],[0,1.6],[0,-1.6]].map(([a,b])=>[a,b*pSide])}});
+  if(standFits(iB,pSide,22.5,12,110)){
     const pg=new THREE.Group();
     const bld=new THREE.Mesh(new THREE.BoxGeometry(12,9,110),lam(0xeef1f4));bld.position.set(8,4.5,0);pg.add(bld);
     const top2=new THREE.Mesh(new THREE.BoxGeometry(9,3,110),glass);top2.position.set(7,10.5,0);pg.add(top2);
-    S.teams.forEach((t,i)=>{const dz=-50+i*(100/Math.max(1,S.teams.length-1));const dr=new THREE.Mesh(new THREE.BoxGeometry(.3,4.2,7),lam(t.color));dr.position.set(1.9,2.1,dz);pg.add(dr)});
-    const lane=new THREE.Mesh(new THREE.PlaneGeometry(4,110),lam(0x3a3f46));lane.rotation.x=-Math.PI/2;lane.position.set(-1.8,.05,0);pg.add(lane);
-    place(pg,iMain,pSide,21,110);
+    place(pg,iB,pSide,23.6,110);
   }
+  // ограждение с рекламой; на стороне боксов — проёмы на въезде и выезде пит-лейна
+  const pitGap=(i,o)=>{if(Math.sign(o)!==R._pS)return false;const m=F[i].d-F.len,pg=pitGeo();return(m>-pg.len-4&&m<-pg.len+PIT.inR)||m>-PIT.outR-4};
+  [17,-17].forEach(o=>{const w=mesh(ribbonGeo(F,o,o,0,1.4,adc,i=>crowded(i,o)||pitGap(i,o)),wallM,true);if(q>=2)w.castShadow=true});
   // трибуны в поворотах (снаружи поворота, где есть место)
   const peaks=[];for(let i=0;i<N0;i++){const k=F[i].k;if(k>=F[(i+N0-4)%N0].k&&k>=F[(i+4)%N0].k)peaks.push(i)}
   peaks.sort((a,b)=>F[b].k-F[a].k);
@@ -1400,7 +1423,7 @@ function init3D(cv){
   const sc=safetyCar();sc.visible=false;scene.add(sc);
   // ТВ-камеры вдоль трассы
   const tv=[];for(let i=0;i<28;i++){const f=F[Math.floor(i/28*F.length)],s=i%2?1:-1;if(near(f.x+f.nx*s*26,f.z+f.nz*s*26,20))continue;tv.push(new THREE.Vector3(f.x+f.nx*s*26,6+rnd(0,6),f.z+f.nz*s*26))}
-  G={clouds,sunSp,D,SKY,renderer,scene,camera,sun,hemi,skyG,asphalt,rain,cars,sc,tv,F,w:0,h:0,wet:null,dir:new THREE.Vector3(0,0,1),look:new THREE.Vector3(),tvIdx:-1,fov:55,ov:{x:0,z:0,zoom:1,follow:false},path:p};
+  G={clouds,sunSp,D,SKY,renderer,scene,camera,sun,hemi,skyG,asphalt,rain,cars,sc,tv,F,w:0,h:0,wet:null,dir:new THREE.Vector3(0,0,1),look:new THREE.Vector3(),tvIdx:-1,fov:55,ov:{x:0,z:0,zoom:1,follow:false},path:p,crews};
   linearize(scene);hemi.color.convertSRGBToLinear();hemi.groundColor.convertSRGBToLinear();sun.color.convertSRGBToLinear();
   setWeather3D(R.wet[0]);
 }
@@ -1423,7 +1446,7 @@ function carProg3D(c,T){
   const p=carProgress(c,T);
   if(c.out)return{prog:c.parkF||0,out:true};
   if(p.done){const end=c.cum[R.N];return{prog:R.N+(T-end)/(R.track.base*1.6),done:true}}
-  return{prog:p.laps+p.f};
+  return{prog:p.laps+p.f,pit:p.pit};
 }
 function draw3D(dt){
   const cv=G.renderer.domElement,w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
@@ -1436,7 +1459,7 @@ function draw3D(dt){
       if(pr!==G.renderer.getPixelRatio()){G.renderer.setPixelRatio(pr);G.w=0}}}
   if(w!==G.w||h!==G.h){G.w=w;G.h=h;G.renderer.setSize(w,h,false);G.camera.aspect=w/h;G.camera.updateProjectionMatrix()}
   const wetNow=R.wet[Math.min(R.N-1,R.lapDone)];if(wetNow!==G.wet)setWeather3D(wetNow);
-  const len=G.F.len;
+  const len=G.F.len,stopped={};
   // стартовая решётка: до старта машины стоят парами в шахматном порядке через 8 м;
   // после старта — разгон с места (Te отстаёт от T и догоняет) и плавный переход к позициям симуляции
   const T=R.T,TAU=10,u=Math.min(1,T/TAU),bl=R.count>0?1:1-u*u*(3-2*u),Te=T<TAU?T-T*(1-T/TAU)**2:T;
@@ -1450,17 +1473,24 @@ function draw3D(dt){
   run.forEach((x,i)=>{
     const o=G.cars[x.c.did];
     let target=0;
-    if(i>0&&run[i-1].prog-x.prog<5/len*2.2)target=(i%2?2.6:-2.6);
+    if(i>0&&!run[i-1].pit&&run[i-1].prog-x.prog<5/len*2.2)target=(i%2?2.6:-2.6);
     if(x.done)target=-4;
     if(x.grid)o.lane=slotLane(x.c);else if(x.bl>0)o.lane=slotLane(x.c)*x.bl+target*(1-x.bl);
+    else if(x.pit)o.lane=pitOff(x.pit.m,x.pit.bm);
     else o.lane+=(target-o.lane)*Math.min(1,dt*2.5);
     const s=w3(x.prog,o.lane);
-    o.m.g.position.set(s.x,0,s.z);o.m.g.rotation.y=Math.atan2(s.tx,s.tz);o.m.g.visible=true;
+    let yaw=Math.atan2(s.tx,s.tz);
+    if(x.pit&&!x.pit.stop){const sl=(pitOff(x.pit.m+1,x.pit.bm)-pitOff(x.pit.m-1,x.pit.bm))/2;yaw=Math.atan2(s.tx-sl*s.tz,s.tz+sl*s.tx)}
+    o.m.g.position.set(s.x,0,s.z);o.m.g.rotation.y=yaw;o.m.g.visible=true;
+    if(x.pit&&x.pit.stop)stopped[x.c.tid]=s;
     if(o.prev!==null){o.spin+=(x.prog-o.prev)*len/.56;o.m.wheels.forEach(wg=>wg.rotation.x=o.spin)}
     o.prev=x.prog;
     if(o.label){o.label.visible=!(x.c.did===UI.follow&&(UI.cam==='chase'||UI.cam==='cockpit'));const t=x.c.out?'—':String(i+1);if(t!==o.ltxt){o.ltxt=t;o.label.material.map.dispose();o.label.material.map=labelTex(t,team(x.c.tid).color)}}
   });
   list.filter(x=>x.out).forEach(x=>{const o=G.cars[x.c.did];const s=w3(x.prog,11);o.m.g.position.set(s.x,0,s.z);o.m.g.rotation.y=Math.atan2(s.tx,s.tz)+.7;if(o.label)o.label.visible=false});
+  // механики: у гаража в ожидании, вокруг машины во время стоянки
+  if(G.crews)Object.entries(G.crews).forEach(([tid,cr])=>{const st=stopped[tid];if(st!==cr.st){cr.st=st;
+    cr.men.forEach((mm,j)=>{if(st){const a=cr.act[j],sx=-st.tz,sz=st.tx;mm.position.set(st.x+st.tx*a[0]+sx*a[1],.85,st.z+st.tz*a[0]+sz*a[1])}else mm.position.copy(cr.idle[j])})}});
   // метки машин на обзоре
   const over=UI.cam==='over';
   R.cars.forEach(c=>{const o=G.cars[c.did];o.mk.visible=over&&o.m.g.visible;
@@ -1486,7 +1516,7 @@ function draw3D(dt){
       if(r){const d=(tgt.prog-r.prog)*len;if(d<=140)dB=Math.max(dB,d)}}
     const wb=clamp(dB+16,26,115),wa=clamp(dA*.65,26,100),kf=G.chB?Math.min(1,dt*1.2):1;
     G.chB=(G.chB||wb)+(wb-(G.chB||wb))*kf;G.chA=(G.chA||wa)+(wa-(G.chA||wa))*kf;
-    const p=tgt.prog,cp=w3(p-G.chB/len,0),lp=w3(p+G.chA/len,0);
+    const p=tgt.prog,cl=tgt.pit?G.cars[tgt.c.did].lane*.85:0,cp=w3(p-G.chB/len,cl),lp=w3(p+G.chA/len,cl);
     cam.position.set(cp.x,8+G.chB*.26,cp.z);G.look.set(lp.x,.5,lp.z);fov=62}
   else if(UI.cam==='cockpit'){cam.position.copy(pos).addScaledVector(dir,-.25).setY(1.32);G.look.copy(pos).addScaledVector(dir,30).setY(1);fov=70}
   else if(UI.cam==='heli'){cam.position.copy(pos).addScaledVector(dir,-55).setY(62);G.look.copy(pos).addScaledVector(dir,25)}
@@ -1747,7 +1777,8 @@ function simLap(k){
     if(c.pitReq&&k<R.N){
       const crew=t.crew.rating;let st=2.1+(100-crew)*.03;let slow=false;
       if(Math.random()<.05+(100-crew)*.0015){st+=rnd(2,6);slow=true}
-      lt+=(sc?R.track.pit*.45:R.track.pit)+S.rules.pitAdd+st;
+      const pl=(sc?R.track.pit*.45:R.track.pit)+S.rules.pitAdd+st;lt+=pl;
+      (c.pitAt=c.pitAt||{})[k]={extra:pl,st};
       c.tyre=c.pitReq;c.health=100;c.stops++;c.stintLap=k;c.used.push(c.tyre);c.pitReq=null;pitted.add(c);
       if(c.me||slow)feed(`${nm(c.did)} в боксах: ${TYRES[c.tyre].n.toLowerCase()}, стоянка ${st.toFixed(1).replace('.',',')} с${slow?' — проблема с колесом':''}.`,c.me);
     }else c.pitReq=null;
@@ -1777,6 +1808,24 @@ function simLap(k){
   if(k<R.N&&R.wet[k]!==wet)feed(R.wet[k]?'Начинается дождь!':'Дождь прекращается, трасса подсыхает.');
   R.lapDone=k;
 }
+// пит-лейн (в метрах до линии старта): въезд, разгон по ограничителю, бокс своей команды, выезд к линии
+const PIT={len:420,inR:70,outR:50,fast:19.5,work:22.5,edge:7};
+function pitGeo(){
+  const L=R._pL||R.track.km*1000,side=R._pS||1;
+  if(R._pg&&R._pg.L===L&&R._pg.side===side)return R._pg;
+  const len=Math.min(PIT.len,L*.14),n=S.teams.length,box={};
+  // боксы команд вдоль здания: от −165 до −55 м до линии
+  S.teams.forEach((t,i)=>box[t.id]=(-165+(i+.5)*110/n));
+  return R._pg={L,side,len,a:len/L,box};
+}
+const sstep=x=>{x=clamp(x,0,1);return x*x*(3-2*x)};
+// боковое смещение машины в пит-лейне на расстоянии m от линии (m<0)
+function pitOff(m,boxM){
+  const g=pitGeo(),ent=-g.len;
+  let o=m<ent+PIT.inR?PIT.edge+(PIT.fast-PIT.edge)*sstep((m-ent)/PIT.inR):m>-PIT.outR?PIT.fast+(PIT.edge-PIT.fast)*sstep((m+PIT.outR)/PIT.outR):PIT.fast;
+  if(boxM!=null)o+=(PIT.work-PIT.fast)*sstep(1-Math.abs(m-boxM)/14);
+  return o*g.side;
+}
 function carProgress(c,T){
   const cum=c.cum;let i=Math.min(c.pi||0,cum.length-1);
   while(i>0&&cum[i]>T)i--;
@@ -1784,6 +1833,13 @@ function carProgress(c,T){
   if(i>=cum.length-1){return{laps:i,f:0,done:i>=R.N}}
   const a=cum[i],b=cum[i+1];
   if(!isFinite(b))return{laps:i,f:0,out:true};
+  const ps=c.pitAt&&c.pitAt[i+1];
+  if(ps&&T>a){// круг с пит-стопом: до въезда — темп гонки, в пит-лейне — ограничитель и стоянка
+    const g=pitGeo(),lt=b-a,t=T-a,norm=Math.max(lt*.5,lt-ps.extra),t1=(1-g.a)*norm;
+    if(t>=t1){const drive=Math.max(1,lt-t1-ps.st),bm=g.box[c.tid]!=null?g.box[c.tid]:-110,bu=(bm+g.len)/g.len,tIn=drive*bu,u=t-t1;
+      let s2,stop=false;if(u<tIn)s2=bu*u/tIn;else if(u<tIn+ps.st){s2=bu;stop=true}else s2=bu+(1-bu)*Math.min(1,(u-tIn-ps.st)/Math.max(.1,drive-tIn));
+      const m=-g.len*(1-s2);return{laps:i,f:clamp(1-g.a+g.a*s2,-.5,1),done:false,pit:{m,bm,stop}}}
+  }
   return{laps:i,f:clamp((T-a)/(b-a),-.5,1),done:false};
 }
 function liveOrder(){
@@ -2773,6 +2829,6 @@ render();
 if(SET.intro)showIntro();
 window.__pitwall={get S(){return S},get R(){return R},get G(){return G}};
 // внутренние функции для автотестов — только при открытии с ?debug
-if(/[?&]debug\b/.test(location.search))window.__dbg={lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,get R(){return R},get W(){return W}};
+if(/[?&]debug\b/.test(location.search))window.__dbg={lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,get R(){return R},get W(){return W}};
 })();
 </script>
