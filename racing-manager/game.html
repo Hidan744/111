@@ -124,7 +124,7 @@ canvas.track{width:100%;display:block;background:var(--panel);border-radius:10px
 .viewport{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#06090c;aspect-ratio:16/10;max-width:100%;flex:none}
 .viewport>canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .viewport>canvas.mini{inset:8px 8px auto auto;width:30%;height:auto;aspect-ratio:1.6;background:rgba(11,15,20,.62);border-radius:8px;border:1px solid rgba(232,238,244,.12)}
-.hud{position:absolute;left:8px;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none}
+.hud{position:absolute;left:8px;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none;z-index:3}
 .hud>*{pointer-events:auto}
 .zoomctl{position:absolute;right:8px;bottom:8px}
 .spdtop{flex:none}
@@ -232,11 +232,11 @@ tr[data-a]{cursor:pointer}
 .rb-wx .wxi svg{width:28px;height:28px;display:block}
 .rbar .spdtop{flex:none;width:auto}.rbar .spdtop button{min-width:38px}.rbar .spdtop button.on{background:var(--act);color:var(--act-ink)}
 .rb-lap{font-family:var(--display);font-size:20px;letter-spacing:.04em;padding:4px 10px;background:#0b1117;border-radius:8px;white-space:nowrap}
-.rtop{position:absolute;left:50%;top:8px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(14,20,27,.88);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:5px 16px;font-family:var(--display);font-size:13px;letter-spacing:.08em;z-index:3;white-space:nowrap;pointer-events:none}
-.rtoast{position:absolute;left:50%;top:46px;transform:translateX(-50%);z-index:4;display:flex;gap:10px;align-items:center;background:rgba(20,29,39,.95);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--act);border-radius:10px;padding:8px 14px;font-size:13px;max-width:70%;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:tin .25s ease-out}
+.rtop{position:absolute;right:calc(30% + 16px);top:8px;display:flex;gap:8px;align-items:center;background:rgba(14,20,27,.88);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:5px 16px;font-family:var(--display);font-size:13px;letter-spacing:.08em;z-index:3;white-space:nowrap;pointer-events:none}
+.rtoast{position:absolute;right:calc(30% + 16px);top:46px;z-index:4;display:flex;gap:10px;align-items:center;background:rgba(20,29,39,.95);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--act);border-radius:10px;padding:8px 14px;font-size:13px;max-width:70%;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:tin .25s ease-out}
 .rtoast.fast{border-left-color:#b65cff}.rtoast.fast .tl{color:#c88bff;font-family:var(--display);letter-spacing:.06em}
 .rtoast.mine{border-left-color:var(--team)}
-@keyframes tin{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes tin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .tower{background:rgba(14,20,27,.9);border:1px solid rgba(255,255,255,.07);border-radius:8px;width:330px;font-family:var(--body);font-size:13px}
 .tower .th{background:transparent;color:var(--muted);font-family:var(--mono);font-size:11px;padding:6px 8px;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
 .tower .th button{font:inherit;color:var(--act);border:1px solid rgba(47,209,191,.4);border-radius:5px;padding:2px 6px;min-height:0;background:none}
@@ -264,7 +264,7 @@ tr[data-a]{cursor:pointer}
 .btn.pitbtn.armed{background:#e0263a;color:#fff}
 @media (max-width:959px){.stage{flex:none}}
 @media (max-width:600px){.rtop{display:none!important}.tower{width:236px;font-size:11px}.tower .tr{grid-template-columns:18px 3px minmax(32px,1fr) 14px 28px 42px 16px;height:17px;gap:4px;padding:0 4px}.tower .tr .ps{height:14px;font-size:9px}.tower .tr .tb{height:12px}.tower .tr .g{font-size:9.5px}
-  .rtop{font-size:10px;padding:3px 10px;top:auto;bottom:44px}.rtoast{top:auto;bottom:72px;max-width:88%;font-size:11.5px}.rb-lap{font-size:16px}.rbar{gap:6px}}
+  .rtop{font-size:10px;padding:3px 10px;top:auto;bottom:44px}.rtoast{top:auto;bottom:72px;right:8px;left:8px;max-width:none;font-size:11.5px}.rb-lap{font-size:16px}.rbar{gap:6px}}
 @media (min-width:960px){.racebody .stage{height:100%}.racebody .stage .viewport{flex:1}}
 .intro{position:fixed;inset:0;z-index:60;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;background:radial-gradient(120% 80% at 50% 42%,#17222e 0%,#07090c 68%);transition:opacity .55s}
 .intro.bye{opacity:0;pointer-events:none}
@@ -1659,11 +1659,13 @@ function init3D(cv){
   const rain=new THREE.Points(rg,new THREE.PointsMaterial({color:0xc4d8ea,size:.07,transparent:true,opacity:.6}));scene.add(rain);
   // машины
   const cars={};
-  const dotTex={};
+  const dotTex={},sprayTex=q>=1?glowTex():null;
   R.cars.forEach(c=>{const t=team(c.tid),m=carMesh(t.color,q>=1,accentOf(t.id),[90,140,190,260][q]);scene.add(m.g);const o={m,lane:0,prev:null,spin:0};
     if(c.me){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:labelTex('–',t.color),depthTest:false}));sp.scale.set(3.1,1.95,1);sp.position.y=3;m.g.add(sp);o.label=sp;o.ltxt='–'}
     if(!dotTex[t.color])dotTex[t.color]=dotTexture(t.color);
     const mk=new THREE.Sprite(new THREE.SpriteMaterial({map:dotTex[t.color],depthTest:false}));mk.visible=false;mk.renderOrder=5;scene.add(mk);o.mk=mk;
+    // водяная пыль за машиной в дождь (только средняя графика и выше)
+    if(q>=1){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:sprayTex,transparent:true,opacity:.5,depthWrite:false,color:0xdfe8f0}));sp.scale.set(4.2,2,1);sp.visible=false;scene.add(sp);o.spray=sp}
     cars[c.did]=o});
   const sc=safetyCar();sc.visible=false;scene.add(sc);
   // ТВ-камеры вдоль трассы
@@ -1733,9 +1735,15 @@ function draw3D(dt){
     if(o.label){o.label.visible=!(x.c.did===UI.follow&&(UI.cam==='chase'||UI.cam==='cockpit'));const t=x.c.out?'—':String(i+1);if(t!==o.ltxt){o.ltxt=t;o.label.material.map.dispose();o.label.material.map=labelTex(t,team(x.c.tid).color)}}
   });
   list.filter(x=>x.out).forEach(x=>{const o=G.cars[x.c.did];const s=w3(x.prog,11);o.m.g.position.set(s.x,0,s.z);o.m.g.rotation.y=Math.atan2(s.tx,s.tz)+.7;if(o.label)o.label.visible=false});
+  // водяная пыль: за машиной на трассе, если мокро и машина едет
+  const wetNow2=G.wet,tm=performance.now()/1000;
+  run.forEach(x=>{const o=G.cars[x.c.did];if(!o.spray)return;const on=wetNow2&&!x.grid&&!(x.pit&&x.pit.stop)&&!x.done&&R.count<=0;o.spray.visible=on;
+    if(on){const g=o.m.g,yaw=g.rotation.y;o.spray.position.set(g.position.x-Math.sin(yaw)*3.2,.9,g.position.z-Math.cos(yaw)*3.2);const f=.85+Math.sin(tm*9+o.lane)*.15;o.spray.scale.set(4.2*f,2*f,1);o.spray.material.opacity=.32+.12*Math.sin(tm*7+o.lane)}});
   // механики: у гаража в ожидании, вокруг машины во время стоянки
   if(G.crews)Object.entries(G.crews).forEach(([tid,cr])=>{const st=stopped[tid];if(st!==cr.st){cr.st=st;
-    cr.men.forEach((mm,j)=>{if(st){const a=cr.act[j],sx=-st.tz,sz=st.tx;mm.position.set(st.x+st.tx*a[0]+sx*a[1],.85,st.z+st.tz*a[0]+sz*a[1])}else mm.position.copy(cr.idle[j])})}});
+    cr.men.forEach((mm,j)=>{if(st){const a=cr.act[j],sx=-st.tz,sz=st.tx;mm.position.set(st.x+st.tx*a[0]+sx*a[1],.85,st.z+st.tz*a[0]+sz*a[1])}else mm.position.copy(cr.idle[j])})}
+    // во время стоянки механики работают: приседают у колёс
+    if(cr.st)cr.men.forEach((mm,j)=>{mm.scale.y=.78+.22*Math.abs(Math.sin(tm*10+j*1.3));mm.position.y=.85*mm.scale.y});else if(cr.men[0].scale.y!==1)cr.men.forEach(mm=>{mm.scale.y=1;mm.position.y=.85})});
   // метки машин на обзоре
   const over=UI.cam==='over';
   R.cars.forEach(c=>{const o=G.cars[c.did];o.mk.visible=over&&o.m.g.visible;
@@ -1748,7 +1756,8 @@ function draw3D(dt){
   const tp=tgt.out?w3(tgt.prog,11):w3(tgt.prog,G.cars[tgt.c.did].lane);
   const pos=new THREE.Vector3(tp.x,0,tp.z),d=new THREE.Vector3(tp.tx,0,tp.tz);
   G.dir.lerp(d,Math.min(1,dt*(UI.cam==='cockpit'?14:5))).normalize();
-  const cam=G.camera,dir=G.dir;let fov=55;
+  const cam=G.camera,dir=G.dir;let fov=55;const pc=cam.position.clone(),pl=G.look.clone();
+  if(UI.cam!==G.lastCam){G.blend=G.lastCam?1:0;G.lastCam=UI.cam}
   const fi=run.indexOf(tgt);
   if(R.count>0&&UI.cam!=='over'){// перед стартом: кран над решёткой, видна вся стартовая решётка
     const k=clamp((6.6-R.count)/6.6,0,1),gl=(6+(run.length-1)*8)/len,a=w3(28/len-k*10/len,-12),b=w3(-gl*.55,0);
@@ -1773,6 +1782,8 @@ function draw3D(dt){
     let bi=0,bd=1e9;G.tv.forEach((v,i)=>{const dd=v.distanceTo(pos);if(dd<bd){bd=dd;bi=i}});
     if(G.tv.length){cam.position.copy(G.tv[bi]);G.look.copy(pos).setY(1)}fov=clamp(2*Math.atan(9/Math.max(10,bd))*180/Math.PI,12,50);
   }
+  // плавный переход между камерами (около полусекунды)
+  if(G.blend>0&&UI.cam!=='tv'){G.blend=Math.max(0,G.blend-dt*2);const k=Math.min(1,dt*6+(1-G.blend)*.15);cam.position.lerpVectors(pc,cam.position,k);G.look.lerpVectors(pl,G.look,k);fov=G.fov+(fov-G.fov)*k}
   if(Math.abs(fov-G.fov)>.05){G.fov=fov;cam.fov=fov;cam.updateProjectionMatrix()}
   cam.lookAt(G.look);
   if(G.sun.castShadow){G.sun.position.copy(pos).add(new THREE.Vector3(120,220,80));G.sun.target.position.copy(pos)}
@@ -1884,7 +1895,8 @@ function startWeekend(){
   me().drivers.forEach(id=>{W.setups[id]={wing:5,susp:5,gear:5,brake:5};W.fbs[id]=null});
   UI.pd=me().drivers[0];
   W.ideal=idealSetup(tr,W.weather[0]);
-  S.teams.forEach(t=>{W.aiSq[t.id]=clamp(rnd(48,80)+(t.td.rating-70)*.4+(SET.diff-1)*8,25,98)});
+  // настройка соперников зависит от их гоночных инженеров и техдиректора (как у игрока — от инженеров и практики)
+  S.teams.forEach(t=>{W.aiSq[t.id]=clamp(70+(srat(t,'eng')-70)*.6+(t.td.rating-70)*.25+rnd(-8,8)+(SET.diff-1)*8,25,98)});
   me().drivers.forEach(id=>{W.risk[id]=false;W.start[id]=W.weather[0]?'I':'M'});
   enterStep();
 }
@@ -1986,7 +1998,8 @@ function aiMode(c,gapAhead,k,wet){
 }
 function aiDecide(c,k,wet,sc){
   if((c.me&&!c.auto)||c.pitReq)return;
-  if(c.me&&srat(me(),'strat')>=70&&!sc){const o=raceOptions(c),b=Object.keys(o).find(x=>o[x].delta<.05);if(b&&b!=='stay')c.pitReq=b;return}
+  // одно правило для всех команд: сильный стратег (70+) считает варианты оптимизатором, слабый — заезжает по порогу износа
+  if(srat(team(c.tid),'strat')>=70&&!sc&&!(wet&&c.tyre!=='I')&&!(!wet&&c.tyre==='I')){const o=raceOptions(c),b=Object.keys(o).find(x=>o[x].delta<.05);if(b&&b!=='stay')c.pitReq=b;return}
   const left=(R.N-k+1)*R.ls;
   if(wet&&c.tyre!=='I'){if(Math.random()<.65)c.pitReq='I';return}
   if(!wet&&c.tyre==='I'){if(Math.random()<.65)c.pitReq=left>14?'H':left>8?'M':'S';return}
@@ -2346,7 +2359,8 @@ function endSeason(){
   if(div>0){money(-div,'owners','Дивиденды владельцам');news(`Владельцы команды забрали ${fm(div,1)} — деньги сверх годового резерва (${fm(keep,1)}).`)}
   let verdict;
   if(pos<=S.goal){verdict={ok:true,t:`Цель выполнена: ${pos}-е место при задаче ${S.goal}-е. Совет доволен.`};S.rep=clamp(S.rep+6,10,100);S.warnings=0}
-  else if(pos<=S.goal+1){verdict={ok:null,t:`Почти: ${pos}-е место при задаче ${S.goal}-е. Совет ждёт прогресса.`}}
+  // у команд с целью 1–2-е место «почти» — до двух мест ниже цели: борьба за титул не должна стоить работы за 2-е место
+  else if(pos<=S.goal+(S.goal<=2?2:1)){verdict={ok:null,t:`Почти: ${pos}-е место при задаче ${S.goal}-е. Совет ждёт прогресса.`}}
   else{S.warnings++;verdict={ok:false,t:`Провал: ${pos}-е место при задаче ${S.goal}-е. Предупреждение ${S.warnings} из 2.`}}
   const champ=driverStandings()[0];
   S.history.push({season:year(),pos,champ:champ.name,ctid:st[0].id,cname:st[0].name});
@@ -2540,6 +2554,8 @@ function attention(){
   if(S.projects.length<maxProjects()){const b=bestUpgrade();if(b&&devAv>=b.c)add(1,`Свободно слотов разработки: ${maxProjects()-S.projects.length}`,`Выгоднее всего сейчас: доработка «${b.n}» — +${b.g.toFixed(1).replace('.',',')} за ${fm(b.c,1)} (${b.why}).`,'goto','car|sec-upg','К разработке')}
   COMPS.forEach(([k,n])=>{const sp=teamSpec(t,k);if(sp>1&&(S.stockNew||{})[k]>0&&t.drivers.some(id=>(ensureParts(id)[k].sp||1)<sp))add(1,`Готовы узлы новой версии: ${n}, спец. ${sp}`,'На машинах стоит старая версия.','goto','car|sec-parts','К узлам')});
   if(windowOpen()&&seatsNext()>0)add(1,`Место на ${year()+1} свободно: ${seatsNext()}`,'Открыт рынок пилотов — договоритесь о контракте на следующий сезон.','goto','staff|','К рынку');
+  const sx=STAFF_ROLES.filter(([k])=>t[k]&&!t[k].acting&&t[k].contract<=1).map(([,n])=>n);if(sx.length&&S.round>NR()*.5)add(S.round>NR()*.8?2:1,`Контракты персонала истекают: ${sx.join(', ')}`,'Без продления их заменят временные сотрудники с рейтингом 48 — разработка и пит-стопы станут хуже.','goto','staff|','К персоналу');
+  const acting=STAFF_ROLES.filter(([k])=>t[k]&&t[k].acting).map(([,n])=>n);if(acting.length)add(2,`Временно исполняют обязанности: ${acting.join(', ')}`,'Наймите постоянных сотрудников на рынке персонала.','goto','staff|','К персоналу');
   const ex=t.drivers.map(drv).filter(d=>d.contract<=1&&!d.retiring);if(ex.length&&S.round>NR()*.5)add(1,`Контракт истекает: ${ex.map(d=>d.name).join(', ')}`,'Продлите или найдите замену до конца сезона.','goto','staff|','Переговоры');
   return L.sort((a,b)=>b.lvl-a.lvl);
 }
@@ -3082,7 +3098,7 @@ function updateRaceUi(){
     el.innerHTML=`<span style="flex-basis:100%">${pl}</span><span>${TYRES[c.tyre].n}: <b>${pct}%</b>, ${Math.max(0,R.lapDone-c.stintLap)} кр. на комплекте, износ ${w.toFixed(1).replace('.',',')}%/кр. (${c.mode==='push'?'атака':c.mode==='save'?'бережём':'норма'})</span><span>${l30>=left?`<span style="color:var(--good)">до финиша хватит (на финише ~${end}%)</span>`:`до 30% — <b>${l30}</b> кр. (к ${R.lapDone+l30+1}-му), полный износ через ${l0} кр.`}</span>`});
   // табло трансляции: позиция, пилот, шины и их износ, отставание от лидера или интервал до машины впереди
   const tw=$('#tower');
-  if(tw){const vp=tw.parentElement,sm=vp.clientWidth<600,rh=sm?17:24,n=UI.towerMin?0:Math.max(3,Math.floor((vp.clientHeight-(sm?60:70))/rh));
+  if(tw){const vp=tw.parentElement,sm=vp.clientWidth<600,rh=sm?17:24,n=UI.towerMin?0:Math.max(3,Math.floor((vp.clientHeight-(sm?60:70)-(sm?70:92))/rh));
     let rows=ord.map((x,i)=>({x,i}));if(rows.length>n){const top=rows.slice(0,n),mine=rows.filter(r=>r.x.c.me&&r.i>=n);rows=[...top.slice(0,n-mine.length),...mine]}
     const fl=R.cars.filter(c=>c.best<1e8).sort((a,b)=>a.best-b.best)[0];
     const intv=(x,i)=>{if(i===0)return'Лидер';const pv=ord[i-1];if(!pv||pv.c.out)return x.gap;const L=Math.min(x.p.laps,pv.p.laps,R.N);if(pv.p.laps-x.p.laps>=1&&x.c.cum[L]-pv.c.cum[L]>R.track.base)return'+1 кр.';return fgap(Math.max(0,x.c.cum[L]-pv.c.cum[L]))};
@@ -3296,8 +3312,15 @@ function botPolicy(pol){
   while(S.sponsors.length<3&&S.offers.length){const i=S.offers.reduce((bi,o,j,a)=>o.per>a[bi].per?j:bi,0);const o=S.offers.splice(i,1)[0];S.sponsors.push(o);money(o.sign,'sponsor','Бонус за подписание: '+o.name)}
   // составы: продлить пилотов, закрыть свободное место лучшим доступным
   t.drivers.forEach(id=>{const d=drv(id);if(d.contract<=1&&!d.retiring&&S.round>NR()*.7){d.salary=asking(d);d.contract=3}});
+  STAFF_ROLES.forEach(([k])=>{const sf=t[k];if(sf&&!sf.acting&&sf.contract<=1&&S.round>NR()*.7){sf.salary=staffAsk(sf);sf.contract=3}});
+  STAFF_ROLES.forEach(([k])=>{if(!t[k]||!t[k].acting||!S.market||!S.market[k])return;const c=[...S.market[k]].sort((a,b)=>b.rating-a.rating).find(c=>hireCost(k,c)<S.budget-10);if(c){money(-hireCost(k,c),'staff','Найм: '+c.name);c.contract=2;t[k]=c;S.market[k]=S.market[k].filter(x=>x!==c)}});
   while(t.drivers.length<2){const fa=Object.values(S.drivers).filter(d=>!d.team&&!d.retired).sort((a,b)=>b.pace-a.pace)[0];if(!fa)break;fa.team=S.pid;fa.contract=2;t.drivers.push(fa.id);ensureParts(fa.id)}
   if(pol==='save')return;
+  // зеркало ИИ: та же сумма и та же раскладка, что у соперников, но из настоящего бюджета игрока
+  if(pol==='mirror'){const m=Math.min(aiDevBudget(t)/NR(),Math.max(0,S.budget-mandPerRace()*2),capLeft()),nx=S.round>NR()*.4?.7:.3;if(m<=0)return;
+    const ff=Math.min(S.devFund,m*nx),fb=m-ff;S.devFund=+(S.devFund-ff).toFixed(2);money(-fb,'dev','Разработка (зеркало ИИ)');S.spent=+(S.spent+fb).toFixed(2);
+    PARTS.forEach(([k])=>{if(k==='engine'&&t.engineSup)return;t.next[k]+=m*nx/4*devEff(t,k)});
+    const part=pick(['aero','engine','chassis','aero','engine','chassis','rel'].filter(k=>!(k==='engine'&&(t.engineSup||S.rules.freeze))));t.car[part]=clamp(+(t.car[part]+m*(1-nx)*BAL.aiPtsPerM*(.7+t.td.rating/200)*facMul(t,part)/(1+Math.max(0,t.car[part]-70)/40)).toFixed(1),0,100);return}
   const reserve=pol==='risky'?2:10;
   // одна характеристика: все проекты только в аэродинамику
   if(pol==='aero'){if(S.projects.length<maxProjects()&&!S.projects.some(p=>p.part==='aero')){const u=S.budget>30?UPG[1]:UPG[0],c=upgCost('aero',u);if(S.budget-c>reserve&&c<=capLeft()){money(-c,'dev','Доработка');S.spent=+(S.spent+c).toFixed(2);S.projects.push({part:'aero',gain:+(u.g*(.7+t.td.rating/200)*partBoost(t,'aero')).toFixed(1),days:u.d})}}
@@ -3320,13 +3343,14 @@ function batchCareer(o){
       const sea={dnf:0,starts:0,pos:[],stops:{},tyres:{},grid:[]};
       for(let r=0;r<NR();r++){
         botPolicy(o.policy);
-        startWeekend();while(stepName()!=='quali')nextStep();runQuali();
+        startWeekend();me().drivers.forEach(id=>{const st={};Object.keys(W.ideal).forEach(k=>st[k]=clamp(W.ideal[k]+ri(-1,1),1,9));W.setups[id]=st});while(stepName()!=='quali')nextStep();runQuali();
         if(W.seed==null)W.seed=Math.floor(Math.random()*2147483647);
         const rng=mulberry32(W.seed),mr=Math.random;Math.random=rng;try{startRace0()}finally{Math.random=mr}R.rng=rng;
         while(R.lapDone<R.N)withRng(()=>simLap(R.lapDone+1));
         R.T=Math.max(...R.cars.filter(c=>!c.out).map(c=>c.cum[R.N]||0))+1;R.done=true;
         sea.why=sea.why||{};R.cars.filter(c=>c.out).forEach(c=>{const k=(c.me?'me:':'ai:')+(c.outWhy||'?');sea.why[k]=(sea.why[k]||0)+1});R.cars.filter(c=>c.me).forEach(c=>{sea.starts++;if(c.out)sea.dnf++;sea.stops[c.stops]=(sea.stops[c.stops]||0)+1;c.used.forEach(t=>sea.tyres[t]=(sea.tyres[t]||0)+1)});
         sea.allDnf=(sea.allDnf||0)+R.cars.filter(c=>c.out).length;sea.allStarts=(sea.allStarts||0)+R.cars.length;
+        if(o.diag){const tr=R.track;out.diag=out.diag||[];R.cars.forEach(c=>{const t=team(c.tid),d=drv(c.did);out.diag.push({me:c.me,tid:c.tid,perf:+((100-perf(t,tr))*.06).toFixed(3),pace:+((100-d.pace)*.035).toFixed(3),sq:+(-(c.sq-60)*.012).toFixed(3),spec:+(-specBonus(S.parts[c.did])).toFixed(3),stops:c.stops,pen:c.pen,time:c.out?null:+(c.cum[R.N]/R.N).toFixed(3),out:c.out})})}
         finishRace();W=null;R=null;
         S.lastRace.rows.filter(x=>x.me).forEach(x=>sea.pos.push(x.out?99:x.pos));
       }
@@ -3340,6 +3364,6 @@ function batchCareer(o){
   finally{render=r0;save=s0;Object.assign(SET,set0);}
   return out;
 }
-if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
+if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,aiDevBudget,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
 })();
 </script>
