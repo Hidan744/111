@@ -306,7 +306,7 @@ function leaguesSeasonEnd(){
   if(champs.length)news('Чемпионы младших формул — '+champs.join('; ')+'.');
   // повышения: лучшие F4 → F3, F3 → F2, F2 → рынок Ф-1
   const move=(from,to,n)=>{sorted(from).filter(d=>!A.juniors.includes(d)).slice(0,n).forEach(d=>{S.leagues[from]=S.leagues[from].filter(x=>x!==d);S.leagues[to].push(d)})};
-  sorted('f2').filter(d=>!A.juniors.includes(d)&&ovr(d)>=70).slice(0,3).forEach(d=>{S.leagues.f2=S.leagues.f2.filter(x=>x!==d);const nd=mkDriver(d.name,d.age,Math.floor(d.pace),Math.floor(d.craft),Math.floor(d.tyre));ATTRS.forEach(([a])=>nd[a]=Math.floor(d[a]));nd.pot=d.pot;S.drivers[nd.id]=nd;news(`${d.name} поднимается из Формулы-2 на рынок Ф-1.`)});
+  sorted('f2').filter(d=>!A.juniors.includes(d)&&ovr(d)>=70).slice(0,3).forEach(d=>{S.leagues.f2=S.leagues.f2.filter(x=>x!==d);const nd=mkDriver(d.name,d.age,Math.floor(d.pace),Math.floor(d.craft),Math.floor(d.tyre));ATTRS.forEach(([a])=>nd[a]=Math.floor(d[a]));nd.pot=Math.max(d.pot||0,Math.floor(d.pace));nd.skOff=null;ensurePot(nd);S.drivers[nd.id]=nd;news(`${d.name} поднимается из Формулы-2 на рынок Ф-1.`)});
   move('f3','f2',3);move('f4','f3',3);
   LEAGUES.forEach(([k,,,ages])=>{S.leagues[k].forEach(d=>{d.age++;d.lpts=0;d.lwins=0;d.exp=Math.min(99,(d.exp||40)+4)});S.leagues[k]=S.leagues[k].filter(d=>d.age<=ages[1]+2);while(S.leagues[k].length<20)S.leagues[k].push(mkLeagueDriver(k))});
   A.juniors.forEach(j=>{j.lpts=0;j.lwins=0});

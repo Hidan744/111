@@ -169,6 +169,14 @@ function feed(t,mine){R.feed.unshift({t,mine,l:R.lapDone});R.feed=R.feed.slice(0
 const nm=id=>drv(id).name.split(' ').slice(-1)[0];
 
 // режим пилота-соперника: атака в борьбе и на финише, бережёт шины и узлы при износе
+// темп развития пилота за гонку: тренер команды × возраст (0 — не растёт)
+function growF(d,t){if(!t)return 0;const c=clamp((srat(t,'coach')-40)/45,.15,1.3),a=d.age<=21?1.3:d.age<=25?1:d.age<=28?.6:d.age<=31?.3:0;return c*a}
+function trainDrivers(){
+  S.teams.forEach(t=>t.drivers.forEach(id=>{const d=ensureAttrs(drv(id)),f=growF(d,t);if(f<=0)return;const r=BAL.growRate*f;
+    const room=d.pot-d.pace;if(room>0){const before=Math.floor(d.pace);d.pace=Math.min(d.pot,d.pace+room*r);if(t.id===S.pid&&Math.floor(d.pace)>before)news(`${d.name} прогрессирует: скорость ${Math.floor(d.pace)} — работа тренера.`)}
+    GROW_ATTRS.forEach(k=>{if(d[k]==null)return;const cap=clamp(d.pot+((d.skOff||{})[k]||0),40,99),gap=cap-d[k];if(gap>0)d[k]=Math.min(cap,d[k]+gap*r*(k==='craft'||k==='cons'||k==='defend'?.8:1))});
+  }));
+}
 function aiMode(c,gapAhead,k,wet){
   if(c.me)return;
   const P=S.parts[c.did],left=R.N-k+1,comp=P?Math.min(P.ice.h,P.ers.h,P.gb.h):100;
@@ -215,7 +223,7 @@ function simLap(k){
     COMPS.forEach(([pk])=>{P[pk].h=Math.max(0,P[pk].h-compWear(pk,d,t,c.mode,R.track)*(1-SPEC[pk][1]*((P[pk].sp||1)-1))/R.N*(sc?.4:1));if(FATAL.has(pk)&&P[pk].h<=0&&!broke)broke=pk});
     if(c.me)COMPS.forEach(([pk,pn])=>{if(FATAL.has(pk)&&P[pk].h<20&&!(c.warn||{})[pk]){c.warn=c.warn||{};c.warn[pk]=1;feed(`Радио ${nm(c.did)}: «${pn} на пределе (${Math.round(P[pk].h)}%) — переходи в режим «Беречь»!»`,true)}});
     if(broke){c.out=true;c.outLap=k;c.parkF=(k-1)+clamp((R.T-c.cum[k-1])/(R.track.base+5),.05,.95);c.cum.push(Infinity);c.outWhy=broke;feed(`${nm(c.did)} сходит: ${({ice:'выработан двигатель',ers:'отказ ERS',gb:'отказ коробки передач'})[broke]}.`,c.me);continue}
-    if(!sc&&Math.random()<(c.mode==='push'?.012:c.mode==='save'?.002:.004)*(1.3-d.craft/100)*(wet?2.2:1)*R.ls*(1.1-(d.exp||50)/1000)*(c.me?1.25-srat(me(),'coach')/250:1)){const loss=rnd(1.5,5);lt+=loss;
+    if(!sc&&Math.random()<(c.mode==='push'?.012:c.mode==='save'?.002:.004)*(1.3-d.craft/100)*(wet?2.2:1)*R.ls*(1.1-(d.exp||50)/1000)*(1.25-srat(team(c.tid),'coach')/250)){const loss=rnd(1.5,5);lt+=loss;
       // ошибка на пределе бьёт по аэродинамике; в дождь на атаке — риск аварии
       if(c.mode==='push'){P.fw.h=Math.max(0,P.fw.h-rnd(15,35));P.floor.h=Math.max(0,P.floor.h-rnd(4,14))}
       if(c.mode==='push'&&loss>(wet?4:4.6)&&(wet||Math.random()<.3)){c.out=true;c.outLap=k;c.parkF=(k-1)+.5;c.cum.push(Infinity);c.outWhy='crash';P.fw.h=0;P.floor.h=Math.max(0,P.floor.h-40);feed(`${nm(c.did)} разбивает машину на мокрой трассе!`,c.me);continue}
@@ -501,8 +509,8 @@ function finishRace(){
   S.rep=clamp(S.rep+clamp((exp_pos-best)*.08,-1,.4)+(best<=3?.8:0),10,100);
   tasksAfterRace(rows,W.grid||[]);
   if(W.hype){const ok=best<=10;S.rep=clamp(S.rep+(ok?2.5:-3),10,100);news(ok?'Громкие заявления на медиа-дне подтвердились — репутация растёт.':'Обещания на медиа-дне не сбылись — пресса критикует команду.')}
-  // тренер пилотов: молодые растут
-  t.drivers.forEach(id=>{const d=drv(id);if(d.age<=29&&d.pace<97&&Math.random()<srat(t,'coach')/900){d.pace++;news(`${d.name} прогрессирует: скорость ${d.pace} — работа тренера.`)}else if(Math.random()<srat(t,'coach')/1500&&d.craft<97){d.craft++}});
+  // тренировки во всех командах: рост к потенциалу зависит от тренера и возраста
+  trainDrivers();
   // проекты
 
   // развитие соперников

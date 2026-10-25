@@ -281,6 +281,11 @@ function upgCards(){
      ${why?`<span class="muted" style="font-size:12px">${why}</span>`:''}</div>`}).join('')}
    <p class="muted" style="font-size:12px">Как в Ф-1: новую версию сначала разрабатывают (занимает слот разработки, входит в потолок расходов), потом узлы новой версии нужно произвести на заводе и поставить на машину. Узлы со склада, сделанные раньше, остаются старой версии. Замена тоже расходует лимит узлов на сезон. В новом сезоне версии начинаются заново.</p></div>`;
 }
+// потенциал (оценка: чем лучше тренер, тем точнее) и темп роста при нынешнем тренере
+function potEst(d,t){ensureAttrs(d);const w=t&&t.id===S.pid?Math.max(1,Math.round((100-srat(t,'coach'))/9)):5,lo=Math.max(Math.floor(d.pace),Math.round(d.pot-w/2));return[lo,Math.min(99,lo+w)]}
+function potLine(d,t){const[lo,hi]=potEst(d,t),room=d.pot-d.pace,f=t?growF(d,t):0;
+  const tempo=room<.5?'достиг потолка':f<=0?'возраст: рост закончился':f>=.8?'быстрый':f>=.4?'средний':'медленный — нужен тренер сильнее';
+  return`<div class="row between wrapflex" style="font-size:12px"><span>Потенциал: <b class="mono">${lo===hi?lo:lo+'–'+hi}</b></span><span class="muted">Рост: ${tempo}${t&&room>=.5&&f>0?` · тренер ${srat(t,'coach')}`:''}</span></div>`}
 function attrGrid(d,floor){
   return`<div class="agrid">${ATTRS.map(([k,n])=>{const v=Math.floor(d[k]||0);return`<div class="stat" style="grid-template-columns:1fr 60px 26px"><span class="ell" style="font-size:12px">${n}</span><div class="bar"><i style="width:${v}%;background:${v>=90?'var(--good)':v>=75?'var(--accent)':'var(--muted)'}"></i></div><span class="mono">${v}</span></div>`}).join('')}</div>`;
 }
@@ -289,6 +294,7 @@ function drvCard(d,mine){
   const cp=!mine?'':d.contract<=1?`<span class="pill bad">последний сезон</span>`:`<span class="pill">контракт до ${endYear(d)}</span>`;
   return`<div class="card"><div class="row between"><div class="row">${ovrPill(ensureAttrs(d))}<div><h3>${esc(d.name)}</h3><span class="muted" style="font-size:12px">${d.age} лет · ${d.pts} очк. · побед ${d.wins} · подиумов ${d.pods||0}${(d.cWins||0)>d.wins||(d.cPods||0)>(d.pods||0)?` · за карьеру ${d.cWins||0}/${d.cPods||0}`:''}</span></div></div><div class="row wrapflex" style="justify-content:flex-end">${d.retiring?'<span class="pill acc">уходит из спорта</span>':''}${cp}</div></div>
    ${attrGrid(ensureAttrs(d))}
+   ${potLine(d,mine?me():team(d.team))}
    <div class="row between wrapflex"><span class="muted">Зарплата: <span class="mono">${fm(d.salary,2)}</span>/сезон</span>
    ${mine?`<div class="row wrapflex">${d.retiring&&!d.persuaded?`<button class="btn small" data-a="talk" data-v="${d.id}">Поговорить</button>`:''}${!d.retiring?`<button class="btn small" data-a="nego" data-v="${d.id}">Переговоры</button>`:''}<button class="btn small danger" data-a="fire" data-v="${d.id}">${fire?'Точно уволить?':'Уволить'}</button></div>`:''}</div>
    ${mine&&d.retiring?`<p style="font-size:13px;color:var(--accent)">Хочет завершить карьеру: ${esc(d.retireWhy||'решил уйти')}.${d.persuaded?' Решение окончательное.':''}</p>`:''}
@@ -341,7 +347,7 @@ function marketCard(){
    ${signed.map(d=>`<p style="font-size:13px;color:var(--good)">${esc(d.name)} — предварительный контракт, переходит в команду в ${year()+1} (${fm(d.next.salary,2)}/сезон).</p>`).join('')}
    ${!open?`<p class="muted" style="font-size:13px">Как в Ф-1: со второй половины сезона (сейчас ${fdate(S.day)}) можно договариваться с пилотами других команд, у которых истекает контракт, и со свободными пилотами о переходе на следующий сезон.</p>`:
    seats<=0?`<p class="muted" style="font-size:13px">Оба места на ${year()+1} заняты: у пилотов действуют контракты. Место освободится, если пилот уходит или его контракт истекает и вы его не продлите.</p>`:
-   cands.map(d=>{const t=team(d.team),P=UI.pre&&UI.pre.id===d.id?UI.pre:null,blk=d.negoBlock&&d.negoBlock>negoKey();return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><div class="row between">${ovrPill(d)}<div class="grow"><b>${esc(d.name)}</b> <span class="muted">${d.age} л.</span><br><span class="muted" style="font-size:12px">${t?`«${esc(t.name)}», контракт истекает`:'свободный пилот'} · ${d.pts} очк. · просит ~${fm(preAsk(d),2)}</span></div>
+   cands.map(d=>{const t=team(d.team),P=UI.pre&&UI.pre.id===d.id?UI.pre:null,blk=d.negoBlock&&d.negoBlock>negoKey();return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px"><div class="row between">${ovrPill(d)}<div class="grow"><b>${esc(d.name)}</b> <span class="muted">${d.age} л.</span><br><span class="muted" style="font-size:12px">${t?`«${esc(t.name)}», контракт истекает`:'свободный пилот'} · потенциал ~${potEst(d,null).join('–')} · ${d.pts} очк. · просит ~${fm(preAsk(d),2)}</span></div>
      ${d.next?'<span class="pill">договорился с другой командой</span>':`<button class="btn small" data-a="pre" data-v="${d.id}" ${blk?'disabled':''}>${blk?'не готов':'Переговоры'}</button>`}</div>
      ${P?(()=>{const pc=Math.round(preChance(d,P.offer,P.len)*100),ask=preAsk(d);return`<div class="seg">${[1,2,3].map(l=>`<button data-a="plen" data-v="${l}" class="${P.len===l?'on':''}">до ${year()+l}</button>`).join('')}</div>
        <input type="range" id="pre-offer" min="${(ask*.6).toFixed(2)}" max="${(ask*1.6).toFixed(2)}" step="0.05" value="${P.offer}" aria-label="Зарплата в предложении">

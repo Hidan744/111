@@ -26,6 +26,8 @@ const BAL={
   dividendShare:.6,         // доля денег сверх годового резерва, которую забирают владельцы
   crashCost:.4,
   // развитие соперников: бюджет разработки за сезон = фонд FOM + доля «силы бюджета» команды
+  // развитие пилотов: доля оставшегося запаса до потенциала, которую пилот закрывает за гонку при тренере 85 и возрасте 22–25
+  growRate:.012,
   aiDevShare:.55,aiDevMin:10,aiDevMax:50,aiPtsPerM:.48,
 };
 /* ---------- финансы: журнал операций ---------- */
@@ -98,13 +100,23 @@ function mkDriver(name,age,pace,craft,tyre){const id='d'+(uid++);return ensureAt
 // умения пилота и их вес в общем рейтинге
 const ATTRS=[['pace','Скорость',.22],['craft','Гоночное мастерство',.14],['tyre','Работа с шинами',.11],['overtake','Обгон',.1],['defend','Защита',.08],['cons','Стабильность',.1],['wet','Дождь',.08],['start','Старт',.06],['fb','Обратная связь',.05],['exp','Опыт',.06]];
 const REAL_TRAITS={'Ферстаппен':{wet:98,overtake:96,start:92,cons:94},'Хэмилтон':{wet:96,defend:93,exp:99},'Алонсо':{defend:97,exp:99,start:96,overtake:93},'Норрис':{cons:86,fb:90},'Леклер':{overtake:90,defend:84},'Пиастри':{cons:92,defend:88},'Расселл':{wet:90,fb:89},'Сайнс':{fb:93,cons:90},'Боттас':{start:80,fb:90},'Хюлькенберг':{fb:90,exp:95},'Перес':{tyre:92,start:85},'Антонелли':{wet:90}};
+// потенциал пилота: потолок скорости; у молодых запас больше, у ветеранов почти нет.
+// Отступы навыков от скорости запоминаются: каждый навык растёт к своему потолку (потенциал + отступ)
+function ensurePot(d){
+  if(d.pot!=null&&d.skOff)return d;
+  if(d.pot==null){const a=d.age,room=a<=20?ri(5,13):a<=23?ri(3,9):a<=26?ri(1,5):a<=29?ri(0,2):0;d.pot=clamp(Math.round(d.pace+room*(d.pace>=92?.4:1)),Math.round(d.pace),99)}
+  d.skOff={};GROW_ATTRS.forEach(k=>{if(d[k]!=null)d.skOff[k]=Math.round(d[k]-d.pace)});
+  return d;
+}
 function ensureAttrs(d){
-  if(d.overtake!=null)return d;
+  if(d.overtake!=null){if(d.pot==null||!d.skOff)ensurePot(d);return d}
   const b=(d.pace+d.craft)/2,r=v=>clamp(Math.round(v),25,99);
   d.overtake=r(b+gauss()*4);d.defend=r(b+gauss()*4);d.cons=r(d.craft+gauss()*3);d.wet=r(b+gauss()*5);d.start=r(b+gauss()*5);d.fb=r(d.craft+gauss()*5);d.exp=r(30+(d.age-17)*4.5);
   const tr=REAL_TRAITS[String(d.name).split(' ').slice(-1)[0]];if(tr)Object.assign(d,tr);
+  ensurePot(d);
   return d;
 }
+const GROW_ATTRS=['craft','tyre','overtake','defend','cons','wet','start','fb'];
 const ovr=d=>Math.round(ATTRS.reduce((a,[k,,w])=>a+(d[k]||0)*w,0));
 const ovrPill=d=>{const o=ovr(d);return`<span class="ovr ${o>=88?'a':o>=80?'b':o>=70?'c':'d'}">${o}</span>`};
 function rookie(){return mkDriver(pick(FIRST)+' '+pick(LAST),ri(18,22),ri(72,82),ri(68,78),ri(70,80))}

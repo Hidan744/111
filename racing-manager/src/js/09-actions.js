@@ -133,7 +133,7 @@ document.addEventListener('click',e=>{
      S.leagues.f2=S.leagues.f2.filter(x=>x!==d);const nd=mkDriver(d.name,d.age,Math.floor(d.pace),Math.floor(d.craft),Math.floor(d.tyre));ATTRS.forEach(([a])=>nd[a]=Math.floor(d[a]));nd.team=S.pid;nd.contract=2;nd.salary=+(salaryFor(nd.pace)*.7).toFixed(2);S.drivers[nd.id]=nd;me().drivers.push(nd.id);ensureParts(nd.id);
      money(-fee,'transfer','Пилот из Формулы-2: '+nd.name);news(`${nd.name} переходит из Формулы-2 в основной состав.`);save();toast(`${nd.name} в команде`);keepScroll(render);break}
    case'promote':{const A=S.academy,j=A.juniors.find(x=>x.id===v);if(!j||me().drivers.length>=2||ovr(j)<72)return;
-     const d=mkDriver(j.name,j.age,Math.floor(j.pace),Math.floor(j.craft),Math.floor(j.tyre));ATTRS.forEach(([a])=>d[a]=Math.floor(j[a]));d.salary=+(salaryFor(d.pace)*.6).toFixed(2);d.contract=2;d.team=S.pid;d.pot=j.pot;S.drivers[d.id]=d;me().drivers.push(d.id);ensureParts(d.id);
+     const d=mkDriver(j.name,j.age,Math.floor(j.pace),Math.floor(j.craft),Math.floor(j.tyre));ATTRS.forEach(([a])=>d[a]=Math.floor(j[a]));d.salary=+(salaryFor(d.pace)*.6).toFixed(2);d.contract=2;d.team=S.pid;d.pot=Math.max(j.pot,Math.floor(j.pace));d.skOff=null;ensurePot(d);S.drivers[d.id]=d;me().drivers.push(d.id);ensureParts(d.id);
      A.juniors=A.juniors.filter(x=>x!==j);news(`Дебют: выпускник академии ${d.name} становится боевым пилотом команды.`);save();toast(`${d.name} — в основном составе`);keepScroll(render);break}
    case'hire':{const d=drv(v),fee=+(d.salary*.5).toFixed(2);if(me().drivers.length>=2||S.budget<fee||S.rep<Math.max(0,Math.round((d.pace-74)*3)))return;
      money(-fee,'transfer','Подписание: '+d.name);d.team=S.pid;d.contract=2;me().drivers.push(d.id);ensureParts(d.id);news(`${d.name} подписывает контракт с командой.`);save();toast(`${d.name} в команде`);keepScroll(render);break}
@@ -201,6 +201,7 @@ function batchCareer(o){
       }
       const st=teamStandings(),cars=S.teams.map(t=>carOverall(t)).sort((a,b)=>b-a);
       sea.cpos=st.findIndex(t=>t.id===S.pid)+1;sea.car=+carOverall(me()).toFixed(1);sea.carBest=+cars[0].toFixed(1);sea.carMed=+cars[Math.floor(cars.length/2)].toFixed(1);
+      {const ps=S.teams.flatMap(t=>t.drivers.map(id=>drv(id).pace)).sort((a,b)=>b-a);sea.paceAvg=+(ps.reduce((a,b)=>a+b,0)/ps.length).toFixed(1);sea.paceTop5=+(ps.slice(0,5).reduce((a,b)=>a+b,0)/5).toFixed(1);sea.paceMax=+ps[0].toFixed(1)}
       sea.budgetEnd=S.budget;const F=finState();sea.cats={...F.cats};sea.fac=Object.values(S.fac).reduce((a,v)=>a+v,0);
       endSeason();sea.afterSeason=S.budget;sea.warnings=S.warnings;out.seasons.push(sea);
       if(UI.season&&UI.season.gameover){out.stopped=S.budget<-20?'bankrupt':'fired';break}
@@ -209,5 +210,5 @@ function batchCareer(o){
   finally{render=r0;save=s0;Object.assign(SET,set0);}
   return out;
 }
-if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,aiDevBudget,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
+if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,aiDevBudget,growF,trainDrivers,ensurePot,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
 })();
