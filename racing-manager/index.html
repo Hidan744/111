@@ -932,6 +932,35 @@ function mkOffer(){
   return{name:pick(SPONSORS),per:+(rnd(.35,.8)*(.5+rep/100)*cm).toFixed(2),goal:g,bonus:+(rnd(...GOALS[g].b)*1.7).toFixed(2),sign:+rnd(.5,2.5).toFixed(1)};
 }
 
+
+/* ---------- создание своей команды ---------- */
+// инвестор: деньги, стартовая репутация и ожидания совета
+const OWN_INV=[
+  {n:'Частный энтузиаст',b:0,rep:22,goal:0,h:'Скромно, но без давления: совет ждёт только роста.'},
+  {n:'Инвестиционный фонд',b:12,rep:28,goal:1,h:'Больше денег, но фонд ждёт результата уже в первом сезоне.'},
+  {n:'Автопроизводитель',b:26,rep:36,goal:3,h:'Большой бюджет и имя, высокие ожидания: место в середине таблицы.'},
+];
+// ключевой персонал: уровни найма (рейтинг, разовый бонус за подписание, млн)
+const OWN_STAFF=[['td','Технический директор'],['crew','Шеф механиков'],['strat','Стратег']];
+const OWN_TIER=[['Начинающий',56,0],['Опытный',68,1.5],['Звезда',78,4]];
+const OWN_PTS=12,OWN_MAX=8;
+// кандидаты в пилоты: свободные агенты из состава и молодые пилоты
+function ownPool(RS){
+  const key=(UI.real?1:0)+'-'+UI.year0;if(UI.ownPool&&UI.ownPoolKey===key)return UI.ownPool;
+  const nT=RS.teams.length,fa=RS.drivers.slice(nT*2).map((d,i)=>({src:'fa',i,spec:d})).filter(x=>x.spec[2]<=84);
+  const gen=[];for(let i=0;i<6;i++){const vet=i<2;gen.push({src:'gen',spec:[pick(FIRST)+' '+pick(LAST),vet?ri(30,34):ri(18,23),vet?ri(77,81):ri(72,79),vet?ri(80,86):ri(66,76),vet?ri(78,84):ri(68,78)]})}
+  UI.ownPoolKey=key;UI.ownPool=[...fa,...gen].map(x=>({...x,ovr:Math.round(x.spec[2]*.5+x.spec[3]*.3+x.spec[4]*.2),sal:salaryFor(x.spec[2])})).sort((a,b)=>b.ovr-a.ovr);
+  UI.ownDrv=[UI.ownPool.length-1,UI.ownPool.length-2];return UI.ownPool;
+}
+const ownCar=()=>UI.ownCar||(UI.ownCar={aero:0,chassis:0,rel:0});
+const ownStaff=()=>UI.ownSt||(UI.ownSt={td:0,crew:0,strat:0});
+// итог стартового бюджета: мотор, инвестор, подписание персонала и пилотов
+function ownBudget(RS){
+  const sup=RS.teams.find(t=>t[0]===(UI.ownEng||RS.teams[0][0]))||RS.teams[0],eng=sup[4][1]-3,pool=ownPool(RS);
+  const base=Math.round(34-(eng-75)*.8),inv=OWN_INV[UI.ownInv||0].b,staff=OWN_STAFF.reduce((a,[k])=>a+OWN_TIER[ownStaff()[k]][2],0),
+    drv=(UI.ownDrv||[]).reduce((a,i)=>a+(pool[i]?+(pool[i].sal*.3).toFixed(2):0),0);
+  return{base,inv,staff,drv:+drv.toFixed(2),total:+(base+inv-staff-drv).toFixed(2),eng};
+}
 function newGame(ti,customName){
   uid=1000;
   const RS=rosterFor(UI.real,UI.year0),nT=RS.teams.length;
@@ -946,12 +975,16 @@ function newGame(ti,customName){
   if(UI.own){
     // своя команда: новый участник чемпионата
     const sup=teams.find(t=>t.id===UI.ownEng)||teams[0],eng=sup.car.engine-3,nm0=(UI.teamName||'').trim()||'Новая команда';
-    const fa=dl.slice(nT*2).filter(d=>d.pace<=82).sort(()=>Math.random()-.5);while(fa.length<2){const r=rookie();drivers[r.id]=r;fa.push(r)}
+    // выбранные пилоты; остальные кандидаты остаются на рынке
+    const pool=ownPool(RS),pick2=(UI.ownDrv||[]).slice(0,2),fa=[];
+    pool.forEach((x,j)=>{let d=x.src==='fa'?dl[nT*2+x.i]:null;if(!d){d=mkDriver(...x.spec);drivers[d.id]=d}if(pick2.includes(j))fa[pick2.indexOf(j)]=d});
+    for(let j=0;j<2;j++)if(!fa[j]){const r=rookie();drivers[r.id]=r;fa[j]=r}
+    const inv=OWN_INV[UI.ownInv||0],oc=ownCar(),ost=ownStaff(),ob=ownBudget(RS);
     p={id:'own',name:nm0.slice(0,24),short:((UI.ownShort||'').trim()||nm0.replace(/[^А-ЯЁA-Zа-яёa-z]/g,'').slice(0,3)).toUpperCase().slice(0,3)||'НОВ',color:UI.ownColor||OWN_COLORS[0],
-       car:{aero:70,engine:eng,chassis:70,rel:72},budget:24,rep:22,drivers:[fa[0].id,fa[1].id],pts:0,engineFrom:sup.name,engineSup:sup.id};
-    STAFF_ROLES.forEach(([k])=>{p[k]=mkStaff(k,ri(52,62));p[k].contract=ri(2,3)});
+       car:{aero:66+oc.aero,engine:eng,chassis:66+oc.chassis,rel:68+oc.rel},budget:24+inv.b/2,rep:inv.rep,drivers:[fa[0].id,fa[1].id],pts:0,engineFrom:sup.name,engineSup:sup.id};
+    STAFF_ROLES.forEach(([k])=>{const os=OWN_STAFF.find(x=>x[0]===k);p[k]=mkStaff(k,os?OWN_TIER[ost[k]][1]+ri(-2,2):ri(52,62));p[k].contract=ri(2,3)});
     fa.slice(0,2).forEach(d=>{d.team='own';d.contract=2});
-    teams.push(p);budget=Math.round(34-(eng-75)*.8);goal=teams.length;
+    teams.push(p);budget=ob.total;goal=teams.length-inv.goal;
   }else{
     p=teams[ti];
     if(customName&&customName.trim()){p.name=customName.trim().slice(0,24);p.short=p.name.replace(/[^А-ЯЁA-Zа-яёa-z]/g,'').slice(0,3).toUpperCase()||p.short}
@@ -2258,6 +2291,26 @@ function vTitle(){
    <div class="stripes"></div>
   </div>`;
 }
+function ownSetup(RS){
+  const pool=ownPool(RS),sel=UI.ownDrv||[],oc=ownCar(),left=OWN_PTS-oc.aero-oc.chassis-oc.rel,ost=ownStaff(),ob=ownBudget(RS),inv=UI.ownInv||0;
+  return`<div class="card"><h3>Инвестор</h3><div class="stack">${OWN_INV.map((o,i)=>`<button class="btn ${inv===i?'primary':''}" style="justify-content:space-between;text-align:left" data-a="oinv" data-v="${i}"><span><b>${o.n}</b><br><span style="font-size:12px;opacity:.8">${o.h}</span></span><span class="mono">+${o.b} млн</span></button>`).join('')}</div></div>
+  <div class="card"><div class="row between"><h3>Пилоты</h3><span class="pill ${sel.length===2?'good':'bad'}">выбрано ${sel.length}/2</span></div>
+   ${pool.map((x,i)=>{const on=sel.includes(i),[n,age,pace,craft,tyre]=x.spec;return`<button class="btn ${on?'primary':''}" style="justify-content:space-between;text-align:left" data-a="odrv" data-v="${i}"><span><b>${esc(n)}</b> <span style="opacity:.8">${age} л.</span><br><span class="mono" style="font-size:12px;opacity:.85">рейтинг ${x.ovr} · СКР ${pace} · МАС ${craft} · ШИН ${tyre}</span></span><span class="mono" style="font-size:12px;text-align:right">${fm(x.sal,2)}/сезон<br>подписание ${fm(+(x.sal*.3).toFixed(2),2)}</span></button>`}).join('')}
+   <p class="muted" style="font-size:12px">Свободные пилоты и молодые таланты. Сильный пилот дороже: зарплата идёт из бюджета каждый этап.</p></div>
+  <div class="card"><div class="row between"><h3>Концепция болида</h3><span class="pill ${left?'acc':'good'}">очков: ${left}</span></div>
+   ${[['aero','Аэродинамика',66],['chassis','Шасси',66],['rel','Надёжность',68]].map(([k,n,b])=>`<div class="row between" style="gap:8px"><span style="width:110px">${n}</span><div class="bar grow"><i style="width:${b+oc[k]}%"></i></div><span class="mono" style="width:28px;text-align:right">${b+oc[k]}</span><div class="seg" style="width:auto"><button data-a="ocar" data-v="${k}|-1" ${oc[k]<=0?'disabled':''}>−</button><button data-a="ocar" data-v="${k}|1" ${left<=0||oc[k]>=OWN_MAX?'disabled':''}>+</button></div></div>`).join('')}
+   <div class="row between"><span style="width:110px">Двигатель</span><span class="muted" style="font-size:12px">${ob.eng} — от поставщика</span></div>
+   <p class="muted" style="font-size:12px">Распределите ${OWN_PTS} очков (не больше ${OWN_MAX} в одну часть): быстрая, но хрупкая машина или надёжная, но медленная.</p></div>
+  <div class="card"><h3>Ключевой персонал</h3>${OWN_STAFF.map(([k,n])=>`<div class="stack" style="gap:4px;border-top:1px solid var(--line);padding-top:8px"><b>${n}</b><div class="seg">${OWN_TIER.map(([tn,r,c],i)=>`<button data-a="ostaff" data-v="${k}|${i}" class="${ost[k]===i?'on':''}">${tn} ${r}${c?` · ${String(c).replace('.',',')} млн`:''}</button>`).join('')}</div></div>`).join('')}
+   <p class="muted" style="font-size:12px">Техдиректор — темп разработки и слоты; шеф механиков — пит-стопы; стратег — точность прогнозов. Остальной персонал — начинающий, его можно нанять позже.</p></div>
+  <div class="card"><h3>Стартовый бюджет</h3><div class="kv">
+   <div><span class="eyebrow">База (мотор)</span><b>${fm(ob.base,1)}</b></div><div><span class="eyebrow">Инвестор</span><b style="color:var(--good)">+${fm(ob.inv,1)}</b></div>
+   <div><span class="eyebrow">Персонал</span><b style="color:var(--bad)">−${fm(ob.staff,1)}</b></div><div><span class="eyebrow">Пилоты</span><b style="color:var(--bad)">−${fm(ob.drv,2)}</b></div></div>
+   <div class="row between" style="border-top:1px solid var(--line);padding-top:8px"><b>Итого</b><b class="money" style="font-size:20px">${fm(ob.total,1)}</b></div>
+   ${ob.total<8?`<p style="color:var(--bad);font-size:13px">Мало денег на старт: нужно хотя бы 8 млн на зарплаты и узлы.</p>`:''}
+   <p class="muted" style="font-size:12px">Цель совета в первом сезоне: ${OWN_INV[inv].goal?`${S0TeamsN(RS)-OWN_INV[inv].goal}-е место или выше`:'не быть последними'}.</p></div>`;
+}
+const S0TeamsN=RS=>RS.teams.length+1;
 function vNew(){
   const RS=rosterFor(UI.real,UI.year0),nT=RS.teams.length,sel=Math.min(UI.pickTeam,nT-1);UI.pickTeam=sel;
   const seg=(a,cur,opts)=>`<div class="seg">${opts.map(([v,n])=>`<button data-a="${a}" data-v="${v}" class="${String(cur)===String(v)?'on':''}">${n}</button>`).join('')}</div>`;
@@ -2273,14 +2326,16 @@ function vNew(){
     <label class="stack"><span class="eyebrow">Сокращение (3 буквы)</span><input type="text" id="tshort" maxlength="3" placeholder="ПУР" value="${esc(UI.ownShort||'')}"></label>
     <span class="eyebrow">Цвет</span><div class="row wrapflex">${OWN_COLORS.map(c=>`<button data-a="ocolor" data-v="${c}" aria-label="Цвет" style="width:34px;height:34px;border-radius:8px;background:${c};${(UI.ownColor||OWN_COLORS[0])===c?'box-shadow:0 0 0 3px var(--fg)':''}"></button>`).join('')}</div>
     <span class="eyebrow">Двигатель</span><div class="stack">${[...RS.teams].sort((a,b)=>b[4][1]-a[4][1]).slice(0,5).map(t=>{const eng=t[4][1]-3,b=Math.round(34-(eng-75)*.8);return`<button class="btn ${(UI.ownEng||RS.teams[0][0])===t[0]?'primary':''}" style="justify-content:space-between" data-a="oeng" data-v="${t[0]}"><span>Как у «${t[1]}» · мощность ${eng}</span><span class="mono">бюджет ${b} млн</span></button>`}).join('')}</div>
-    <p class="muted" style="font-size:12px">Сильный мотор дороже: стартовый бюджет меньше. Пилоты — из свободных агентов.</p></div>`:''}
+    <p class="muted" style="font-size:12px">Сильный мотор дороже: стартовый бюджет меньше.</p></div>
+   ${ownSetup(RS)}`:''}
    ${UI.own?'':'<p class="muted">Чем ниже команда в списке, тем слабее болид и скромнее бюджет, но и ожидания совета ниже.</p>'}
    ${UI.own?'':`<div class="teampick">${RS.teams.map((t,i)=>{const dd=RS.drivers.slice(i*2,i*2+2).map(d=>d[0].split(' ').slice(-1)[0]).join(', ');const ov=Math.round((t[4][0]+t[4][1]+t[4][2])/3);
      return`<button data-a="pick" data-v="${i}" class="${i===sel?'on':''}"><span class="chip" style="background:${t[3]};width:14px;height:34px"></span>
        <span class="grow"><b>${t[1]}</b> <span class="muted">${dd}</span><br><span class="muted mono" style="font-size:12px">Болид ${ov} · бюджет ${Math.round(t[5]*.5+10)} млн · цель: ${Math.min(nT-1,i+2)}-е</span></span>
        ${i<2?'<span class="pill bad">высокие ожидания</span>':i>nT-3?'<span class="pill acc">аутсайдер</span>':''}</button>`}).join('')}</div>
    <label class="stack"><span class="eyebrow">Своё название команды (необязательно)</span><input type="text" id="tname" maxlength="24" placeholder="${RS.teams[sel][1]}" value="${esc(UI.teamName)}"></label>`}
-   <button class="btn primary block" data-a="create">${UI.own?'Основать команду':'Подписать контракт'}</button>
+   ${UI.own&&((UI.ownDrv||[]).length<2||ownBudget(RS).total<8)?`<p style="color:var(--bad);font-size:13px">${(UI.ownDrv||[]).length<2?'Выберите двух пилотов.':'Не хватает денег на старт — выберите другого инвестора, мотор, пилотов или персонал подешевле.'}</p>`:''}
+   <button class="btn primary block" data-a="create" ${UI.own&&((UI.ownDrv||[]).length<2||ownBudget(RS).total<8)?'disabled':''}>${UI.own?'Основать команду':'Подписать контракт'}</button>
    <button class="btn block" data-a="home">Назад</button>
   </div></div>`;
 }
@@ -2842,6 +2897,10 @@ document.addEventListener('click',e=>{
    case'ownmode':UI.own=v==='1';keepScroll(render);break;
    case'ocolor':UI.ownColor=v;keepScroll(render);break;
    case'oeng':UI.ownEng=v;keepScroll(render);break;
+   case'oinv':UI.ownInv=+v;keepScroll(render);break;
+   case'odrv':{const i=+v,sel=UI.ownDrv||[];UI.ownDrv=sel.includes(i)?sel.filter(x=>x!==i):[...sel,i].slice(-2);keepScroll(render);break}
+   case'ocar':{const[k,dv]=v.split('|'),oc=ownCar(),left=OWN_PTS-oc.aero-oc.chassis-oc.rel;if(+dv>0&&(left<=0||oc[k]>=OWN_MAX))return;oc[k]=clamp(oc[k]+(+dv),0,OWN_MAX);keepScroll(render);break}
+   case'ostaff':{const[k,i]=v.split('|');ownStaff()[k]=+i;keepScroll(render);break}
    case'create':newGame(UI.pickTeam,UI.teamName);UI.screen='hub';UI.tab='hq';render();break;
    case'restart':wipe();S=null;UI.screen='new';render();break;
    case'tab':UI.tab=v;render();$('#sc').scrollTop=0;break;
