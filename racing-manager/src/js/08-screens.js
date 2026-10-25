@@ -282,6 +282,18 @@ function upgCards(){
    <p class="muted" style="font-size:12px">Как в Ф-1: новую версию сначала разрабатывают (занимает слот разработки, входит в потолок расходов), потом узлы новой версии нужно произвести на заводе и поставить на машину. Узлы со склада, сделанные раньше, остаются старой версии. Замена тоже расходует лимит узлов на сезон. В новом сезоне версии начинаются заново.</p></div>`;
 }
 // потенциал (оценка: чем лучше тренер, тем точнее) и темп роста при нынешнем тренере
+// тактика перед гонкой: стратег ведёт всё или делит зоны ответственности с игроком
+function tacOf(id){W.tac=W.tac||{};if(!W.tac[id])W.tac[id]={...TAC_DEF,...((S.tacPref||{})[id]||{})};return W.tac[id]}
+function tacCard(){
+  const sr=srat(me(),'strat');
+  return`<div class="card"><div class="row between"><h3>Тактика на гонку</h3><span class="pill">стратег ${sr}</span></div>
+   <p class="muted" style="font-size:12px">${sr>=70?'Стратег сильный: плановые заезды считает оптимизатором по износу, погоде и потерям на пит-стопе.':'Стратег слабый (меньше 70): зовёт в боксы по порогу износа, без расчёта вариантов.'} На дождь реагирует ${sr>=85?'быстро':sr>=65?'со средней задержкой':'с опозданием'}. Ваши команды в гонке всегда важнее: заказанный вами пит-стоп стратег не отменяет.</p>
+   ${me().drivers.map(id=>{const T=tacOf(id),all=TAC_AREAS.every(([k])=>T[k]);return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px">
+     <label class="row" style="gap:8px;cursor:pointer"><input type="checkbox" data-a="tacall" data-v="${id}" ${all?'checked':''}><b>${esc(drv(id).name)}: стратег ведёт всю гонку</b></label>
+     ${all?'':TAC_AREAS.map(([k,n,h])=>`<div class="row between wrapflex" style="gap:8px"><div class="grow" style="min-width:0"><span style="font-size:13px">${n}</span><br><span class="muted" style="font-size:11px">${h}</span></div><div class="seg" style="width:auto"><button data-a="tac" data-v="${id}|${k}|1" class="${T[k]?'on':''}">Стратег</button><button data-a="tac" data-v="${id}|${k}|0" class="${T[k]?'':'on'}">Я</button></div></div>`).join('')}
+   </div>`}).join('')}
+  </div>`;
+}
 function potEst(d,t){ensureAttrs(d);const w=t&&t.id===S.pid?Math.max(1,Math.round((100-srat(t,'coach'))/9)):5,lo=Math.max(Math.floor(d.pace),Math.round(d.pot-w/2));return[lo,Math.min(99,lo+w)]}
 function potLine(d,t){const[lo,hi]=potEst(d,t),room=d.pot-d.pace,f=t?growF(d,t):0;
   const tempo=room<.5?'достиг потолка':f<=0?'возраст: рост закончился':f>=.8?'быстрый':f>=.4?'средний':'медленный — нужен тренер сильнее';
@@ -467,6 +479,7 @@ function vQres(){
      <p style="font-size:13px">${TYRES[W.start[id]].n}: ${sel.delta<.05?'<span style="color:var(--good)">оптимальный выбор</span>':`<span style="color:var(--accent)">медленнее оптимальных ${TYRES[best].n.toLowerCase()} на ${fdelta(sel.delta).slice(1)} за гонку</span>`}<br><span class="muted">План: ${planText(sel.plan)} ${plural(5,'','','кругов')}. Лучший: ${planText(o[best].plan)}.</span></p></div>`}).join('')}
     <p class="muted" style="font-size:12px">Оценка инженеров по износу шин, потерям на пит-стопе и правилу двух составов при текущей погоде. Обгоны и машина безопасности не учтены.</p>
    </div>
+   ${tacCard()}
    <button class="btn primary block" data-a="race">На старт</button>
   </div></div>`;
 }
@@ -640,7 +653,7 @@ function updateRaceUi(){
     const pr=$('#pr-'+id),pb=$('#pb-'+id),open=!!(UI.pitOpen&&UI.pitOpen[id])||!!c.pitReq;if(pr)pr.hidden=!open;
     if(pb){pb.textContent=c.pitReq?`Заезд на круге: ${TYRES[c.pitReq].n.toLowerCase()} — отменить`:open?'Скрыть выбор шин':'Пит-стоп';pb.classList.toggle('armed',!!c.pitReq);pb.disabled=c.out}
     ['push','norm','save'].forEach(m=>$(`#m-${id}-${m}`).classList.toggle('on',c.mode===m));
-    const au=$('#au-'+id);if(au){au.classList.toggle('on',!!c.auto);au.textContent=c.auto?'Авто-пит: вкл':'Авто-пит: выкл'}
+    const au=$('#au-'+id);if(au){const n=TAC_AREAS.filter(([k])=>c.tac&&c.tac[k]).length;au.classList.toggle('on',n>0);au.textContent=n===TAC_AREAS.length?'Стратег: всё':n?`Стратег: ${n} из ${TAC_AREAS.length}`:'Стратег: выкл';au.title=TAC_AREAS.filter(([k])=>c.tac&&c.tac[k]).map(x=>x[1]).join(', ')||'Все решения за вами'}
     Object.keys(TYRES).forEach(t=>$(`#pit-${id}-${t}`).classList.toggle('on',c.pitReq===t));
     const dry=new Set(c.used.filter(x=>x!=='I'));
     let st=c.pitReq?`Заезд в боксы на ${TYRES[c.pitReq].n.toLowerCase()} шины — на ближайшем круге.`:c.health<30?'Шины изношены — пора в боксы!':'';

@@ -1999,7 +1999,7 @@ function startRace0(){
        const isMe=g.tid===S.pid;
        let tyre=isMe?W.start[g.id]:(W.weather[0]?'I':(i<10?pick(['S','M','M']):pick(['M','H','S'])));
        return{did:g.id,tid:g.tid,me:isMe,grid:i+1,tyre,health:100,mode:'norm',pitReq:null,stintLap:0,cum:[i*.32],out:false,used:[tyre],stops:0,pen:0,thr:rnd(22,38),last:0,best:1e9,
-              sq:isMe?mySq(g.id):W.aiSq[g.tid],auto:isMe};
+              sq:isMe?mySq(g.id):W.aiSq[g.tid],auto:isMe,tac:isMe?{...TAC_DEF,...((W.tac||{})[g.id]||{})}:null};
      })};
   const sr=srat(me(),'strat');R.fexact=clamp(Math.round(2+sr/20),3,7);R.frng=Math.max(1,Math.round((100-sr)/8));R.fshift=ri(-R.frng,R.frng);
   UI.follow=R.cars.find(c=>c.me).did;UI.cam=SET.cam;
@@ -2024,24 +2024,31 @@ function trainDrivers(){
   }));
 }
 function aiMode(c,gapAhead,k,wet){
-  if(c.me)return;
+  if(c.me&&!tacOn(c,'mode'))return;
   const P=S.parts[c.did],left=R.N-k+1,comp=P?Math.min(P.ice.h,P.ers.h,P.gb.h):100;
   if(comp<25||(c.health<30&&!c.pitReq&&left>3))c.mode='save';
   else if((gapAhead<1.2&&c.health>45&&comp>40)||(left<=3&&c.health>25&&comp>30))c.mode=wet&&c.health<60?'norm':'push';
   else c.mode='norm';
 }
+// зоны ответственности стратега для машин игрока: плановые пит-стопы, смена шин по погоде, пит-стоп под SC, режим пилота
+const TAC_DEF={plan:true,weather:true,sc:true,mode:true};
+const TAC_AREAS=[['plan','Плановые пит-стопы','когда заезжать и на какие шины по износу'],['weather','Шины при дожде и высыхании','переход на дождевые и обратно на сухие'],['sc','Пит-стоп под машиной безопасности','дешёвый заезд, пока поле едет за SC'],['mode','Режим пилота','атака в борьбе и на финише, «беречь» при износе']];
+const tacOn=(c,k)=>!c.me||!!(c.tac&&c.tac[k]);
 function aiDecide(c,k,wet,sc){
-  if((c.me&&!c.auto)||c.pitReq)return;
+  if(c.pitReq)return;
+  if(c.me&&!['plan','weather','sc'].some(x=>tacOn(c,x)))return;
   // одно правило для всех команд: сильный стратег (70+) считает варианты оптимизатором, слабый — заезжает по порогу износа
-  if(srat(team(c.tid),'strat')>=70&&!sc&&!(wet&&c.tyre!=='I')&&!(!wet&&c.tyre==='I')){const o=raceOptions(c),b=Object.keys(o).find(x=>o[x].delta<.05);if(b&&b!=='stay')c.pitReq=b;return}
+  if(tacOn(c,'plan')&&srat(team(c.tid),'strat')>=70&&!sc&&!(wet&&c.tyre!=='I')&&!(!wet&&c.tyre==='I')){const o=raceOptions(c),b=Object.keys(o).find(x=>o[x].delta<.05);if(b&&b!=='stay')c.pitReq=b;return}
   const left=(R.N-k+1)*R.ls;
-  if(wet&&c.tyre!=='I'){if(Math.random()<.65)c.pitReq='I';return}
-  if(!wet&&c.tyre==='I'){if(Math.random()<.65)c.pitReq=left>14?'H':left>8?'M':'S';return}
+  // реакция на погоду: чем сильнее стратег, тем быстрее зовёт в боксы
+  const react=.4+srat(team(c.tid),'strat')/300;
+  if(wet&&c.tyre!=='I'){if(tacOn(c,'weather')&&Math.random()<react)c.pitReq='I';return}
+  if(!wet&&c.tyre==='I'){if(tacOn(c,'weather')&&Math.random()<react)c.pitReq=left>14?'H':left>8?'M':'S';return}
   if(left<=1)return;
   const dry=c.used.filter(x=>x!=='I');
   const needSecond=!R.anyWet&&(new Set(dry).size<2||(S.rules.twoStop&&c.stops<2));
-  if(S.rules.twoStop&&!R.anyWet&&c.stops===0&&left<R.N*R.ls*.62&&c.health<70){c.pitReq=c.tyre==='M'?'H':'M';return}
-  if(c.health<c.thr||(sc&&c.health<62&&left>4)||(needSecond&&left<=3)){
+  if(tacOn(c,'plan')&&S.rules.twoStop&&!R.anyWet&&c.stops===0&&left<R.N*R.ls*.62&&c.health<70){c.pitReq=c.tyre==='M'?'H':'M';return}
+  if((tacOn(c,'plan')&&c.health<c.thr)||(tacOn(c,'sc')&&sc&&c.health<62&&left>4)||(tacOn(c,'plan')&&needSecond&&left<=3)){
     let ch=left>15?'H':left>8?'M':'S';
     if(needSecond&&ch===c.tyre)ch=ch==='H'?'M':ch==='M'?(left>10?'H':'S'):'M';
     if(left<=3&&c.health>45&&!needSecond)return;
@@ -2742,6 +2749,18 @@ function upgCards(){
    <p class="muted" style="font-size:12px">Как в Ф-1: новую версию сначала разрабатывают (занимает слот разработки, входит в потолок расходов), потом узлы новой версии нужно произвести на заводе и поставить на машину. Узлы со склада, сделанные раньше, остаются старой версии. Замена тоже расходует лимит узлов на сезон. В новом сезоне версии начинаются заново.</p></div>`;
 }
 // потенциал (оценка: чем лучше тренер, тем точнее) и темп роста при нынешнем тренере
+// тактика перед гонкой: стратег ведёт всё или делит зоны ответственности с игроком
+function tacOf(id){W.tac=W.tac||{};if(!W.tac[id])W.tac[id]={...TAC_DEF,...((S.tacPref||{})[id]||{})};return W.tac[id]}
+function tacCard(){
+  const sr=srat(me(),'strat');
+  return`<div class="card"><div class="row between"><h3>Тактика на гонку</h3><span class="pill">стратег ${sr}</span></div>
+   <p class="muted" style="font-size:12px">${sr>=70?'Стратег сильный: плановые заезды считает оптимизатором по износу, погоде и потерям на пит-стопе.':'Стратег слабый (меньше 70): зовёт в боксы по порогу износа, без расчёта вариантов.'} На дождь реагирует ${sr>=85?'быстро':sr>=65?'со средней задержкой':'с опозданием'}. Ваши команды в гонке всегда важнее: заказанный вами пит-стоп стратег не отменяет.</p>
+   ${me().drivers.map(id=>{const T=tacOf(id),all=TAC_AREAS.every(([k])=>T[k]);return`<div class="stack" style="border-top:1px solid var(--line);padding-top:8px;gap:6px">
+     <label class="row" style="gap:8px;cursor:pointer"><input type="checkbox" data-a="tacall" data-v="${id}" ${all?'checked':''}><b>${esc(drv(id).name)}: стратег ведёт всю гонку</b></label>
+     ${all?'':TAC_AREAS.map(([k,n,h])=>`<div class="row between wrapflex" style="gap:8px"><div class="grow" style="min-width:0"><span style="font-size:13px">${n}</span><br><span class="muted" style="font-size:11px">${h}</span></div><div class="seg" style="width:auto"><button data-a="tac" data-v="${id}|${k}|1" class="${T[k]?'on':''}">Стратег</button><button data-a="tac" data-v="${id}|${k}|0" class="${T[k]?'':'on'}">Я</button></div></div>`).join('')}
+   </div>`}).join('')}
+  </div>`;
+}
 function potEst(d,t){ensureAttrs(d);const w=t&&t.id===S.pid?Math.max(1,Math.round((100-srat(t,'coach'))/9)):5,lo=Math.max(Math.floor(d.pace),Math.round(d.pot-w/2));return[lo,Math.min(99,lo+w)]}
 function potLine(d,t){const[lo,hi]=potEst(d,t),room=d.pot-d.pace,f=t?growF(d,t):0;
   const tempo=room<.5?'достиг потолка':f<=0?'возраст: рост закончился':f>=.8?'быстрый':f>=.4?'средний':'медленный — нужен тренер сильнее';
@@ -2927,6 +2946,7 @@ function vQres(){
      <p style="font-size:13px">${TYRES[W.start[id]].n}: ${sel.delta<.05?'<span style="color:var(--good)">оптимальный выбор</span>':`<span style="color:var(--accent)">медленнее оптимальных ${TYRES[best].n.toLowerCase()} на ${fdelta(sel.delta).slice(1)} за гонку</span>`}<br><span class="muted">План: ${planText(sel.plan)} ${plural(5,'','','кругов')}. Лучший: ${planText(o[best].plan)}.</span></p></div>`}).join('')}
     <p class="muted" style="font-size:12px">Оценка инженеров по износу шин, потерям на пит-стопе и правилу двух составов при текущей погоде. Обгоны и машина безопасности не учтены.</p>
    </div>
+   ${tacCard()}
    <button class="btn primary block" data-a="race">На старт</button>
   </div></div>`;
 }
@@ -3100,7 +3120,7 @@ function updateRaceUi(){
     const pr=$('#pr-'+id),pb=$('#pb-'+id),open=!!(UI.pitOpen&&UI.pitOpen[id])||!!c.pitReq;if(pr)pr.hidden=!open;
     if(pb){pb.textContent=c.pitReq?`Заезд на круге: ${TYRES[c.pitReq].n.toLowerCase()} — отменить`:open?'Скрыть выбор шин':'Пит-стоп';pb.classList.toggle('armed',!!c.pitReq);pb.disabled=c.out}
     ['push','norm','save'].forEach(m=>$(`#m-${id}-${m}`).classList.toggle('on',c.mode===m));
-    const au=$('#au-'+id);if(au){au.classList.toggle('on',!!c.auto);au.textContent=c.auto?'Авто-пит: вкл':'Авто-пит: выкл'}
+    const au=$('#au-'+id);if(au){const n=TAC_AREAS.filter(([k])=>c.tac&&c.tac[k]).length;au.classList.toggle('on',n>0);au.textContent=n===TAC_AREAS.length?'Стратег: всё':n?`Стратег: ${n} из ${TAC_AREAS.length}`:'Стратег: выкл';au.title=TAC_AREAS.filter(([k])=>c.tac&&c.tac[k]).map(x=>x[1]).join(', ')||'Все решения за вами'}
     Object.keys(TYRES).forEach(t=>$(`#pit-${id}-${t}`).classList.toggle('on',c.pitReq===t));
     const dry=new Set(c.used.filter(x=>x!=='I'));
     let st=c.pitReq?`Заезд в боксы на ${TYRES[c.pitReq].n.toLowerCase()} шины — на ближайшем круге.`:c.health<30?'Шины изношены — пора в боксы!':'';
@@ -3262,7 +3282,9 @@ document.addEventListener('click',e=>{
    case'tower':UI.towerMin=!UI.towerMin;updateRaceUi();break;
    case'tgap':UI.towerInt=!UI.towerInt;updateRaceUi();break;
    case'pitopen':{const c=R.cars.find(x=>x.did===v);if(!c||c.out)return;if(c.pitReq){c.pitReq=null}else{UI.pitOpen=UI.pitOpen||{};UI.pitOpen[v]=!UI.pitOpen[v]}updateRaceUi();break}
-   case'autopit':{const c=R.cars.find(x=>x.did===v);if(c){c.auto=!c.auto;toast(c.auto?`Пит-стопы ${nm(v)} решают инженеры`:`Пит-стопы ${nm(v)} — вручную`)}updateRaceUi();break}
+   case'autopit':{const c=R.cars.find(x=>x.did===v);if(c){const on=!TAC_AREAS.some(([k])=>c.tac[k]);TAC_AREAS.forEach(([k])=>c.tac[k]=on);c.auto=on;toast(on?`${nm(v)}: стратег ведёт всю гонку`:`${nm(v)}: все решения за вами`)}updateRaceUi();break}
+   case'tacall':{const T=tacOf(v),on=!TAC_AREAS.every(([k])=>T[k]);TAC_AREAS.forEach(([k])=>T[k]=on);S.tacPref=S.tacPref||{};S.tacPref[v]={...T};keepScroll(render);break}
+   case'tac':{const[id,k,val]=v.split('|'),T=tacOf(id);T[k]=val==='1';S.tacPref=S.tacPref||{};S.tacPref[id]={...T};keepScroll(render);break}
    case'qrisk':{const[id,r]=v.split('|');W.risk[id]=r==='1';render();break}
    case'runq':runQuali();break;
    case'stire':{const[id,t]=v.split('|');W.start[id]=t;render();break}
@@ -3406,6 +3428,6 @@ function batchCareer(o){
   finally{render=r0;save=s0;Object.assign(SET,set0);}
   return out;
 }
-if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,aiDevBudget,growF,trainDrivers,ensurePot,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
+if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,aiDevBudget,growF,trainDrivers,ensurePot,nm,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
 })();
 </script>

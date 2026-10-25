@@ -153,7 +153,7 @@ function startRace0(){
        const isMe=g.tid===S.pid;
        let tyre=isMe?W.start[g.id]:(W.weather[0]?'I':(i<10?pick(['S','M','M']):pick(['M','H','S'])));
        return{did:g.id,tid:g.tid,me:isMe,grid:i+1,tyre,health:100,mode:'norm',pitReq:null,stintLap:0,cum:[i*.32],out:false,used:[tyre],stops:0,pen:0,thr:rnd(22,38),last:0,best:1e9,
-              sq:isMe?mySq(g.id):W.aiSq[g.tid],auto:isMe};
+              sq:isMe?mySq(g.id):W.aiSq[g.tid],auto:isMe,tac:isMe?{...TAC_DEF,...((W.tac||{})[g.id]||{})}:null};
      })};
   const sr=srat(me(),'strat');R.fexact=clamp(Math.round(2+sr/20),3,7);R.frng=Math.max(1,Math.round((100-sr)/8));R.fshift=ri(-R.frng,R.frng);
   UI.follow=R.cars.find(c=>c.me).did;UI.cam=SET.cam;
@@ -178,24 +178,31 @@ function trainDrivers(){
   }));
 }
 function aiMode(c,gapAhead,k,wet){
-  if(c.me)return;
+  if(c.me&&!tacOn(c,'mode'))return;
   const P=S.parts[c.did],left=R.N-k+1,comp=P?Math.min(P.ice.h,P.ers.h,P.gb.h):100;
   if(comp<25||(c.health<30&&!c.pitReq&&left>3))c.mode='save';
   else if((gapAhead<1.2&&c.health>45&&comp>40)||(left<=3&&c.health>25&&comp>30))c.mode=wet&&c.health<60?'norm':'push';
   else c.mode='norm';
 }
+// зоны ответственности стратега для машин игрока: плановые пит-стопы, смена шин по погоде, пит-стоп под SC, режим пилота
+const TAC_DEF={plan:true,weather:true,sc:true,mode:true};
+const TAC_AREAS=[['plan','Плановые пит-стопы','когда заезжать и на какие шины по износу'],['weather','Шины при дожде и высыхании','переход на дождевые и обратно на сухие'],['sc','Пит-стоп под машиной безопасности','дешёвый заезд, пока поле едет за SC'],['mode','Режим пилота','атака в борьбе и на финише, «беречь» при износе']];
+const tacOn=(c,k)=>!c.me||!!(c.tac&&c.tac[k]);
 function aiDecide(c,k,wet,sc){
-  if((c.me&&!c.auto)||c.pitReq)return;
+  if(c.pitReq)return;
+  if(c.me&&!['plan','weather','sc'].some(x=>tacOn(c,x)))return;
   // одно правило для всех команд: сильный стратег (70+) считает варианты оптимизатором, слабый — заезжает по порогу износа
-  if(srat(team(c.tid),'strat')>=70&&!sc&&!(wet&&c.tyre!=='I')&&!(!wet&&c.tyre==='I')){const o=raceOptions(c),b=Object.keys(o).find(x=>o[x].delta<.05);if(b&&b!=='stay')c.pitReq=b;return}
+  if(tacOn(c,'plan')&&srat(team(c.tid),'strat')>=70&&!sc&&!(wet&&c.tyre!=='I')&&!(!wet&&c.tyre==='I')){const o=raceOptions(c),b=Object.keys(o).find(x=>o[x].delta<.05);if(b&&b!=='stay')c.pitReq=b;return}
   const left=(R.N-k+1)*R.ls;
-  if(wet&&c.tyre!=='I'){if(Math.random()<.65)c.pitReq='I';return}
-  if(!wet&&c.tyre==='I'){if(Math.random()<.65)c.pitReq=left>14?'H':left>8?'M':'S';return}
+  // реакция на погоду: чем сильнее стратег, тем быстрее зовёт в боксы
+  const react=.4+srat(team(c.tid),'strat')/300;
+  if(wet&&c.tyre!=='I'){if(tacOn(c,'weather')&&Math.random()<react)c.pitReq='I';return}
+  if(!wet&&c.tyre==='I'){if(tacOn(c,'weather')&&Math.random()<react)c.pitReq=left>14?'H':left>8?'M':'S';return}
   if(left<=1)return;
   const dry=c.used.filter(x=>x!=='I');
   const needSecond=!R.anyWet&&(new Set(dry).size<2||(S.rules.twoStop&&c.stops<2));
-  if(S.rules.twoStop&&!R.anyWet&&c.stops===0&&left<R.N*R.ls*.62&&c.health<70){c.pitReq=c.tyre==='M'?'H':'M';return}
-  if(c.health<c.thr||(sc&&c.health<62&&left>4)||(needSecond&&left<=3)){
+  if(tacOn(c,'plan')&&S.rules.twoStop&&!R.anyWet&&c.stops===0&&left<R.N*R.ls*.62&&c.health<70){c.pitReq=c.tyre==='M'?'H':'M';return}
+  if((tacOn(c,'plan')&&c.health<c.thr)||(tacOn(c,'sc')&&sc&&c.health<62&&left>4)||(tacOn(c,'plan')&&needSecond&&left<=3)){
     let ch=left>15?'H':left>8?'M':'S';
     if(needSecond&&ch===c.tyre)ch=ch==='H'?'M':ch==='M'?(left>10?'H':'S'):'M';
     if(left<=3&&c.health>45&&!needSecond)return;

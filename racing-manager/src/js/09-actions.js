@@ -66,7 +66,9 @@ document.addEventListener('click',e=>{
    case'tower':UI.towerMin=!UI.towerMin;updateRaceUi();break;
    case'tgap':UI.towerInt=!UI.towerInt;updateRaceUi();break;
    case'pitopen':{const c=R.cars.find(x=>x.did===v);if(!c||c.out)return;if(c.pitReq){c.pitReq=null}else{UI.pitOpen=UI.pitOpen||{};UI.pitOpen[v]=!UI.pitOpen[v]}updateRaceUi();break}
-   case'autopit':{const c=R.cars.find(x=>x.did===v);if(c){c.auto=!c.auto;toast(c.auto?`Пит-стопы ${nm(v)} решают инженеры`:`Пит-стопы ${nm(v)} — вручную`)}updateRaceUi();break}
+   case'autopit':{const c=R.cars.find(x=>x.did===v);if(c){const on=!TAC_AREAS.some(([k])=>c.tac[k]);TAC_AREAS.forEach(([k])=>c.tac[k]=on);c.auto=on;toast(on?`${nm(v)}: стратег ведёт всю гонку`:`${nm(v)}: все решения за вами`)}updateRaceUi();break}
+   case'tacall':{const T=tacOf(v),on=!TAC_AREAS.every(([k])=>T[k]);TAC_AREAS.forEach(([k])=>T[k]=on);S.tacPref=S.tacPref||{};S.tacPref[v]={...T};keepScroll(render);break}
+   case'tac':{const[id,k,val]=v.split('|'),T=tacOf(id);T[k]=val==='1';S.tacPref=S.tacPref||{};S.tacPref[id]={...T};keepScroll(render);break}
    case'qrisk':{const[id,r]=v.split('|');W.risk[id]=r==='1';render();break}
    case'runq':runQuali();break;
    case'stire':{const[id,t]=v.split('|');W.start[id]=t;render();break}
@@ -210,5 +212,5 @@ function batchCareer(o){
   finally{render=r0;save=s0;Object.assign(SET,set0);}
   return out;
 }
-if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,aiDevBudget,growF,trainDrivers,ensurePot,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
+if(/[?&]debug\b/.test(location.search))window.__dbg={batchCareer,botPolicy,NR,weekendDay,save,lapModel,simLap,perf,tyreWear,wearRate,aiMode,finishRace,raceOptions,bestPlan,genWeather,liveOrder,mySq,trackWear,AU,showIntro,advanceDays,specBonus,carProgress,tyreNow,aiDevBudget,growF,trainDrivers,ensurePot,nm,retireCheck,retireOdds,endSeason,preChance,seatsNext,WINDOW_DAY,persuadeChance,get R(){return R},get W(){return W}};
 })();
