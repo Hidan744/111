@@ -490,6 +490,10 @@ function finishRace(){
     const pts=x.c.out?0:(POINTS[i]||0);
     const d=drv(x.c.did);d.pts+=pts;team(x.c.tid).pts+=pts;
     // победы и подиумы — за сезон; за карьеру — отдельно
+    // статистика пилота: сезон (s…) и карьера (c…)
+    d.sStarts=(d.sStarts||0)+1;d.cStarts=(d.cStarts||0)+1;d.sStops=(d.sStops||0)+x.c.stops;d.cStops=(d.cStops||0)+x.c.stops;
+    if(x.c.out){d.sDnf=(d.sDnf||0)+1;d.cDnf=(d.cDnf||0)+1}else{d.sBest=Math.min(d.sBest||99,i+1);d.cBest=Math.min(d.cBest||99,i+1)}
+    d.sGrid=(d.sGrid||0)+x.c.grid;d.sFin=(d.sFin||0)+(x.c.out?0:i+1);
     if(i===0&&!x.c.out){d.wins++;d.cWins=(d.cWins||0)+1}if(i<3&&!x.c.out){d.pods++;d.cPods=(d.cPods||0)+1}
     return{did:x.c.did,tid:x.c.tid,pos:i+1,grid:x.c.grid,out:x.c.out,time:x.t,gap:x.c.out?null:x.t-win,lapsDown:x.c.out||!fin[0]?0:Math.floor((x.c.cum[N]-fin[0].c.cum[N])/(fin[0].c.cum[N]/N)),pts,pen:x.c.pen,stops:x.c.stops,me:x.c.me,best:x.c.best};
   });

@@ -295,6 +295,11 @@ function tacCard(){
   </div>`;
 }
 function potEst(d,t){ensureAttrs(d);const w=t&&t.id===S.pid?Math.max(1,Math.round((100-srat(t,'coach'))/9)):5,lo=Math.max(Math.floor(d.pace),Math.round(d.pot-w/2));return[lo,Math.min(99,lo+w)]}
+// статистика пилота: сезон и карьера
+function statLine(d){const st=d.sStarts||0,fin=st-(d.sDnf||0),cs=d.cStarts||0;
+  const cell=(n,v)=>`<div><span class="eyebrow">${n}</span><b class="mono">${v}</b></div>`;
+  return`<div class="stats"><div class="row between"><span class="eyebrow">Сезон ${year()}</span><span class="muted" style="font-size:11px">${cs>st?`карьера в игре: ${cs} ст., ${d.cStops||0} пит-стопов (${cs?((d.cStops||0)/cs).toFixed(1).replace('.',','):'0'} за гонку), сходов ${d.cDnf||0}, лучший финиш ${d.cBest&&d.cBest<99?d.cBest+'-е':'—'}`:''}</span></div>
+   <div class="sgrid">${cell('Старты',st)}${cell('Пит-стопы',d.sStops||0)}${cell('В среднем',st?((d.sStops||0)/st).toFixed(1).replace('.',','):'—')}${cell('Сходы',d.sDnf||0)}${cell('Лучший финиш',d.sBest&&d.sBest<99?d.sBest+'-е':'—')}${cell('Средний старт / финиш',st?`${Math.round(d.sGrid/st)} / ${fin?Math.round(d.sFin/fin):'—'}`:'—')}</div></div>`}
 function potLine(d,t){const[lo,hi]=potEst(d,t),room=d.pot-d.pace,f=t?growF(d,t):0;
   const tempo=room<.5?'достиг потолка':f<=0?'возраст: рост закончился':f>=.8?'быстрый':f>=.4?'средний':'медленный — нужен тренер сильнее';
   return`<div class="row between wrapflex" style="font-size:12px"><span>Потенциал: <b class="mono">${lo===hi?lo:lo+'–'+hi}</b></span><span class="muted">Рост: ${tempo}${t&&room>=.5&&f>0?` · тренер ${srat(t,'coach')}`:''}</span></div>`}
@@ -307,6 +312,7 @@ function drvCard(d,mine){
   return`<div class="card"><div class="row between"><div class="row">${ovrPill(ensureAttrs(d))}<div><h3>${esc(d.name)}</h3><span class="muted" style="font-size:12px">${d.age} лет · ${d.pts} очк. · побед ${d.wins} · подиумов ${d.pods||0}${(d.cWins||0)>d.wins||(d.cPods||0)>(d.pods||0)?` · за карьеру ${d.cWins||0}/${d.cPods||0}`:''}</span></div></div><div class="row wrapflex" style="justify-content:flex-end">${d.retiring?'<span class="pill acc">уходит из спорта</span>':''}${cp}</div></div>
    ${attrGrid(ensureAttrs(d))}
    ${potLine(d,mine?me():team(d.team))}
+   ${statLine(d)}
    <div class="row between wrapflex"><span class="muted">Зарплата: <span class="mono">${fm(d.salary,2)}</span>/сезон</span>
    ${mine?`<div class="row wrapflex">${d.retiring&&!d.persuaded?`<button class="btn small" data-a="talk" data-v="${d.id}">Поговорить</button>`:''}${!d.retiring?`<button class="btn small" data-a="nego" data-v="${d.id}">Переговоры</button>`:''}<button class="btn small danger" data-a="fire" data-v="${d.id}">${fire?'Точно уволить?':'Уволить'}</button></div>`:''}</div>
    ${mine&&d.retiring?`<p style="font-size:13px;color:var(--accent)">Хочет завершить карьеру: ${esc(d.retireWhy||'решил уйти')}.${d.persuaded?' Решение окончательное.':''}</p>`:''}
@@ -723,8 +729,8 @@ function vResult(){
   return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">Итоги гонки</div><h2>${L.track}</h2></div></div>
   <div class="scroll wrap">
    <div class="podium">${p.map((r,i)=>r?`<div class="p${[2,1,3][i]}"><b>${[2,1,3][i]}</b><span class="ell" style="font-weight:700">${esc(nm(r.did))}</span><span class="chip" style="background:${team(r.tid).color};margin:0 auto;width:28px;height:4px"></span><span class="muted ell">${esc(team(r.tid).short)}</span></div>`:'<div></div>').join('')}</div>
-   <div class="card" style="padding:8px 10px"><div class="tblwrap"><table><thead><tr><th>#</th><th>Пилот</th><th class="num">Старт</th><th class="num">Время</th><th class="num">Очки</th></tr></thead><tbody>
-   ${rows.map(r=>`<tr${r.me?' class="me"':''}><td class="pos">${r.out?'—':r.pos}</td><td><span class="chip" style="background:${team(r.tid).color}"></span> ${esc(drv(r.did).name)}${r.pen?' <span class="pill bad">+10 с</span>':''}</td><td class="num muted">${r.grid}</td><td class="num">${r.out?'сход':r.pos===1?fsec(r.time):r.lapsDown>0?`+${r.lapsDown} кр.`:fgap(r.gap)}</td><td class="num">${r.pts||''}</td></tr>`).join('')}
+   <div class="card" style="padding:8px 10px"><div class="tblwrap"><table><thead><tr><th>#</th><th>Пилот</th><th class="num hs">Старт</th><th class="num">Время</th><th class="num">Пит</th><th class="num">Очки</th></tr></thead><tbody>
+   ${rows.map(r=>`<tr${r.me?' class="me"':''}><td class="pos">${r.out?'—':r.pos}</td><td class="nmcell"><span class="chip" style="background:${team(r.tid).color}"></span> ${esc(drv(r.did).name)}${r.pen?' <span class="pill bad">+10 с</span>':''}</td><td class="num muted hs">${r.grid}</td><td class="num">${r.out?'сход':r.pos===1?fsec(r.time):r.lapsDown>0?`+${r.lapsDown} кр.`:fgap(r.gap)}</td><td class="num muted">${r.stops}</td><td class="num">${r.pts||''}</td></tr>`).join('')}
    </tbody></table></div></div>
    <div class="card"><div class="row between"><h3>Финансы этапа</h3><span class="money" style="color:${L.net>=0?'var(--good)':'var(--bad)'}">${L.net>=0?'+':''}${fm(L.net,2)}</span></div>
     ${L.inc.map(x=>`<div class="row between"><span>${esc(x[0])}</span><span class="mono" style="color:var(--good)">+${x[1].toFixed(2).replace('.',',')}</span></div>`).join('')}

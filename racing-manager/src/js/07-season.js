@@ -30,7 +30,7 @@ function endSeason(){
     S.spent=0;S.rules.freeze=false;S.vote=null;
     Object.values(S.parts||{}).forEach(P=>COMPS.forEach(([k])=>{P[k].used=1;P[k].h=100;P[k].sp=1}));S.gpen={};S.teams.forEach(o=>o.spec={});S.stockNew={};
     const pool=[];
-    Object.values(S.drivers).forEach(d=>{d.pts=0;d.wins=0;d.pods=0;d.age++;ensureAttrs(d);d.exp=Math.min(99,d.exp+3);
+    Object.values(S.drivers).forEach(d=>{d.pts=0;d.wins=0;d.pods=0;d.sStarts=0;d.sStops=0;d.sDnf=0;d.sBest=99;d.sGrid=0;d.sFin=0;d.age++;ensureAttrs(d);d.exp=Math.min(99,d.exp+3);
       // рост — только тренировками по ходу сезона; с 33 лет скорость падает, вместе с ней и потолок
       if(d.age>=33){d.pace=clamp(d.pace-ri(0,2),50,99);d.pot=Math.min(d.pot!=null?d.pot:d.pace,d.pace)}
       d.salary=salaryFor(d.pace);
