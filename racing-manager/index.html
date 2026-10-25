@@ -209,6 +209,62 @@ tr[data-a]{cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .subnav{display:flex;flex:none;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.subnav::-webkit-scrollbar{display:none}.subnav .btn{flex:none;white-space:nowrap}
 [id^=sec-]{scroll-margin-top:8px}
+.stand{display:flex;flex-direction:column;gap:12px}
+.stand .sh h1{font-family:var(--display);font-style:italic;font-size:clamp(28px,6vw,46px);line-height:1;margin:2px 0 0;letter-spacing:-.01em;text-transform:uppercase}
+.slead{position:relative;display:flex;flex-direction:column;gap:4px;padding:16px 18px;border:1px solid color-mix(in srgb,var(--tc) 70%,#000);border-top:3px solid var(--accent);border-radius:10px;background:linear-gradient(120deg,color-mix(in srgb,var(--tc) 22%,#0d131a),#0d131a 70%);overflow:hidden}
+.slead b{font-family:var(--display);font-style:italic;font-size:clamp(22px,5vw,34px);line-height:1.05}
+.slead .sp{position:absolute;right:18px;bottom:14px;font-family:var(--display);font-size:clamp(34px,8vw,56px);line-height:1;text-align:right}.slead .sp small{display:block;font-size:11px;font-family:var(--mono);color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.slead .sn{position:absolute;right:14px;top:-10px;font-family:var(--display);font-size:90px;color:rgba(255,255,255,.05);line-height:1}
+.slist{display:flex;flex-direction:column;gap:6px}
+.srow{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-left:4px solid var(--tc);border-radius:8px;background:#0f151c}
+.srow.me{background:color-mix(in srgb,var(--tc) 14%,#0f151c)}
+.srow .sn{font-family:var(--display);font-size:20px;color:var(--muted);width:28px;text-align:center}
+.srow b{display:block;font-size:15px}.srow span.ell{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.srow .sp{font-family:var(--display);font-size:22px;text-align:right;line-height:1}.srow .sp small{display:block;font-family:var(--mono);font-size:10px;color:var(--muted)}
+/* ---------- экран гонки в стиле трансляции ---------- */
+:root{--act:#2fd1bf;--act-ink:#04201d;--slate:#141d27;--slate2:#1c2733}
+.rtitle{font-family:var(--display);font-size:20px;font-style:italic}
+.stage{display:flex;flex-direction:column;gap:8px;min-height:0}
+.rbar{display:flex;align-items:center;gap:10px;background:var(--slate);border:1px solid var(--line);border-radius:10px;padding:6px 10px;flex-wrap:wrap}
+.rb-gp{display:flex;flex-direction:column;line-height:1.1;min-width:0}.rb-gp b{font-family:var(--display);font-size:15px}.rb-gp span{font-size:11px;color:var(--muted)}
+.rb-wx{display:flex;align-items:center;gap:6px;font-size:12px;line-height:1.15;flex:1;min-width:140px}.rb-wx b{display:block;font-size:13px}.rb-wx span{color:var(--muted);font-size:11px}
+.rb-wx .wxi svg{width:28px;height:28px;display:block}
+.rbar .spdtop{flex:none;width:auto}.rbar .spdtop button{min-width:38px}.rbar .spdtop button.on{background:var(--act);color:var(--act-ink)}
+.rb-lap{font-family:var(--display);font-size:20px;letter-spacing:.04em;padding:4px 10px;background:#0b1117;border-radius:8px;white-space:nowrap}
+.rtop{position:absolute;left:50%;top:8px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(14,20,27,.88);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:5px 16px;font-family:var(--display);font-size:13px;letter-spacing:.08em;z-index:3;white-space:nowrap;pointer-events:none}
+.rtoast{position:absolute;left:50%;top:46px;transform:translateX(-50%);z-index:4;display:flex;gap:10px;align-items:center;background:rgba(20,29,39,.95);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--act);border-radius:10px;padding:8px 14px;font-size:13px;max-width:70%;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:tin .25s ease-out}
+.rtoast.fast{border-left-color:#b65cff}.rtoast.fast .tl{color:#c88bff;font-family:var(--display);letter-spacing:.06em}
+.rtoast.mine{border-left-color:var(--team)}
+@keyframes tin{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+.tower{background:rgba(14,20,27,.9);border:1px solid rgba(255,255,255,.07);border-radius:8px;width:330px;font-family:var(--body);font-size:13px}
+.tower .th{background:transparent;color:var(--muted);font-family:var(--mono);font-size:11px;padding:6px 8px;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
+.tower .th button{font:inherit;color:var(--act);border:1px solid rgba(47,209,191,.4);border-radius:5px;padding:2px 6px;min-height:0;background:none}
+.tower .tr{grid-template-columns:24px 4px minmax(0,1fr) 20px 34px 58px 24px;height:24px;gap:6px;padding:0 6px}
+.tower .tr .ps{display:grid;place-items:center;height:18px;background:#e8eef4;color:#0b0f14;border-radius:4px;font-family:var(--mono);font-size:11px}
+.tower .tr.me .ps{background:var(--act);color:var(--act-ink)}
+.tower .tr .tb{height:16px;width:4px;border-radius:2px}
+.tower .tr .nmc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.tower .tr .nmc.fl{color:#c88bff}
+.tower .tr .g{font-family:var(--mono);font-size:11.5px}
+.tower .tr .a{font-family:var(--mono);font-size:10px}
+.tower .tr em{font-style:normal;font-family:var(--mono);font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px}
+.tower .tr em.pt{background:#e0263a;color:#fff}.tower .tr em.st{color:#ff6b6b}
+.tower .tr.me{background:rgba(47,209,191,.13)}
+.drvctl{background:var(--slate);border:1px solid var(--line);border-left:0;border-radius:12px;padding:0 0 10px;overflow:hidden;gap:8px;flex:none}
+.drvctl>*:not(.dh){margin-inline:10px}
+.drvctl .dh{display:flex;align-items:center;gap:10px;padding:8px 10px;background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 55%,#0b1117),#16202a 85%)}
+.drvctl .dpos{display:flex;flex-direction:column;align-items:center;line-height:1;min-width:46px}.drvctl .dpos small{font-size:10px;color:rgba(255,255,255,.75)}.drvctl .dpos b{font-family:var(--display);font-size:28px}
+.drvctl .dn{display:block;font-family:var(--display);font-size:16px}.drvctl .dh span.ell{display:block;font-size:12px;color:rgba(255,255,255,.75)}
+.btn.ghost{background:rgba(0,0,0,.25);border-color:rgba(255,255,255,.15)}
+.drvctl .dg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gauge{background:var(--slate2);border-radius:10px;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:70px;text-align:center}
+.gauge>span{display:flex;align-items:center;gap:4px}.gauge>span b,.gauge>b{font-family:var(--display);font-size:18px}.gauge small{font-size:10px;color:var(--muted);line-height:1.1}
+.btn.pitbtn{background:var(--act);color:var(--act-ink);border:0;font-family:var(--display);font-size:17px;min-height:46px;border-radius:999px;letter-spacing:.04em}
+.btn.pitbtn.armed{background:#e0263a;color:#fff}
+@media (max-width:959px){.stage{flex:none}}
+@media (max-width:600px){.rtop{display:none!important}.tower{width:236px;font-size:11px}.tower .tr{grid-template-columns:18px 3px minmax(32px,1fr) 14px 28px 42px 16px;height:17px;gap:4px;padding:0 4px}.tower .tr .ps{height:14px;font-size:9px}.tower .tr .tb{height:12px}.tower .tr .g{font-size:9.5px}
+  .rtop{font-size:10px;padding:3px 10px;top:auto;bottom:44px}.rtoast{top:auto;bottom:72px;max-width:88%;font-size:11.5px}.rb-lap{font-size:16px}.rbar{gap:6px}}
+@media (min-width:960px){.racebody .stage{height:100%}.racebody .stage .viewport{flex:1}}
 .intro{position:fixed;inset:0;z-index:60;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;background:radial-gradient(120% 80% at 50% 42%,#17222e 0%,#07090c 68%);transition:opacity .55s}
 .intro.bye{opacity:0;pointer-events:none}
 .intro::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(255,255,255,.018) 22px 24px)}
@@ -595,6 +651,9 @@ function save(bak){
 function exportSave(raw){
   const txt=raw?(()=>{try{return localStorage.getItem(SAVE)||''}catch(e){return''}})():JSON.stringify(S);if(!txt)return toast('Нечего сохранять');
   const t=S&&S.teams?S.teams.find(x=>x.id===S.pid):null,name=`pitwall-${t?t.short:'career'}-${S?(S.year0||2026)+(S.season||1)-1:''}.json`;
+  // внутри claude.ai файл отдаётся через возможность downloads, в обычном браузере — ссылкой на скачивание
+  const dl=UI.dlCap;
+  if(dl){dl.save({filename:name,data:txt}).then(()=>toast('Файл карьеры сохранён: '+name),e=>{if(e&&e.code!=='declined')toast('Не удалось сохранить файл')});return}
   try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('Файл карьеры сохранён: '+name)}
   catch(e){toast('Не удалось скачать файл')}
 }
@@ -1997,6 +2056,9 @@ function pitOff(m,boxM){
   return o*g.side;
 }
 // шины, которые сейчас на машине на экране: симуляция считает круг вперёд, а комплект меняется только в боксе
+// машина сейчас в пит-лейне (по экранному времени)
+function pitState(c){if(!c.pitAt||c.out)return false;const p=carProgress(c,R.T);return!!p.pit}
+function raceToast(html,kind){const el=$('#rtoast');if(!el)return;el.innerHTML=html;el.className='rtoast '+(kind||'');el.hidden=false;clearTimeout(R._tt);R._tt=setTimeout(()=>{const e2=$('#rtoast');if(e2)e2.hidden=true},3600)}
 function tyreNow(c){
   if(!c.pitAt||c.out)return{tyre:c.tyre,h:c.health,stint:c.stintLap};
   const p=carProgress(c,R.T),j=p.laps+1;
@@ -2692,6 +2754,11 @@ function vTable(){
   if(UI.stand==='f2'||UI.stand==='f3'||UI.stand==='f4'){const k=UI.stand,A=S.academy,list=[...S.leagues[k],...A.juniors.filter(j=>j.league===k)].sort((a,b)=>(b.lpts||0)-(a.lpts||0)||ovr(b)-ovr(a));
     return segs+`<div class="card"><h3>${LEAGUES.find(l=>l[0]===k)[1]}</h3><div class="tblwrap"><table><thead><tr><th>#</th><th>Пилот</th><th>Команда</th><th class="num">Рейт.</th><th class="num">Поб</th><th class="num">Очки</th></tr></thead><tbody>${list.map((d,i)=>{const mine=A.juniors.includes(d);return`<tr${mine?' class="me"':''}><td class="num">${i+1}</td><td>${esc(d.name)} <span class="muted" style="font-size:11px">${d.age}</span></td><td class="muted">${esc(mine?farmName():d.team)}</td><td class="num">${ovr(d)}</td><td class="num">${d.lwins||0}</td><td class="num">${d.lpts||0}</td></tr>`}).join('')}</tbody></table></div></div>`}
   if(UI.stand==='intel')return segs+intelView();
+  // пилоты и конструкторы: карточка лидера и список с цветом команды, отставание от лидера
+  if(UI.stand==='drivers'||UI.stand==='teams'){const isD=UI.stand==='drivers',list=isD?ds:ts,lead=list[0],lp=lead.pts,col=x=>isD?team(x.team).color:x.color,sub=x=>isD?esc(team(x.team).name):x.engineSup?`Мотор: ${esc(x.engineFrom)}`:`Болид ${carOverall(x).toFixed(0)}`;
+    return segs+`<div class="stand"><div class="sh"><span class="eyebrow">Сезон ${year()} · пройдено этапов: ${Math.min(S.round,NR())} из ${NR()}</span><h1>${isD?'Личный зачёт':'Кубок конструкторов'}</h1></div>
+     <div class="slead" style="--tc:${col(lead)}"><span class="eyebrow" style="color:var(--accent)">${S.round?'Лидер чемпионата':'Перед стартом сезона'}</span><b>${esc(lead.name)}</b><span class="muted">${sub(lead)}${isD?` · побед ${lead.wins} · подиумов ${lead.pods||0}`:''}</span><span class="sp">${lp}<small>очков</small></span><span class="sn">1</span></div>
+     <div class="slist">${list.slice(1).map((x,i)=>{const mine=isD?x.team===S.pid:x.id===S.pid;return`<div class="srow${mine?' me':''}" style="--tc:${col(x)}"><span class="sn">${i+2}</span><div class="grow" style="min-width:0"><b class="ell">${esc(x.name)}</b><span class="ell">${sub(x)}${isD&&(x.wins||x.pods)?` · ${x.wins} поб. · ${x.pods||0} под.`:''}</span></div><div class="sp">${x.pts}<small>${S.round?'−'+(lp-x.pts):'очк.'}</small></div></div>`}).join('')}</div></div>`}
   return segs+`
   <div class="card"><div class="tblwrap"><table>
   ${UI.stand==='drivers'?`<thead><tr><th>#</th><th>Пилот</th><th class="num">Поб</th><th class="num">Под</th><th class="num">Очки</th></tr></thead><tbody>${ds.map((d,i)=>`<tr${d.team===S.pid?' class="me"':''}><td class="num">${i+1}</td><td><span class="chip" style="background:${team(d.team).color}"></span> ${esc(d.name)}</td><td class="num">${d.wins}</td><td class="num">${d.pods||0}</td><td class="num">${d.pts}</td></tr>`).join('')}</tbody>`
@@ -2739,21 +2806,40 @@ function vQres(){
 /* --- гонка --- */
 function vRace(){
   const mine=R.cars.filter(c=>c.me),is3=SET.view==='3d'&&HAS3D;
-  return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">${R.track.gp} · ${R.track.name}</div><div class="lapbox" id="lap">Круг 1/${R.N}</div></div><div class="seg spdtop" id="spd">${SPEEDS.map(([v,n])=>`<button data-a="spd" data-v="${v}">${n}</button>`).join('')}</div></div>
+  return`<div class="racehead wrap"><div class="grow"><div class="eyebrow">${R.track.gp} · ${R.track.name}</div><div class="rtitle">Гонка</div></div><div id="flags"></div></div>
   <div class="racebody wrap">
+   <div class="stage">
    <div class="viewport">
      ${is3?'<canvas id="v3d" aria-label="3D-трансляция гонки"></canvas>':''}
      ${is3?'':'<canvas id="trk" aria-label="Схема трассы"></canvas>'}
      <div class="tower" id="tower"></div>
+     <div class="rtop" id="rtop"></div>
+     <div class="rtoast" id="rtoast" hidden></div>
      <div class="ovright">${is3?'<canvas id="trk" class="mini" aria-label="Схема трассы"></canvas>':''}<div class="ovfc" id="ovfc"></div></div>
      <div class="lights" id="lights"><i></i><i></i><i></i><i></i><i></i></div>
-     <div class="camseg zoomctl" id="zoomctl"><button data-a="zoom" data-v="in" aria-label="Приблизить">＋</button><button data-a="zoom" data-v="out" aria-label="Отдалить">−</button><button data-a="zoom" data-v="fit">Вся трасса</button><button data-a="zoom" data-v="follow" id="zf">За пилотом</button></div>
+     <div class="camseg zoomctl" id="zoomctl"><button data-a="zoom" data-v="in" aria-label="Приблизить">＋</button><button data-a="zoom" data-v="out" aria-label="Отдалить">−</button><button data-a="zoom" data-v="fit">Вся трасса</button><button data-a="zoom" data-v="follow" id="zf">За машиной</button></div>
      <div class="hud">
        ${is3?`<div class="camseg" id="cams">${CAMS.map(([k,n])=>`<button data-a="cam" data-v="${k}">${n}</button>`).join('')}</div>`:''}
        <span class="hudtag" id="follow"></span>
      </div>
    </div>
+   <div class="rbar">
+     <div class="rb-gp"><b>${esc(R.track.country)}</b><span>${esc(R.track.name)}</span></div>
+     <div class="rb-wx" id="rbwx"></div>
+     <div class="seg spdtop" id="spd">${SPEEDS.map(([v,n])=>`<button data-a="spd" data-v="${v}">${v===0?'❚❚':n}</button>`).join('')}</div>
+     <div class="rb-lap" id="lap">Круг 1/${R.N}</div>
+   </div>
+   </div>
    <div class="side">
+   ${mine.map(c=>`<div class="drvctl" id="ctl-${c.did}" style="--tc:${team(c.tid).color}">
+     <div class="dh"><div class="dpos"><small id="dl-${c.did}">Круг 1</small><b id="p-${c.did}">–</b></div><div class="grow" style="min-width:0"><b class="dn ell">${esc(drv(c.did).name)}</b><span class="ell" id="g-${c.did}"></span></div><button class="btn small ghost" data-a="follow" data-v="${c.did}" title="Камера на пилота">Камера</button></div>
+     <div class="dg"><div class="gauge"><span id="tyr-${c.did}"></span><small>Шины</small></div><div class="gauge"><b id="cond-${c.did}">100%</b><small>Состояние</small></div><div class="gauge"><b id="stint-${c.did}">0</b><small>кр. на комплекте</small></div></div>
+     <div class="seg">${[['push','Атака'],['norm','Норма'],['save','Беречь']].map(([m,n])=>`<button data-a="mode" data-v="${c.did}|${m}" id="m-${c.did}-${m}">${n}</button>`).join('')}</div>
+     <button class="btn pitbtn" data-a="pitopen" data-v="${c.did}" id="pb-${c.did}">Пит-стоп</button>
+     <div class="pitrow" id="pr-${c.did}" hidden><span class="eyebrow" style="width:58px">В боксы</span>${Object.entries(TYRES).map(([k,ty])=>`<div class="tcol"><button class="tbtn" style="border-color:${ty.col}" data-a="pit" data-v="${c.did}|${k}" id="pit-${c.did}-${k}" aria-label="Пит-стоп: ${ty.n}">${ty.l}</button><small id="pd-${c.did}-${k}"></small></div>`).join('')}<div class="stack" style="margin-left:auto;gap:4px"><button class="btn small" data-a="autopit" data-v="${c.did}" id="au-${c.did}" title="Инженеры сами вызывают пилота в боксы">Авто-пит</button><button class="btn small" data-a="follow" data-v="${c.did}">Камера</button></div></div>
+     <div class="wearf" id="wf-${c.did}"></div>
+     <div class="muted" style="font-size:12px" id="st-${c.did}"></div>
+   </div>`).join('')}
    <div class="card fcard"><div class="row between"><h3>Погода на гонку</h3><span class="muted mono" style="font-size:11px" id="wxacc"></span></div>
      <div class="wxstrip" id="wxs"></div><div class="row between muted mono" style="font-size:10px"><span>1</span><span>${Math.round(R.N/2)}</span><span>${R.N}</span></div>
      <p style="font-size:13px" id="wxt"></p>
@@ -2762,14 +2848,6 @@ function vRace(){
      <p class="muted" style="font-size:11px" id="tyrenote"></p>
      <div class="stratl" id="strat"></div>
    </div>
-   ${mine.map(c=>`<div class="drvctl" id="ctl-${c.did}">
-     <div class="row between"><div class="row"><span class="lapbox" id="p-${c.did}">–</span><div><b>${esc(drv(c.did).name)}</b><br><span class="muted mono" style="font-size:12px" id="g-${c.did}"></span></div></div><div class="row"><span class="tyre" id="ty-${c.did}"></span><div style="width:64px" class="bar"><i id="hb-${c.did}"></i></div></div></div>
-     <div class="seg">${[['push','Атака'],['norm','Норма'],['save','Беречь']].map(([m,n])=>`<button data-a="mode" data-v="${c.did}|${m}" id="m-${c.did}-${m}">${n}</button>`).join('')}</div>
-     <div class="pitrow"><span class="eyebrow" style="width:58px">В боксы</span>${Object.entries(TYRES).map(([k,ty])=>`<div class="tcol"><button class="tbtn" style="border-color:${ty.col}" data-a="pit" data-v="${c.did}|${k}" id="pit-${c.did}-${k}" aria-label="Пит-стоп: ${ty.n}">${ty.l}</button><small id="pd-${c.did}-${k}"></small></div>`).join('')}<div class="stack" style="margin-left:auto;gap:4px"><button class="btn small" data-a="autopit" data-v="${c.did}" id="au-${c.did}" title="Инженеры сами вызывают пилота в боксы">Авто-пит</button><button class="btn small" data-a="follow" data-v="${c.did}">Камера</button></div></div>
-     <div class="wearf" id="wf-${c.did}"></div>
-     <div class="muted" style="font-size:12px" id="st-${c.did}"></div>
-   </div>`).join('')}
-
    <div class="card"><h3>Радио</h3><div class="feed" id="feed"></div></div>
    </div>
   </div>`;
@@ -2867,8 +2945,8 @@ function vSettings(){
   </div></div></div>`;
 }
 // кольцо шины: дуга уменьшается вместе с остатком ресурса
-function tyreRing(ty,h){const r=7,c=2*Math.PI*r,f=clamp(h/100,0,1);
-  return`<svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="${r}" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="3"/><circle cx="10" cy="10" r="${r}" fill="none" stroke="${ty.col}" stroke-width="3" stroke-dasharray="${(c*f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 10 10)"/><text x="10" y="13.2" text-anchor="middle" font-size="8" font-weight="700" fill="${ty.col}" font-family="JetBrains Mono, monospace">${ty.l}</text></svg>`}
+function tyreRing(ty,h,sz){const r=7,c=2*Math.PI*r,f=clamp(h/100,0,1);sz=sz||20;
+  return`<svg width="${sz}" height="${sz}" viewBox="0 0 20 20"><circle cx="10" cy="10" r="${r}" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="3"/><circle cx="10" cy="10" r="${r}" fill="none" stroke="${ty.col}" stroke-width="3" stroke-dasharray="${(c*f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 10 10)"/><text x="10" y="13.2" text-anchor="middle" font-size="8" font-weight="700" fill="${ty.col}" font-family="JetBrains Mono, monospace">${ty.l}</text></svg>`}
 function updateRaceUi(){
   if(!$('#tower'))return;
   const ord=liveOrder();
@@ -2886,9 +2964,12 @@ function updateRaceUi(){
     return`<tr data-a="follow" data-v="${x.c.did}"${x.c.me?' class="me"':''}><td class="pos">${x.c.out?'—':i+1}</td><td><span class="chip" style="background:${t.color}"></span> ${esc(nm(x.c.did))}</td><td class="num">${x.gap}</td><td><span class="tyre" style="border-color:${ty.col};width:18px;height:18px;border-width:2px;font-size:9px">${ty.l}</span></td><td class="num muted">${Math.round(x.c.health)}% · ${Math.max(0,Math.min(R.N,x.p.laps)-x.c.stintLap)} кр.</td></tr>`}).join('')+'</tbody>';
   ord.forEach((x,i)=>{if(!x.c.me)return;const c=x.c,id=c.did;
     $('#p-'+id).textContent=c.out?'—':(i+1);
-    $('#g-'+id).textContent=c.out?'Сход':`${x.gap} · пит-стопов ${c.stops}`;
-    const ty=TYRES[tyreNow(c).tyre],te=$('#ty-'+id);te.textContent=ty.l;te.style.borderColor=ty.col;
-    const hb=$('#hb-'+id);hb.style.width=tyreNow(c).h+'%';hb.style.background=tyreNow(c).h<30?'var(--bad)':tyreNow(c).h<55?'var(--accent)':'var(--good)';
+    $('#g-'+id).textContent=c.out?'Сход':`${i===0?'лидер':x.gap} · пит-стопов ${c.stops}${pitState(c)?' · в боксах':''}`;
+    const tn=tyreNow(c),ty=TYRES[tn.tyre];$('#tyr-'+id).innerHTML=tyreRing(ty,tn.h,46)+`<b style="color:${tn.h<30?'var(--bad)':tn.h<55?'var(--accent)':'var(--fg)'}">${Math.round(tn.h)}%</b>`;
+    const P=S.parts[id],cond=P?Math.round(Math.min(...['ice','ers','gb','floor','fw'].map(k=>P[k].h))):100,ce=$('#cond-'+id);ce.textContent=cond+'%';ce.style.color=cond<30?'var(--bad)':cond<55?'var(--accent)':'var(--good)';
+    $('#stint-'+id).textContent=Math.max(0,Math.min(R.N,x.p.laps)-tn.stint);$('#dl-'+id).textContent=c.out?'сход':`Круг ${Math.min(R.N,x.p.laps+1)}`;
+    const pr=$('#pr-'+id),pb=$('#pb-'+id),open=!!(UI.pitOpen&&UI.pitOpen[id])||!!c.pitReq;if(pr)pr.hidden=!open;
+    if(pb){pb.textContent=c.pitReq?`Заезд на круге: ${TYRES[c.pitReq].n.toLowerCase()} — отменить`:open?'Скрыть выбор шин':'Пит-стоп';pb.classList.toggle('armed',!!c.pitReq);pb.disabled=c.out}
     ['push','norm','save'].forEach(m=>$(`#m-${id}-${m}`).classList.toggle('on',c.mode===m));
     const au=$('#au-'+id);if(au){au.classList.toggle('on',!!c.auto);au.textContent=c.auto?'Авто-пит: вкл':'Авто-пит: выкл'}
     Object.keys(TYRES).forEach(t=>$(`#pit-${id}-${t}`).classList.toggle('on',c.pitReq===t));
@@ -2927,13 +3008,22 @@ function updateRaceUi(){
     const pct=Math.round(c.health),end=Math.max(0,Math.round(c.health-w*left));
     const PP=S.parts[c.did],pl=COMPS.map(([k,n])=>{const h=Math.round(PP[k].h);return`<span style="color:${h<20?'var(--bad)':h<50?'var(--accent)':'var(--muted)'}">${n} ${h}%</span>`}).join(' · ');
     el.innerHTML=`<span style="flex-basis:100%">${pl}</span><span>${TYRES[c.tyre].n}: <b>${pct}%</b>, ${Math.max(0,R.lapDone-c.stintLap)} кр. на комплекте, износ ${w.toFixed(1).replace('.',',')}%/кр. (${c.mode==='push'?'атака':c.mode==='save'?'бережём':'норма'})</span><span>${l30>=left?`<span style="color:var(--good)">до финиша хватит (на финише ~${end}%)</span>`:`до 30% — <b>${l30}</b> кр. (к ${R.lapDone+l30+1}-му), полный износ через ${l0} кр.`}</span>`});
-  // табло трансляции
+  // табло трансляции: позиция, пилот, шины и их износ, отставание от лидера или интервал до машины впереди
   const tw=$('#tower');
-  if(tw){const vp=tw.parentElement,rh=vp.clientWidth<600?16:21,n=UI.towerMin?0:Math.max(3,Math.floor((vp.clientHeight-(vp.clientWidth<600?112:96))/rh));
+  if(tw){const vp=tw.parentElement,sm=vp.clientWidth<600,rh=sm?17:24,n=UI.towerMin?0:Math.max(3,Math.floor((vp.clientHeight-(sm?60:70))/rh));
     let rows=ord.map((x,i)=>({x,i}));if(rows.length>n){const top=rows.slice(0,n),mine=rows.filter(r=>r.x.c.me&&r.i>=n);rows=[...top.slice(0,n-mine.length),...mine]}
-    tw.innerHTML=`<div class="th" data-a="tower" title="Свернуть или развернуть табло"><span>КРУГ ${Math.min(R.N,lap)}/${R.N}</span><span>${R.sc>0?'SC':UI.towerMin?'▸':''}</span></div>`+rows.map(({x,i})=>{const t=team(x.c.tid),ty=TYRES[tyreNow(x.c).tyre];
-      const age=Math.max(0,Math.min(R.N,x.p.laps)-x.c.stintLap);
-      return`<div class="tr${x.c.me?' me':''}${x.c.out?' out':''}${x.c.did===UI.follow?' fo':''}" data-a="follow" data-v="${x.c.did}"><b>${x.c.out?'—':i+1}</b><span style="background:${t.color};height:12px"></span><b>${esc(nm(x.c.did).slice(0,3).toUpperCase())}</b><span class="g">${x.c.out?'СХОД':i===0?'Лидер':x.gap}</span>${x.c.out?'<span></span><span></span>':`${tyreRing(ty,tyreNow(x.c).h)}<span class="w" style="color:${tyreNow(x.c).h<30?'var(--bad)':tyreNow(x.c).h<55?'var(--accent)':'#c9d3dd'}">${Math.round(tyreNow(x.c).h)}%</span>`}<span class="a">${x.c.out?'':age+'к'}</span></div>`}).join('')}
+    const fl=R.cars.filter(c=>c.best<1e8).sort((a,b)=>a.best-b.best)[0];
+    const intv=(x,i)=>{if(i===0)return'Лидер';const pv=ord[i-1];if(!pv||pv.c.out)return x.gap;const L=Math.min(x.p.laps,pv.p.laps,R.N);if(pv.p.laps-x.p.laps>=1&&x.c.cum[L]-pv.c.cum[L]>R.track.base)return'+1 кр.';return fgap(Math.max(0,x.c.cum[L]-pv.c.cum[L]))};
+    tw.innerHTML=`<div class="th"><span data-a="tower" title="Свернуть или развернуть табло">${UI.towerMin?'▸ ':''}КРУГ ${Math.min(R.N,lap)}/${R.N}</span><button data-a="tgap" title="Переключить: отставание от лидера или интервал">${UI.towerInt?'Интервал':'Отставание'}</button></div>`+rows.map(({x,i})=>{const t=team(x.c.tid),tn=tyreNow(x.c),ty=TYRES[tn.tyre],pit=!x.c.out&&pitState(x.c);
+      const age=Math.max(0,Math.min(R.N,x.p.laps)-tn.stint),fast=fl&&fl===x.c;
+      return`<div class="tr${x.c.me?' me':''}${x.c.out?' out':''}${x.c.did===UI.follow?' fo':''}" data-a="follow" data-v="${x.c.did}"><b class="ps">${x.c.out?'—':i+1}</b><span class="tb" style="background:${t.color}"></span><span class="nmc${fast?' fl':''}">${esc(sm?nm(x.c.did).slice(0,3).toUpperCase():nm(x.c.did))}</span>${x.c.out?'<span></span><span></span>':`${tyreRing(ty,tn.h,sm?14:19)}<span class="w" style="color:${tn.h<30?'var(--bad)':tn.h<55?'var(--accent)':'#c9d3dd'}">${Math.round(tn.h)}%</span>`}<span class="g">${x.c.out?'<em class="st">СХОД</em>':pit?'<em class="pt">PIT</em>':UI.towerInt?intv(x,i):(i===0?'Лидер':x.gap)}</span><span class="a">${x.c.out?'':age+'к'}</span></div>`}).join('');
+    // всплывающие события трансляции: быстрый круг, машина безопасности, события нашей команды
+    if(fl&&R.lapDone>=2&&R._fl!==fl.did+'|'+fl.best){R._fl=fl.did+'|'+fl.best;raceToast(`<span class="tl">Быстрый круг</span><b>${esc(drv(fl.did).name)}</b><span class="mono">${fsec(fl.best)}</span>`,'fast')}
+    const f0=R.feed[0];if(f0&&R._ft!==f0&&(f0.mine||/безопасности|разбивает|сход/i.test(f0.t))){R._ft=f0;raceToast(esc(f0.t),f0.mine?'mine':'')}
+  }
+  const rb=$('#rbwx');if(rb){const now=R.wet[Math.min(R.N-1,R.lapDone)];let nx=-1;for(let i=R.lapDone+1;i<R.N;i++)if((i<=R.lapDone+R.fexact?R.wet[i]:R.wet[clamp(i+R.fshift,0,R.N-1)])!==now){nx=i;break}
+    rb.innerHTML=`<span class="wxi">${now?'<svg viewBox="0 0 24 24"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z" fill="#9fb3c8"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3" stroke="#55b6ff" stroke-width="2" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#ffc531"/><g stroke="#ffc531" stroke-width="2" stroke-linecap="round"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg>'}</span><div><b>${now?'Дождь':'Сухо'} · ${R.temp}°</b><span>${nx<0?'без изменений до финиша':`${now?'сухо':'дождь'} через ~${nx-R.lapDone} кр.`}</span></div>`}
+  const rt=$('#rtop');if(rt){const left=Math.max(0,R.N-Math.min(R.N,lap)+1);rt.innerHTML=`${R.sc>0?'<span class="flag sc">МАШИНА БЕЗОПАСНОСТИ</span>':''}<span>${R.done?'ФИНИШ':left<=1?'ПОСЛЕДНИЙ КРУГ':`ОСТАЛОСЬ ${left} ${plural(left,'КРУГ','КРУГА','КРУГОВ').toUpperCase()}`}</span>`}
   // прогноз поверх трансляции
   const ov=$('#ovfc');
   if(ov){const m=[];for(let i=cur;i<Math.min(R.N,cur+15);i++)m.push(fc(i));
@@ -3041,6 +3131,8 @@ document.addEventListener('click',e=>{
    case'follow':UI.follow=v;updateRaceUi();break;
    case'zoom':zoomBtn(v);updateRaceUi();break;
    case'tower':UI.towerMin=!UI.towerMin;updateRaceUi();break;
+   case'tgap':UI.towerInt=!UI.towerInt;updateRaceUi();break;
+   case'pitopen':{const c=R.cars.find(x=>x.did===v);if(!c||c.out)return;if(c.pitReq){c.pitReq=null}else{UI.pitOpen=UI.pitOpen||{};UI.pitOpen[v]=!UI.pitOpen[v]}updateRaceUi();break}
    case'autopit':{const c=R.cars.find(x=>x.did===v);if(c){c.auto=!c.auto;toast(c.auto?`Пит-стопы ${nm(v)} решают инженеры`:`Пит-стопы ${nm(v)} — вручную`)}updateRaceUi();break}
    case'qrisk':{const[id,r]=v.split('|');W.risk[id]=r==='1';render();break}
    case'runq':runQuali();break;
@@ -3121,6 +3213,7 @@ document.addEventListener('click',e=>{
 window.addEventListener('resize',()=>{if(UI.screen!=='race')after()});
 
 render();
+if(window.claude&&claude.use)claude.use('downloads').then(d=>{UI.dlCap=d||null}).catch(()=>{});
 if(SET.intro)showIntro();
 window.__pitwall={get S(){return S},get R(){return R},get G(){return G}};
 // внутренние функции для автотестов — только при открытии с ?debug
