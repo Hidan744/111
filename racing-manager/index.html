@@ -242,7 +242,7 @@ tr[data-a]{cursor:pointer}
 .rbar .spdtop{flex:none;width:auto}.rbar .spdtop button{min-width:38px}.rbar .spdtop button.on{background:var(--act);color:var(--act-ink)}
 .rb-lap{font-family:var(--display);font-size:20px;letter-spacing:.04em;padding:4px 10px;background:#0b1117;border-radius:8px;white-space:nowrap}
 .rtop{position:absolute;right:calc(30% + 16px);top:8px;display:flex;gap:8px;align-items:center;background:rgba(14,20,27,.88);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:5px 16px;font-family:var(--display);font-size:13px;letter-spacing:.08em;z-index:3;white-space:nowrap;pointer-events:none}
-.rtoast{position:absolute;right:calc(30% + 16px);top:46px;z-index:4;display:flex;gap:10px;align-items:center;background:rgba(20,29,39,.95);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--act);border-radius:10px;padding:8px 14px;font-size:13px;max-width:70%;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:tin .25s ease-out}
+.rtoast{position:absolute;right:8px;bottom:58px;max-width:min(440px,56%);z-index:4;display:flex;gap:10px;align-items:center;background:rgba(20,29,39,.95);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--act);border-radius:10px;padding:8px 14px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:tin .25s ease-out}
 .rtoast.fast{border-left-color:#b65cff}.rtoast.fast .tl{color:#c88bff;font-family:var(--display);letter-spacing:.06em}
 .rtoast.mine{border-left-color:var(--team)}
 @keyframes tin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
@@ -1678,10 +1678,15 @@ function init3D(cv){
     // водяная пыль за машиной в дождь (только средняя графика и выше)
     if(q>=1){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:sprayTex,transparent:true,opacity:.5,depthWrite:false,color:0xdfe8f0}));sp.scale.set(4.2,2,1);sp.visible=false;scene.add(sp);o.spray=sp}
     cars[c.did]=o});
+  // дым: общий пул спрайтов (сходы, ошибки пилотов, старт)
+  const smokeTex=glowTex(),smoke=[];for(let i=0;i<(q>=1?36:14);i++){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:smokeTex,transparent:true,opacity:0,depthWrite:false,color:0x9aa1a8}));sp.visible=false;scene.add(sp);smoke.push({sp,life:0})}
+  // следы шин на стартовой решётке появляются после старта
+  const marks=new THREE.Group();marks.visible=false;scene.add(marks);{const mm=new THREE.MeshBasicMaterial({color:0x111214,transparent:true,opacity:.55,depthWrite:false});
+    for(let i=0;i<R.cars.length;i++)for(const dx of[-.75,.75]){const s0=w3f(F,-(6+i*8)/F.len+3/F.len,((i+1)%2?-3:3)+dx);const m=new THREE.Mesh(geo('mark',()=>new THREE.PlaneGeometry(.32,7)),mm);m.rotation.order='YXZ';m.rotation.y=Math.atan2(s0.tx,s0.tz);m.rotation.x=-Math.PI/2;m.position.set(s0.x,.075,s0.z);marks.add(m)}}
   const sc=safetyCar();sc.visible=false;scene.add(sc);
   // ТВ-камеры вдоль трассы
   const tv=[];for(let i=0;i<28;i++){const f=F[Math.floor(i/28*F.length)],s=i%2?1:-1;if(near(f.x+f.nx*s*26,f.z+f.nz*s*26,20))continue;tv.push(new THREE.Vector3(f.x+f.nx*s*26,6+rnd(0,6),f.z+f.nz*s*26))}
-  G={clouds,sunSp,D,SKY,renderer,scene,camera,sun,hemi,skyG,asphalt,rain,cars,sc,tv,F,w:0,h:0,wet:null,dir:new THREE.Vector3(0,0,1),look:new THREE.Vector3(),tvIdx:-1,fov:55,ov:{x:0,z:0,zoom:1,follow:false},path:p,crews};
+  G={clouds,sunSp,D,SKY,renderer,scene,camera,sun,hemi,skyG,asphalt,rain,cars,sc,tv,F,w:0,h:0,wet:null,dir:new THREE.Vector3(0,0,1),look:new THREE.Vector3(),tvIdx:-1,fov:55,ov:{x:0,z:0,zoom:1,follow:false},path:p,crews,smoke,marks};
   linearize(scene);hemi.color.convertSRGBToLinear();hemi.groundColor.convertSRGBToLinear();sun.color.convertSRGBToLinear();
   setWeather3D(R.wet[0]);
 }
@@ -1750,6 +1755,15 @@ function draw3D(dt){
   const wetNow2=G.wet,tm=performance.now()/1000;
   run.forEach(x=>{const o=G.cars[x.c.did];if(!o.spray)return;const on=wetNow2&&!x.grid&&!(x.pit&&x.pit.stop)&&!x.done&&R.count<=0;o.spray.visible=on;
     if(on){const g=o.m.g,yaw=g.rotation.y;o.spray.position.set(g.position.x-Math.sin(yaw)*3.2,.9,g.position.z-Math.cos(yaw)*3.2);const f=.85+Math.sin(tm*9+o.lane)*.15;o.spray.scale.set(4.2*f,2*f,1);o.spray.material.opacity=.32+.12*Math.sin(tm*7+o.lane)}});
+  // дым: сход (поломка) — столб на месте машины, ошибка пилота — облако у колёс, старт — дым от пробуксовки
+  const puff=(x,z,big)=>{const p=G.smoke.find(s=>s.life<=0);if(!p)return;p.life=big?3.2:1.4;p.max=p.life;p.big=big;p.sp.position.set(x+rnd(-.6,.6),.8,z+rnd(-.6,.6));p.sp.visible=true};
+  if(R.count<=0&&!G.marksOn){G.marksOn=true;G.marks.visible=true;run.slice(0,12).forEach(x=>{const g=G.cars[x.c.did].m.g;puff(g.position.x,g.position.z,false)})}
+  list.forEach(x=>{const o=G.cars[x.c.did],g=o.m.g;
+    if(x.out&&!o.smoked){o.smoked=true;if(x.c.outWhy!=='crash'){o.smokeUntil=performance.now()+9000}}
+    if(o.smokeUntil&&performance.now()<o.smokeUntil&&Math.random()<dt*5)puff(g.position.x,g.position.z,true);
+    if(x.c.errLap&&x.c.errLap!==o.errSeen&&Math.floor(x.prog)+1===x.c.errLap){o.errSeen=x.c.errLap;for(let i=0;i<3;i++)puff(g.position.x,g.position.z,false)}});
+  G.smoke.forEach(p=>{if(p.life<=0)return;p.life-=dt;const k=1-p.life/p.max;if(p.life<=0){p.sp.visible=false;return}
+    const sc0=(p.big?3:2)+k*(p.big?9:5);p.sp.scale.set(sc0,sc0,1);p.sp.position.y+=dt*(p.big?2.4:1);p.sp.material.opacity=(1-k)*(p.big?.55:.4)});
   // механики: у гаража в ожидании, вокруг машины во время стоянки
   if(G.crews)Object.entries(G.crews).forEach(([tid,cr])=>{const st=stopped[tid];if(st!==cr.st){cr.st=st;
     cr.men.forEach((mm,j)=>{if(st){const a=cr.act[j],sx=-st.tz,sz=st.tx;mm.position.set(st.x+st.tx*a[0]+sx*a[1],.85,st.z+st.tz*a[0]+sz*a[1])}else mm.position.copy(cr.idle[j])})}
@@ -1907,7 +1921,7 @@ function startWeekend(){
   UI.pd=me().drivers[0];
   W.ideal=idealSetup(tr,W.weather[0]);
   // настройка соперников зависит от их гоночных инженеров и техдиректора (как у игрока — от инженеров и практики)
-  S.teams.forEach(t=>{W.aiSq[t.id]=clamp(70+(srat(t,'eng')-70)*.6+(t.td.rating-70)*.25+rnd(-8,8)+(SET.diff-1)*8,25,98)});
+  S.teams.forEach(t=>{W.aiSq[t.id]=clamp(78+(srat(t,'eng')-70)*.6+(t.td.rating-70)*.25+rnd(-8,8)+(SET.diff-1)*8,25,98)});
   me().drivers.forEach(id=>{W.risk[id]=false;W.start[id]=W.weather[0]?'I':'M'});
   enterStep();
 }
@@ -2050,7 +2064,7 @@ function simLap(k){
       // ошибка на пределе бьёт по аэродинамике; в дождь на атаке — риск аварии
       if(c.mode==='push'){P.fw.h=Math.max(0,P.fw.h-rnd(15,35));P.floor.h=Math.max(0,P.floor.h-rnd(4,14))}
       if(c.mode==='push'&&loss>(wet?4:4.6)&&(wet||Math.random()<.3)){c.out=true;c.outLap=k;c.parkF=(k-1)+.5;c.cum.push(Infinity);c.outWhy='crash';P.fw.h=0;P.floor.h=Math.max(0,P.floor.h-40);feed(`${nm(c.did)} разбивает машину на мокрой трассе!`,c.me);continue}
-      feed(`${nm(c.did)} ошибается и теряет ${loss.toFixed(1).replace('.',',')} с${c.mode==='push'?' — повреждено переднее крыло':''}.`,c.me)}
+      c.errLap=k;feed(`${nm(c.did)} ошибается и теряет ${loss.toFixed(1).replace('.',',')} с${c.mode==='push'?' — повреждено переднее крыло':''}.`,c.me)}
     // прокол
     if(c.health<10&&Math.random()<.18){lt+=rnd(18,28);c.health=0;if(!c.pitReq)c.pitReq=R.N-k>8?'M':'S';feed(`Прокол у ${nm(c.did)}! Ползёт в боксы.`,c.me)}
     // пит-стоп
