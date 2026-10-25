@@ -118,6 +118,24 @@ const check = (name, ok, info) => { results.push({ name, ok, info }); console.lo
   check('пит-стоп под SC выгоднее в расчёте стратегии', !adv || adv.underSc < adv.normal, adv ? `разница ${adv.normal.toFixed(1)} → ${adv.underSc.toFixed(1)} с` : 'машина сошла');
   await finish();
 
+  // 8. Шины меняются только в боксе: сухо → дождь → сухо, на экране комплект меняется лишь после стоянки
+  await toRace();
+  await page.click('[data-a=race]');
+  const box = await page.evaluate(() => {
+    const R = __pitwall.R, D = __dbg; R.count = 0; R.paused = true;
+    for (let i = 0; i < R.N; i++) R.wet[i] = i >= 5 && i < 11;
+    const shown = {}; let bad = 0, changes = 0, T = 0;
+    while (R.lapDone < R.N && T < 1e5) {
+      T += .5; R.T = T;
+      for (;;) { const k = R.lapDone; if (k >= R.N) break; const run = R.cars.filter(c => !c.out); if (!run.length) break; if (R.T >= Math.min(...run.map(c => c.cum[k]))) D.simLap(k + 1); else break; }
+      R.cars.forEach(c => { if (c.out) return; c.pi = 0; const pr = D.carProgress(c, T), tn = D.tyreNow(c).tyre;
+        if (shown[c.did] && shown[c.did] !== tn) { changes++; if (!(pr.pit && pr.pit.after)) bad++; } shown[c.did] = tn; });
+    }
+    return { bad, changes };
+  });
+  check('шины меняются только в боксе', box.changes > 0 && box.bad === 0, `смен шин ${box.changes}, вне бокса ${box.bad}`);
+  await finish();
+
   check('нет ошибок JavaScript', errors.length === 0, errors.slice(0, 3).join(' | '));
   await browser.close();
   const failed = results.filter(r => !r.ok).length;
